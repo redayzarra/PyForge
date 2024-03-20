@@ -22,4 +22,23 @@ namespace rz
             }
         }
     }
+
+    enum SyntaxKind {}
+
+    class SyntaxToken {
+        public SyntaxToken(SyntaxKind kind, int position, string text) {
+
+        }
+    }
+
+    class Lexer {
+        private readonly string _text;
+        private int _position;
+
+        public Lexer(string text) {
+            _text = text;
+        }
+
+        public SyntaxToken NextToken() {}
+    }
 }
