@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\reday\\documents\\compiler\\cp\\cp.csproj": {}
+    "C:\\Users\\reday\\documents\\compiler\\rz\\cp.csproj": {}
   },
   "projects": {
-    "C:\\Users\\reday\\documents\\compiler\\cp\\cp.csproj": {
+    "C:\\Users\\reday\\documents\\compiler\\rz\\cp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\reday\\documents\\compiler\\cp\\cp.csproj",
+        "projectUniqueName": "C:\\Users\\reday\\documents\\compiler\\rz\\cp.csproj",
         "projectName": "cp",
-        "projectPath": "C:\\Users\\reday\\documents\\compiler\\cp\\cp.csproj",
+        "projectPath": "C:\\Users\\reday\\documents\\compiler\\rz\\cp.csproj",
         "packagesPath": "C:\\Users\\reday\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\reday\\documents\\compiler\\cp\\obj\\",
+        "outputPath": "C:\\Users\\reday\\documents\\compiler\\rz\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\reday\\AppData\\Roaming\\NuGet\\NuGet.Config",
