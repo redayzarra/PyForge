@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\reday\\Documents\\Compiler\\compiler2.csproj",
-      "projectName": "compiler2",
-      "projectPath": "C:\\Users\\reday\\Documents\\Compiler\\compiler2.csproj",
+      "projectUniqueName": "C:\\Users\\reday\\documents\\compiler\\cp\\cp.csproj",
+      "projectName": "cp",
+      "projectPath": "C:\\Users\\reday\\documents\\compiler\\cp\\cp.csproj",
       "packagesPath": "C:\\Users\\reday\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\reday\\Documents\\Compiler\\obj\\",
+      "outputPath": "C:\\Users\\reday\\documents\\compiler\\cp\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\reday\\AppData\\Roaming\\NuGet\\NuGet.Config",
