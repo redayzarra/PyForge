@@ -11,17 +11,20 @@ namespace rz
                 Console.WriteLine("Please enter an expression (or press Enter to exit):");
                 var line = Console.ReadLine();
                 if (string.IsNullOrWhiteSpace(line))
-                {
                     return;
-                }
-                
-                if (line == "4 + 5")
+
+                var lexer = new Lexer(line);
+                while (true)
                 {
-                    Console.WriteLine("9");
-                }
-                else
-                {
-                    Console.WriteLine("ERROR: Invalid Expression");
+                    var token = lexer.NextToken();
+                    if (token.Kind == SyntaxKind.EndOfFileToken)
+                        break;
+
+                    Console.WriteLine($"{token.Kind}: '{token.Text}'");
+                    if (token.Value != null)
+                        Console.WriteLine($"{token.Value}");
+                    
+                    Console.WriteLine();
                 }
             }
         }
@@ -38,6 +41,7 @@ namespace rz
         OpenParenthesisToken,
         CloseParenthesisToken,
         BadToken,
+        EndOfFileToken,
     }
 
     class SyntaxToken
@@ -75,9 +79,15 @@ namespace rz
 
         public SyntaxToken NextToken()
         {
-            if (_position >= _text.Length)
-                return new SyntaxToken(SyntaxKind.BadToken, _position, "\0", null);
+            // Skip any whitespace
+            while (char.IsWhiteSpace(Current))
+                Next();
 
+            // After skipping whitespace, check if we're at the end of the text
+            if (_position >= _text.Length)
+                return new SyntaxToken(SyntaxKind.EndOfFileToken, _position, string.Empty, null);
+
+            // If the char is a number, then grab the entire number and return it
             if (char.IsDigit(Current))
             {
                 var start = _position;
@@ -87,13 +97,13 @@ namespace rz
                 
                 var length = _position - start;
                 var text = _text.Substring(start, length);
-                int.TryParse(text, out var value);
-                return new SyntaxToken(SyntaxKind.NumberToken, start, text, value);
+                if (int.TryParse(text, out var value))
+                {
+                    return new SyntaxToken(SyntaxKind.NumberToken, start, text, value);
+                }
             }
 
-            if (char.IsWhiteSpace(Current))
-                Next();
-
+            // Handling operators and parentheses
             var tokenKind = Current switch
             {
                 '+' => SyntaxKind.PlusToken,
@@ -104,8 +114,18 @@ namespace rz
                 ')' => SyntaxKind.CloseParenthesisToken,
                 _ => SyntaxKind.BadToken,
             };
-            
-            return new SyntaxToken(tokenKind, _position++, _text.Substring(_position - 1, 1), null);
+
+            if (tokenKind != SyntaxKind.BadToken)
+            {
+                // Consume the character for a recognized token
+                var tokenText = _text.Substring(_position, 1);
+                _position++;
+                return new SyntaxToken(tokenKind, _position - 1, tokenText, null);
+            }
+
+            // Skip the unrecognized character and return a bad token
+            Next();
+            return new SyntaxToken(SyntaxKind.BadToken, _position - 1, _text.Substring(_position - 1, 1), null);
         } 
     }
 }
