@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace rz
 {
@@ -45,6 +46,7 @@ namespace rz
         EndOfFileToken,
     }
 
+    // A specific token in the given text (syntax of programming language)
     class SyntaxToken
     {
         public SyntaxToken(SyntaxKind kind, int position, string text, object? value)
@@ -61,6 +63,12 @@ namespace rz
         public object? Value { get; }
     }
 
+    abstract class SyntaxNode
+    {
+        public abstract SyntaxKind Kind { get; }
+    }
+
+    // Analyzes text and breaks it down into syntax tokens for parsing
     class Lexer
     {
         private readonly string _text;
@@ -138,6 +146,45 @@ namespace rz
             Next();
             return new SyntaxToken(SyntaxKind.BadToken, _position - 1, _text.Substring(_position - 1, 1), null);
         } 
+    } 
+
+    class Parser 
+    {
+        private readonly SyntaxToken[] _tokens;
+        private int _position;
+
+        // Creates a list of tokens from a given text
+        public Parser(string text)
+        {
+            var tokens = new List<SyntaxToken>();
+            var lexer = new Lexer(text);
+            SyntaxToken token;
+
+            do
+            { // Add valid tokens to the _tokens array
+                token = lexer.NextToken();
+                if (token.Kind != SyntaxKind.WhitespaceToken && 
+                    token.Kind != SyntaxKind.BadToken) 
+                {
+                    tokens.Add(token);
+                }
+            } while (token.Kind != SyntaxKind.EndOfFileToken);
+
+            _tokens = tokens.ToArray();
+        }
+
+        // Given a certain offset, look at the token at that index
+        private SyntaxToken Peek(int offset)
+        {
+            var index = _position + offset;
+            if (index < 0 || index >= _tokens.Length)
+                return _tokens[_tokens.Length - 1];
+            
+            return _tokens[index];
+        }
+
+        // Current is the token at the current position
+        private SyntaxToken Current => Peek(0);
     }
 }
 
