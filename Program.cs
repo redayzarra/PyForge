@@ -30,6 +30,7 @@ namespace rz
         }
     }
 
+    // Basically a list of all the things my compiler can recognize
     enum SyntaxKind
     {
         NumberToken,
@@ -80,10 +81,19 @@ namespace rz
         public SyntaxToken NextToken()
         {
             // Skip any whitespace
-            while (char.IsWhiteSpace(Current))
-                Next();
+            if (char.IsWhiteSpace(Current))
+            {
+                var start = _position;
 
-            // After skipping whitespace, check if we're at the end of the text
+                while (char.IsWhiteSpace(Current))
+                    Next();
+
+                var length = _position - start;
+                var text = _text.Substring(start, length);
+                return new SyntaxToken(SyntaxKind.WhitespaceToken, start, text, null);
+            }
+
+            // After skipping whitespaces, check if we're at the end of the text
             if (_position >= _text.Length)
                 return new SyntaxToken(SyntaxKind.EndOfFileToken, _position, string.Empty, null);
 
@@ -115,6 +125,7 @@ namespace rz
                 _ => SyntaxKind.BadToken,
             };
 
+            // If we recognize the special token (operator), then return it
             if (tokenKind != SyntaxKind.BadToken)
             {
                 // Consume the character for a recognized token
@@ -123,7 +134,7 @@ namespace rz
                 return new SyntaxToken(tokenKind, _position - 1, tokenText, null);
             }
 
-            // Skip the unrecognized character and return a bad token
+            // Otherwise, skip the unrecognized character and return a bad token
             Next();
             return new SyntaxToken(SyntaxKind.BadToken, _position - 1, _text.Substring(_position - 1, 1), null);
         } 
