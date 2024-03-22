@@ -11,6 +11,7 @@ namespace rz
             while (true)
             {
                 // Input: Extracts the input from console in 'line'
+                Console.WriteLine();
                 Console.Write("Enter an expression: ");
                 var line = Console.ReadLine();
                 if (string.IsNullOrWhiteSpace(line))
@@ -30,8 +31,20 @@ namespace rz
                 Console.WriteLine();
                 Console.ForegroundColor = color;
 
+                // If we have no errors, then go ahead and evaluate tree
+                if (!syntaxTree.Diagnostics.Any())
+                {
+                    var evaluator = new Evaluator(syntaxTree.Root);
+                    var result = evaluator.Evaluate();
+
+                    // Console styling
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    Console.Write($"Result: {result}");
+                    Console.WriteLine();
+                    Console.ForegroundColor = color;
+                }
                 // If we have any diagnostics, list them all 
-                if (syntaxTree.Diagnostics.Any())
+                else 
                 {
                     // Console styling and printing diagnostic
                     Console.ForegroundColor = ConsoleColor.DarkRed;
@@ -150,17 +163,23 @@ namespace rz
             // If the char is a number, then grab the entire number and return it
             if (char.IsDigit(Current))
             {
+                // From our current position, let's try extracting the num
                 var start = _position;
                 
+                // Keep increasing the pointer to get the whole number
                 while (char.IsDigit(Current))
                     Next();
                 
+                // Calculate the length of the text and the text itself
                 var length = _position - start;
                 var text = _text.Substring(start, length);
-                if (int.TryParse(text, out var value))
-                {
-                    return new SyntaxToken(SyntaxKind.NumberToken, start, text, value);
-                }
+
+                // Error handling if the number can't be converted to int
+                if (!int.TryParse(text, out var value))
+                    _diagnostics.Add($"The number {_text} isn't a valid Int32");
+            
+                // Otherwise, it's valid and we are good to go
+                return new SyntaxToken(SyntaxKind.NumberToken, start, text, value);
             }
 
             // Handling operators and parentheses
@@ -355,6 +374,48 @@ namespace rz
         {
             var numberToken = Match(SyntaxKind.NumberToken);
             return new NumberExpressionSyntax(numberToken);
+        }
+    }
+
+    class Evaluator
+    {
+        private readonly ExpressionSyntax _root;
+
+        public Evaluator(ExpressionSyntax root)
+        {
+            this._root = root;
+        }
+
+        public int Evaluate()
+        {
+            return EvaluateExpression(_root);
+        }
+
+        private int EvaluateExpression(ExpressionSyntax root)
+        {
+            // Switch expression to handle different types of nodes
+            return root switch
+            {
+                NumberExpressionSyntax num => (int)num.NumberToken.Value,
+                BinaryExpressionSyntax bin => EvaluateBinaryExpression(bin),
+                _ => throw new Exception($"Unexpected node type: '{root.Kind}'")
+            };
+        }
+
+        private int EvaluateBinaryExpression(BinaryExpressionSyntax bin)
+        {
+            var left = EvaluateExpression(bin.Left);
+            var right = EvaluateExpression(bin.Right);
+
+            // Handling operations with a switch statement
+            return bin.OperatorToken.Kind switch
+            {
+                SyntaxKind.PlusToken => left + right,
+                SyntaxKind.MinusToken => left - right,
+                SyntaxKind.StarToken => left * right,
+                SyntaxKind.SlashToken => right != 0 ? left / right : throw new Exception("Division by zero."),
+                _ => throw new Exception($"Unexpected binary operator: '{bin.OperatorToken.Kind}'")
+            };
         }
     }
 }
