@@ -8,6 +8,7 @@ namespace rz
     {
         static void Main(string[] args)
         {
+            bool showTree = true;
             while (true)
             {
                 // Input: Extracts the input from console in 'line'
@@ -17,19 +18,50 @@ namespace rz
                 if (string.IsNullOrWhiteSpace(line))
                     return;
 
+                var color = Console.ForegroundColor;
+
+                // Setting up tree visibility feature
+                switch (line)
+                {
+                    case "#showTree":
+                        showTree = true;
+                        break;
+                    case "#hideTree":
+                        showTree = false;
+                        break;
+                    default:
+                        break;
+                }
+
+                // Making the console more convenient
+                if (line == "#showTree" || line == "#hideTree")
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    Console.WriteLine(showTree ? "Showing parse tree." : "Hiding parse tree.");
+                    Console.ForegroundColor = color;
+                    continue;
+                }
+                else if (line == "clear" || line == "cleawr") {
+                    Console.Clear();
+                    continue;
+                }
+                else if (line == "exit")
+                    break;
+                
+
                 // Parse the current line from the console
-                var parser = new Parser(line);
-                var syntaxTree = parser.Parse();
+                var syntaxTree = SyntaxTree.Parse(line);
 
                 // Console styling
-                var color = Console.ForegroundColor;
                 Console.ForegroundColor = ConsoleColor.DarkGray;
                 Console.WriteLine();
 
-                // Pretty print the synax tree from the parser
-                PrettyPrint(syntaxTree.Root);
-                Console.WriteLine();
-                Console.ForegroundColor = color;
+                if (showTree) {
+                    // Pretty print the synax tree from the parser
+                    PrettyPrint(syntaxTree.Root);
+                    Console.WriteLine();
+                    Console.ForegroundColor = color;
+                }
 
                 // If we have no errors, then go ahead and evaluate tree
                 if (!syntaxTree.Diagnostics.Any())
@@ -96,6 +128,7 @@ namespace rz
         EndOfFileToken,
         NumberExpression, 
         BinaryExpression,
+        ParenthesizedExpression,
     }
 
     // A specific token in the given text (syntax of programming language)
@@ -263,6 +296,28 @@ namespace rz
         }
     }
 
+    sealed class ParenthesizedExpressionSyntax : ExpressionSyntax
+    {
+        public ParenthesizedExpressionSyntax(SyntaxToken openParenthesisToken, ExpressionSyntax expression, SyntaxToken closedParenthesisToken)
+        {
+            OpenParenthesisToken = openParenthesisToken;
+            Expression = expression;
+            ClosedParenthesisToken = closedParenthesisToken;
+        }
+
+        public SyntaxToken OpenParenthesisToken { get; }
+        public ExpressionSyntax Expression { get; }
+        public SyntaxToken ClosedParenthesisToken { get; }
+
+        public override SyntaxKind Kind => SyntaxKind.ParenthesizedExpression;
+        public override IEnumerable<SyntaxNode> GetChildren()
+        {
+            yield return OpenParenthesisToken;
+            yield return Expression;
+            yield return ClosedParenthesisToken;
+        }
+    }
+
     sealed class SyntaxTree
     {
         public SyntaxTree(IEnumerable<string> diagnostics, ExpressionSyntax root, SyntaxToken endOfFileToken)
@@ -275,6 +330,12 @@ namespace rz
         public IReadOnlyList<string> Diagnostics { get; }
         public ExpressionSyntax Root { get; }
         public SyntaxToken EndOfFileToken { get; }
+
+        public static SyntaxTree Parse(string text)
+        {
+            var parser = new Parser(text);
+            return parser.Parse();
+        }
     }
 
     // Uses the tokens from the Lexer to create a syntax tree
@@ -341,6 +402,11 @@ namespace rz
             return new SyntaxToken(kind, Current.Position, null, null);
         }
 
+        private ExpressionSyntax ParseExpression()
+        {
+            return ParseTerm();
+        }
+
         // Builds binary expressions for "+" and "-" operators
         public SyntaxTree Parse()
         {
@@ -391,6 +457,15 @@ namespace rz
         // Parses a primary expression (simplest form) into syntax node
         private ExpressionSyntax ParsePrimaryExpression()
         {
+            if (Current.Kind == SyntaxKind.OpenParenthesisToken)
+            {
+                var left = NextToken();
+                var expression = ParseExpression();
+                var right = Match(SyntaxKind.CloseParenthesisToken);
+
+                return new ParenthesizedExpressionSyntax(left, expression, right);
+            }
+
             var numberToken = Match(SyntaxKind.NumberToken);
             return new NumberExpressionSyntax(numberToken);
         }
@@ -417,6 +492,7 @@ namespace rz
             {
                 NumberExpressionSyntax num => (int)num.NumberToken.Value,
                 BinaryExpressionSyntax bin => EvaluateBinaryExpression(bin),
+                ParenthesizedExpressionSyntax paren => EvaluateExpression(paren.Expression),
                 _ => throw new Exception($"Unexpected node type: '{root.Kind}'")
             };
         }
