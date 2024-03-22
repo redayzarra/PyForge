@@ -44,6 +44,8 @@ namespace rz
         CloseParenthesisToken,
         BadToken,
         EndOfFileToken,
+        NumberExpression, 
+        BinaryExpression,
     }
 
     // A specific token in the given text (syntax of programming language)
@@ -61,11 +63,6 @@ namespace rz
         public int Position { get; }
         public string Text { get; }
         public object? Value { get; }
-    }
-
-    abstract class SyntaxNode
-    {
-        public abstract SyntaxKind Kind { get; }
     }
 
     // Analyzes text and breaks it down into syntax tokens for parsing
@@ -148,6 +145,43 @@ namespace rz
         } 
     } 
 
+    abstract class SyntaxNode
+    {
+        public abstract SyntaxKind Kind { get; }
+    }
+
+    abstract class ExpressionSyntax : SyntaxNode
+    {
+
+    }
+
+    sealed class NumberExpressionSyntax : ExpressionSyntax
+    {
+        public NumberExpressionSyntax(SyntaxToken numberToken)
+        {
+            NumberToken = numberToken;
+        }
+
+        public override SyntaxKind Kind => SyntaxKind.NumberExpression;
+        public SyntaxToken NumberToken { get; }
+    }
+
+    sealed class BinaryExpressionSyntax : ExpressionSyntax
+    {
+        public BinaryExpressionSyntax(ExpressionSyntax left, SyntaxToken operatorToken, ExpressionSyntax right)
+        {
+            Left = left;
+            OperatorToken = operatorToken;
+            Right = right;
+        }
+
+        public ExpressionSyntax Left { get; }
+        public SyntaxNode OperatorToken { get; }
+        public ExpressionSyntax Right { get; }
+
+        public override SyntaxKind Kind => SyntaxKind.BinaryExpression;
+    }
+
     class Parser 
     {
         private readonly SyntaxToken[] _tokens;
@@ -185,6 +219,25 @@ namespace rz
 
         // Current is the token at the current position
         private SyntaxToken Current => Peek(0);
+
+        private SyntaxToken NextToken()
+        {
+            var current = Current;
+            _position++
+            return current;
+        }
+
+        public ExpressionSyntax Parse ()
+        {
+            var primary = ParsePrimaryExpression();
+
+            while (Current == SyntaxKind.PlusToken || 
+                   Current == SyntaxKind.MinusToken)
+            {
+                var operatorToken = NextToken();
+                 
+            }
+        }
     }
 }
 
