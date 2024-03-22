@@ -10,20 +10,36 @@ namespace rz
         {
             while (true)
             {
-                Console.WriteLine("Please enter an expression (or press Enter to exit):");
-                Console.WriteLine();
+                // Input: Extracts the input from console in 'line'
+                Console.Write("Enter an expression: ");
                 var line = Console.ReadLine();
                 if (string.IsNullOrWhiteSpace(line))
                     return;
 
+                // Parse the current line from the console
                 var parser = new Parser(line);
-                var expression = parser.Parse();
+                var syntaxTree = parser.Parse();
 
+                // Console styling
                 var color = Console.ForegroundColor;
                 Console.ForegroundColor = ConsoleColor.DarkGray;
-                PrettyPrint(expression);
+                Console.WriteLine();
+
+                // Pretty print the synax tree from the parser
+                PrettyPrint(syntaxTree.Root);
                 Console.WriteLine();
                 Console.ForegroundColor = color;
+
+                // If we have any diagnostics, list them all 
+                if (syntaxTree.Diagnostics.Any())
+                {
+                    // Console styling and printing diagnostic
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    foreach (var diagnostic in syntaxTree.Diagnostics)
+                        Console.WriteLine(diagnostic);
+                    Console.WriteLine(); 
+                    Console.ForegroundColor = color;
+                }
             }
         }
 
@@ -228,10 +244,25 @@ namespace rz
         }
     }
 
+    sealed class SyntaxTree
+    {
+        public SyntaxTree(IEnumerable<string> diagnostics, ExpressionSyntax root, SyntaxToken endOfFileToken)
+        {
+            Diagnostics = diagnostics.ToArray();
+            Root = root;
+            EndOfFileToken = endOfFileToken;
+        }
+
+        public IReadOnlyList<string> Diagnostics { get; }
+        public ExpressionSyntax Root { get; }
+        public SyntaxToken EndOfFileToken { get; }
+    }
+
     // Uses the tokens from the Lexer to create a syntax tree
     class Parser 
     {
         private readonly SyntaxToken[] _tokens;
+        private List<string> _diagnostics = new List<string>();
         private int _position;
 
         // Creates a list of tokens from a given text
@@ -252,7 +283,10 @@ namespace rz
             } while (token.Kind != SyntaxKind.EndOfFileToken);
 
             _tokens = tokens.ToArray();
+            _diagnostics.AddRange(lexer.Diagnostics);
         }
+
+        public IEnumerable<string> Diagnostics => _diagnostics;
 
         // Given a certain offset, look at the token at that index
         private SyntaxToken Peek(int offset)
@@ -284,11 +318,20 @@ namespace rz
                 return NextToken(); // But move the Parser's focus to next
 
             // Otherwise, return a placeholder token with null content
+            _diagnostics.Add($"ERROR: Unexpected token <{Current.Kind}>, expected <{kind}>");
             return new SyntaxToken(kind, Current.Position, null, null);
         }
 
         // Builds binary expressions for "+" and "-" operators
-        public ExpressionSyntax Parse()
+        public SyntaxTree Parse()
+        {
+            var expression = ParseExpression();
+            var endOfFileToken = Match(SyntaxKind.EndOfFileToken);
+
+            return new SyntaxTree(_diagnostics, expression, endOfFileToken);
+        }
+
+        private ExpressionSyntax ParseExpression()
         {
             // Start with the first part of the expression (left side)
             var left = ParsePrimaryExpression();
