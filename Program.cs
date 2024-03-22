@@ -27,6 +27,7 @@ namespace rz
             }
         }
 
+        // Creates a really pretty tree similar to Unix tree (folders)
         static void PrettyPrint(SyntaxNode node, string indent = "", bool isLast = true)
         {
             var marker = isLast ? "└──" : "├──";
@@ -95,11 +96,14 @@ namespace rz
     {
         private readonly string _text;
         private int _position;
+        private List<string> _diagnostics = new List<string>();
 
         public Lexer(string text)
         {
             _text = text;
         }
+
+        public IEnumerable<string> Diagnostics => _diagnostics;
 
         private char Current => _position >= _text.Length ? '\0' : _text[_position];
 
@@ -165,11 +169,13 @@ namespace rz
             }
 
             // Otherwise, skip the unrecognized character and return a bad token
+            _diagnostics.Add($"ERROR: Bad character in input: '{Current}'");
             Next();
             return new SyntaxToken(SyntaxKind.BadToken, _position - 1, _text.Substring(_position - 1, 1), null);
         } 
     } 
 
+    // Defines our syntax node to build our syntax tree
     abstract class SyntaxNode
     {
         public abstract SyntaxKind Kind { get; }
@@ -182,6 +188,7 @@ namespace rz
 
     }
 
+    // Syntax node that holds numbers
     sealed class NumberExpressionSyntax : ExpressionSyntax
     {
         public NumberExpressionSyntax(SyntaxToken numberToken)
@@ -198,6 +205,7 @@ namespace rz
         }
     }
 
+    // Creates a binary expression (e.g. 4 + 5) and holds the operator
     sealed class BinaryExpressionSyntax : ExpressionSyntax
     {
         public BinaryExpressionSyntax(ExpressionSyntax left, SyntaxToken operatorToken, ExpressionSyntax right)
@@ -220,6 +228,7 @@ namespace rz
         }
     }
 
+    // Uses the tokens from the Lexer to create a syntax tree
     class Parser 
     {
         private readonly SyntaxToken[] _tokens;
@@ -258,36 +267,47 @@ namespace rz
         // Current is the token at the current position
         private SyntaxToken Current => Peek(0);
 
+        // Returns the current token, then moves to next token
         private SyntaxToken NextToken()
         {
+            // Return the same token we started with, but shift to next
             var current = Current;
             _position++;
             return current;
         }
 
+        // If the token matches what it's suppose to be, move on or create null node
         private SyntaxToken Match(SyntaxKind kind)
         {
+            // If the current token is the same kind, return the current
             if (Current.Kind == kind)
-                return NextToken();
+                return NextToken(); // But move the Parser's focus to next
 
+            // Otherwise, return a placeholder token with null content
             return new SyntaxToken(kind, Current.Position, null, null);
         }
 
+        // Builds binary expressions for "+" and "-" operators
         public ExpressionSyntax Parse()
         {
+            // Start with the first part of the expression (left side)
             var left = ParsePrimaryExpression();
 
+            // Keep going as long as we see "+" or "-" operators
             while (Current.Kind == SyntaxKind.PlusToken || 
                    Current.Kind == SyntaxKind.MinusToken)
             {
+                // Capture the operator and combine the left and right sides
                 var operatorToken = NextToken();
                 var right = ParsePrimaryExpression();
                 left = new BinaryExpressionSyntax(left, operatorToken, right);
             }
 
+            // Return the constructed expression (can be number or binary)
             return left;
         }
 
+        // Parses a primary expression (simplest form) into syntax node
         private ExpressionSyntax ParsePrimaryExpression()
         {
             var numberToken = Match(SyntaxKind.NumberToken);
