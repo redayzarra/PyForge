@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace rz
 {
@@ -10,24 +11,43 @@ namespace rz
             while (true)
             {
                 Console.WriteLine("Please enter an expression (or press Enter to exit):");
+                Console.WriteLine();
                 var line = Console.ReadLine();
                 if (string.IsNullOrWhiteSpace(line))
                     return;
 
-                var lexer = new Lexer(line);
-                while (true)
-                {
-                    var token = lexer.NextToken();
-                    if (token.Kind == SyntaxKind.EndOfFileToken)
-                        break;
+                var parser = new Parser(line);
+                var expression = parser.Parse();
 
-                    Console.WriteLine($"{token.Kind}: '{token.Text}'");
-                    if (token.Value != null)
-                        Console.WriteLine($"{token.Value}");
-                    
-                    Console.WriteLine();
-                }
+                var color = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.DarkGray;
+                PrettyPrint(expression);
+                Console.WriteLine();
+                Console.ForegroundColor = color;
             }
+        }
+
+        static void PrettyPrint(SyntaxNode node, string indent = "", bool isLast = true)
+        {
+            var marker = isLast ? "└──" : "├──";
+
+            Console.Write(indent);
+            Console.Write(marker);
+            Console.Write(node.Kind);
+
+            if (node is SyntaxToken token && token.Value != null)
+            {
+                Console.Write(" ");
+                Console.Write(token.Value);
+            }
+            Console.WriteLine();
+
+            indent += isLast ? "    " : "│   ";
+            
+            var lastChild = node.GetChildren().LastOrDefault();
+
+            foreach (var child in node.GetChildren())
+                PrettyPrint(child, indent, child == lastChild);
         }
     }
 
@@ -49,7 +69,7 @@ namespace rz
     }
 
     // A specific token in the given text (syntax of programming language)
-    class SyntaxToken
+    class SyntaxToken : SyntaxNode
     {
         public SyntaxToken(SyntaxKind kind, int position, string text, object? value)
         {
@@ -59,10 +79,15 @@ namespace rz
             Value = value;
         }
 
-        public SyntaxKind Kind { get; }
+        public override SyntaxKind Kind { get; }
         public int Position { get; }
         public string Text { get; }
         public object? Value { get; }
+
+        public override IEnumerable<SyntaxNode> GetChildren()
+        {
+            return Enumerable.Empty<SyntaxNode>();
+        }
     }
 
     // Analyzes text and breaks it down into syntax tokens for parsing
@@ -148,6 +173,8 @@ namespace rz
     abstract class SyntaxNode
     {
         public abstract SyntaxKind Kind { get; }
+
+        public abstract IEnumerable<SyntaxNode> GetChildren();
     }
 
     abstract class ExpressionSyntax : SyntaxNode
@@ -164,6 +191,11 @@ namespace rz
 
         public override SyntaxKind Kind => SyntaxKind.NumberExpression;
         public SyntaxToken NumberToken { get; }
+
+        public override IEnumerable<SyntaxNode> GetChildren()
+        {
+            yield return NumberToken;
+        }
     }
 
     sealed class BinaryExpressionSyntax : ExpressionSyntax
@@ -175,11 +207,17 @@ namespace rz
             Right = right;
         }
 
+        public override SyntaxKind Kind => SyntaxKind.BinaryExpression;
         public ExpressionSyntax Left { get; }
-        public SyntaxNode OperatorToken { get; }
+        public SyntaxToken OperatorToken { get; }
         public ExpressionSyntax Right { get; }
 
-        public override SyntaxKind Kind => SyntaxKind.BinaryExpression;
+        public override IEnumerable<SyntaxNode> GetChildren()
+        {
+            yield return Left;
+            yield return OperatorToken;
+            yield return Right;
+        }
     }
 
     class Parser 
@@ -223,20 +261,37 @@ namespace rz
         private SyntaxToken NextToken()
         {
             var current = Current;
-            _position++
+            _position++;
             return current;
         }
 
-        public ExpressionSyntax Parse ()
+        private SyntaxToken Match(SyntaxKind kind)
         {
-            var primary = ParsePrimaryExpression();
+            if (Current.Kind == kind)
+                return NextToken();
 
-            while (Current == SyntaxKind.PlusToken || 
-                   Current == SyntaxKind.MinusToken)
+            return new SyntaxToken(kind, Current.Position, null, null);
+        }
+
+        public ExpressionSyntax Parse()
+        {
+            var left = ParsePrimaryExpression();
+
+            while (Current.Kind == SyntaxKind.PlusToken || 
+                   Current.Kind == SyntaxKind.MinusToken)
             {
                 var operatorToken = NextToken();
-                 
+                var right = ParsePrimaryExpression();
+                left = new BinaryExpressionSyntax(left, operatorToken, right);
             }
+
+            return left;
+        }
+
+        private ExpressionSyntax ParsePrimaryExpression()
+        {
+            var numberToken = Match(SyntaxKind.NumberToken);
+            return new NumberExpressionSyntax(numberToken);
         }
     }
 }
