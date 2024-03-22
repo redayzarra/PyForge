@@ -344,20 +344,39 @@ namespace rz
         // Builds binary expressions for "+" and "-" operators
         public SyntaxTree Parse()
         {
-            var expression = ParseExpression();
+            var expression = ParseTerm();
             var endOfFileToken = Match(SyntaxKind.EndOfFileToken);
 
             return new SyntaxTree(_diagnostics, expression, endOfFileToken);
         }
 
-        private ExpressionSyntax ParseExpression()
+        private ExpressionSyntax ParseTerm()
         {
             // Start with the first part of the expression (left side)
-            var left = ParsePrimaryExpression();
+            var left = ParseFactor();
 
             // Keep going as long as we see "+" or "-" operators
             while (Current.Kind == SyntaxKind.PlusToken || 
                    Current.Kind == SyntaxKind.MinusToken)
+            {
+                // Capture the operator and combine the left and right sides
+                var operatorToken = NextToken();
+                var right = ParseFactor();
+                left = new BinaryExpressionSyntax(left, operatorToken, right);
+            }
+
+            // Return the constructed expression (can be number or binary)
+            return left;
+        }
+
+        private ExpressionSyntax ParseFactor()
+        {
+            // Start with the first part of the expression (left side)
+            var left = ParsePrimaryExpression();
+
+            // Keep going as long as we see "*" or "/" operators
+            while (Current.Kind == SyntaxKind.StarToken ||
+                   Current.Kind == SyntaxKind.SlashToken)
             {
                 // Capture the operator and combine the left and right sides
                 var operatorToken = NextToken();
