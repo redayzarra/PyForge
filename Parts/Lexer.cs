@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace Compiler.Parts
 {
     // Analyzes text and breaks it down into syntax tokens for parsing

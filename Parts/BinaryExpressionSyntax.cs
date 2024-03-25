@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace Compiler.Parts
 {
     // Creates a binary expression (e.g. 4 + 5) and holds the operator

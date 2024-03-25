@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace Compiler.Parts
 {
     // Uses the tokens from the Lexer to create a syntax tree

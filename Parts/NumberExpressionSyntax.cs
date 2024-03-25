@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace Compiler.Parts
 {
     // Syntax node that holds numbers

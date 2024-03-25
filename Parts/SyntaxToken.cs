@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
-
 namespace Compiler.Parts
 {
     // A specific token in the given text (syntax of programming language)

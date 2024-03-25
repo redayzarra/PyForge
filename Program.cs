@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using Compiler.Parts;
+﻿using Compiler.Parts;
 
 namespace Compiler
 {

@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace Compiler.Parts
 {
     sealed class ParenthesizedExpressionSyntax : ExpressionSyntax
