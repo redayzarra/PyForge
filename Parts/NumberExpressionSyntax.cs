@@ -1,7 +1,7 @@
 namespace Compiler.Parts
 {
     // Syntax node that holds numbers
-    sealed class NumberExpressionSyntax : ExpressionSyntax
+    public sealed class NumberExpressionSyntax : ExpressionSyntax
     {
         public NumberExpressionSyntax(SyntaxToken numberToken)
         {

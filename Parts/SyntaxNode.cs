@@ -1,7 +1,7 @@
 namespace Compiler.Parts
 {
     // Defines our syntax node to build our syntax tree
-    abstract class SyntaxNode
+    public abstract class SyntaxNode
     {
         public abstract SyntaxKind Kind { get; }
 

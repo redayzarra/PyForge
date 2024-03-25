@@ -1,7 +1,7 @@
 namespace Compiler.Parts
 {
     // Uses the tokens from the Lexer to create a syntax tree
-    class Parser 
+    internal sealed class Parser 
     {
         private readonly SyntaxToken[] _tokens;
         private List<string> _diagnostics = new List<string>();

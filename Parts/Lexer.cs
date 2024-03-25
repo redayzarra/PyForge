@@ -1,7 +1,7 @@
 namespace Compiler.Parts
 {
     // Analyzes text and breaks it down into syntax tokens for parsing
-    class Lexer
+    internal sealed class Lexer
     {
         private readonly string _text;
         private int _position;

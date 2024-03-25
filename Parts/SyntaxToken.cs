@@ -1,7 +1,7 @@
 namespace Compiler.Parts
 {
     // A specific token in the given text (syntax of programming language)
-    class SyntaxToken : SyntaxNode
+    public sealed class SyntaxToken : SyntaxNode
     {
         public SyntaxToken(SyntaxKind kind, int position, string text, object? value)
         {

@@ -2,11 +2,11 @@
 
 namespace Compiler
 {
-    class Program
+    internal static class Program
     {
-        static void Main(string[] args)
+        private static void Main()
         {
-            bool showTree = true;
+            var showTree = true;
             while (true)
             {
                 // Input: Extracts the input from console in 'line'
@@ -15,8 +15,6 @@ namespace Compiler
                 var line = Console.ReadLine();
                 if (string.IsNullOrWhiteSpace(line))
                     return;
-
-                var color = Console.ForegroundColor;
 
                 // Setting up tree visibility feature
                 switch (line)
@@ -36,7 +34,7 @@ namespace Compiler
                 {
                     Console.ForegroundColor = ConsoleColor.DarkGray;
                     Console.WriteLine(showTree ? "Showing parse tree." : "Hiding parse tree.");
-                    Console.ForegroundColor = color;
+                    Console.ResetColor();
                     continue;
                 }
                 else if (line == "clear" || line == "cleawr") {
@@ -58,7 +56,7 @@ namespace Compiler
                     // Pretty print the synax tree from the parser
                     PrettyPrint(syntaxTree.Root);
                     Console.WriteLine();
-                    Console.ForegroundColor = color;
+                    Console.ResetColor();
                 }
 
                 // If we have no errors, then go ahead and evaluate tree
@@ -71,7 +69,6 @@ namespace Compiler
                     Console.ForegroundColor = ConsoleColor.DarkGray;
                     Console.Write($"Result: {result}");
                     Console.WriteLine();
-                    Console.ForegroundColor = color;
                 }
                 // If we have any diagnostics, list them all 
                 else 
@@ -81,8 +78,8 @@ namespace Compiler
                     foreach (var diagnostic in syntaxTree.Diagnostics)
                         Console.WriteLine(diagnostic);
                     Console.WriteLine(); 
-                    Console.ForegroundColor = color;
                 }
+                Console.ResetColor();
             }
         }
 
@@ -102,7 +99,7 @@ namespace Compiler
             }
             Console.WriteLine();
 
-            indent += isLast ? "    " : "│   ";
+            indent += isLast ? "   " : "│  ";
             
             var lastChild = node.GetChildren().LastOrDefault();
 

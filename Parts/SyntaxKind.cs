@@ -1,7 +1,7 @@
 namespace Compiler.Parts
 {
     // Basically a list of all the things my compiler can recognize
-    enum SyntaxKind
+    public enum SyntaxKind
     {
         NumberToken,
         WhitespaceToken,
