@@ -19,7 +19,7 @@ namespace Compiler.Parts
             // Switch expression to handle different types of nodes
             return root switch
             {
-                NumberExpressionSyntax num => (int)num.NumberToken.Value,
+                LiteralExpressionSyntax num => (int)(num.LiteralToken.Value ?? throw new Exception("Null value encountered.")),
                 BinaryExpressionSyntax bin => EvaluateBinaryExpression(bin),
                 ParenthesizedExpressionSyntax paren => EvaluateExpression(paren.Expression),
                 _ => throw new Exception($"Unexpected node type: '{root.Kind}'")
