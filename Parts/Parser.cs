@@ -16,7 +16,7 @@ namespace Compiler.Parts
 
             do
             { // Add valid tokens to the _tokens array
-                token = lexer.NextToken();
+                token = lexer.Lex();
                 if (token.Kind != SyntaxKind.WhitespaceToken && 
                     token.Kind != SyntaxKind.BadToken) 
                 {

@@ -21,7 +21,7 @@ namespace Compiler.Parts
             _position++;
         }
 
-        public SyntaxToken NextToken()
+        public SyntaxToken Lex()
         {
             // Skip any whitespace
             if (char.IsWhiteSpace(Current))

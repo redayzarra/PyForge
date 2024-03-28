@@ -20,7 +20,7 @@ namespace Compiler.Parts
         CloseParenthesisToken,
 
         // Expressions
-        NumberExpression, 
+        LiteralExpression, 
         BinaryExpression,
         ParenthesizedExpression,
     }
