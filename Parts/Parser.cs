@@ -73,11 +73,6 @@ namespace Compiler.Parts
             return new SyntaxTree(_diagnostics, expression, endOfFileToken);
         }
 
-        private ExpressionSyntax ParseExpression()
-        {
-            return ParseTerm();
-        }
-
         private ExpressionSyntax ParseExpression(int parentPrecedence = 0)
         {
             var left = ParsePrimaryExpression();
@@ -100,10 +95,12 @@ namespace Compiler.Parts
         {
             switch (kind)
             {
-                case SyntaxKind.PlusToken:
-                case SyntaxKind.MinusToken:
                 case SyntaxKind.StarToken:
                 case SyntaxKind.SlashToken:
+                    return 2;
+
+                case SyntaxKind.PlusToken:
+                case SyntaxKind.MinusToken:
                     return 1;
                 
                 default:
