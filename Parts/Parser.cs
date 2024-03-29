@@ -78,42 +78,37 @@ namespace Compiler.Parts
             return ParseTerm();
         }
 
-        private ExpressionSyntax ParseTerm()
+        private ExpressionSyntax ParseExpression(int parentPrecedence = 0)
         {
-            // Start with the first part of the expression (left side)
-            var left = ParseFactor();
+            var left = ParsePrimaryExpression();
 
-            // Keep going as long as we see "+" or "-" operators
-            while (Current.Kind == SyntaxKind.PlusToken || 
-                   Current.Kind == SyntaxKind.MinusToken)
+            while (true) 
             {
-                // Capture the operator and combine the left and right sides
+                var precedence = GetBinaryOperator(Current.Kind);
+                if (precedence == 0 || precedence <= parentPrecedence)
+                    break;
+                
                 var operatorToken = NextToken();
-                var right = ParseFactor();
+                var right = ParseExpression();
                 left = new BinaryExpressionSyntax(left, operatorToken, right);
             }
 
-            // Return the constructed expression (can be number or binary)
             return left;
         }
 
-        private ExpressionSyntax ParseFactor()
+        private static int GetBinaryOperator(SyntaxKind kind)
         {
-            // Start with the first part of the expression (left side)
-            var left = ParsePrimaryExpression();
-
-            // Keep going as long as we see "*" or "/" operators
-            while (Current.Kind == SyntaxKind.StarToken ||
-                   Current.Kind == SyntaxKind.SlashToken)
+            switch (kind)
             {
-                // Capture the operator and combine the left and right sides
-                var operatorToken = NextToken();
-                var right = ParsePrimaryExpression();
-                left = new BinaryExpressionSyntax(left, operatorToken, right);
+                case SyntaxKind.PlusToken:
+                case SyntaxKind.MinusToken:
+                case SyntaxKind.StarToken:
+                case SyntaxKind.SlashToken:
+                    return 1;
+                
+                default:
+                    return 0;
             }
-
-            // Return the constructed expression (can be number or binary)
-            return left;
         }
 
         // Parses a primary expression (simplest form) into syntax node
