@@ -1,3 +1,5 @@
+using static Compiler.Parts.SyntaxFacts;
+
 namespace Compiler.Parts
 {
     // Uses the tokens from the Lexer to create a syntax tree
@@ -79,7 +81,7 @@ namespace Compiler.Parts
 
             while (true) 
             {
-                var precedence = GetBinaryOperator(Current.Kind);
+                var precedence = Current.Kind.GetBinaryOperator();
                 if (precedence == 0 || precedence <= parentPrecedence)
                     break;
                 
@@ -91,22 +93,6 @@ namespace Compiler.Parts
             return left;
         }
 
-        private static int GetBinaryOperator(SyntaxKind kind)
-        {
-            switch (kind)
-            {
-                case SyntaxKind.StarToken:
-                case SyntaxKind.SlashToken:
-                    return 2;
-
-                case SyntaxKind.PlusToken:
-                case SyntaxKind.MinusToken:
-                    return 1;
-                
-                default:
-                    return 0;
-            }
-        }
 
         // Parses a primary expression (simplest form) into syntax node
         private ExpressionSyntax ParsePrimaryExpression()
