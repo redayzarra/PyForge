@@ -2,7 +2,7 @@ namespace Compiler.Parts
 {
     internal static class SyntaxFacts
     {
-        private static int GetBinaryOperator(this SyntaxKind kind)
+        internal static int GetBinaryOperator(SyntaxKind kind)
         {
             switch (kind)
             {

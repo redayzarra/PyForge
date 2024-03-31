@@ -81,7 +81,7 @@ namespace Compiler.Parts
 
             while (true) 
             {
-                var precedence = Current.Kind.GetBinaryOperator();
+                var precedence = GetBinaryOperator(Current.Kind);
                 if (precedence == 0 || precedence <= parentPrecedence)
                     break;
                 
