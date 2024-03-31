@@ -21,6 +21,7 @@ namespace Compiler.Parts
 
         // Expressions
         LiteralExpression, 
+        UnaryExpression,
         BinaryExpression,
         ParenthesizedExpression,
     }
