@@ -77,7 +77,19 @@ namespace Compiler.Parts
 
         private ExpressionSyntax ParseExpression(int parentPrecedence = 0)
         {
-            var left = ParsePrimaryExpression();
+            ExpressionSyntax left;
+
+            var unaryOperator = GetUnaryOperator(Current.Kind);
+            if (unaryOperator != 0 && unaryOperator > parentPrecedence)
+            {
+                var operatorToken = NextToken();
+                var operand = ParsePrimaryExpression();
+                left = new UnaryExpressionSyntax(operatorToken, operand);
+            }
+            else 
+            {
+                left = ParsePrimaryExpression();
+            }
 
             while (true) 
             {
