@@ -80,10 +80,10 @@ namespace Compiler.Parts
             ExpressionSyntax left;
 
             var unaryOperator = GetUnaryOperator(Current.Kind);
-            if (unaryOperator != 0 && unaryOperator > parentPrecedence)
+            if (unaryOperator != 0 && unaryOperator >= parentPrecedence)
             {
                 var operatorToken = NextToken();
-                var operand = ParsePrimaryExpression();
+                var operand = ParseExpression(unaryOperator);
                 left = new UnaryExpressionSyntax(operatorToken, operand);
             }
             else 
