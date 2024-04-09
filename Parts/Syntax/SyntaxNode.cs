@@ -1,4 +1,4 @@
-namespace Compiler.Parts
+namespace Compiler.Parts.Syntax
 {
     // Defines our syntax node to build our syntax tree
     public abstract class SyntaxNode

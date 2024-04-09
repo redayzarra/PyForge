@@ -1,4 +1,4 @@
-namespace Compiler.Parts
+namespace Compiler.Parts.Syntax
 {
     // Basically a list of all the things my compiler can recognize
     public enum SyntaxKind

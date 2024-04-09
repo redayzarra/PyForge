@@ -1,4 +1,4 @@
-namespace Compiler.Parts
+namespace Compiler.Parts.Syntax
 {
     // Analyzes text and breaks it down into syntax tokens for parsing
     internal sealed class Lexer

@@ -1,4 +1,4 @@
-namespace Compiler.Parts
+namespace Compiler.Parts.Syntax
 {
     // Syntax node that holds numbers
     public sealed class LiteralExpressionSyntax : ExpressionSyntax

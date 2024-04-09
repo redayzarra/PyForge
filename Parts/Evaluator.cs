@@ -1,3 +1,5 @@
+using Compiler.Parts.Syntax;
+
 namespace Compiler.Parts
 {
     public sealed class Evaluator
@@ -6,7 +8,7 @@ namespace Compiler.Parts
 
         public Evaluator(ExpressionSyntax root)
         {
-            this._root = root;
+            _root = root;
         }
 
         // Runs the EvaluateExpression function on the root of the tree

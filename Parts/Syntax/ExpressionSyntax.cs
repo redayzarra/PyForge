@@ -1,4 +1,4 @@
-namespace Compiler.Parts
+namespace Compiler.Parts.Syntax
 {
     public abstract class ExpressionSyntax : SyntaxNode
     {

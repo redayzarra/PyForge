@@ -1,6 +1,6 @@
-using static Compiler.Parts.SyntaxFacts;
+using static Compiler.Parts.Syntax.SyntaxFacts;
 
-namespace Compiler.Parts
+namespace Compiler.Parts.Syntax
 {
     // Uses the tokens from the Lexer to create a syntax tree
     internal sealed class Parser 

@@ -1,4 +1,4 @@
-namespace Compiler.Parts
+namespace Compiler.Parts.Syntax
 {
     // Creates a binary expression (e.g. 4 + 5) and holds the operator
     public sealed class BinaryExpressionSyntax : ExpressionSyntax
