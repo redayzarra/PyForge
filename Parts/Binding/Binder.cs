@@ -107,26 +107,53 @@ namespace Compiler.Parts.Binding
         private BoundExpression BindUnaryExpression(UnaryExpressionSyntax syntax)
         {
             var boundOperand = BindExpression(syntax.Operand);
-            var boundOperatorKind = BindUnaryOperatorKind(syntax.OperatorToken.Kind);
+            var boundOperatorKind = BindUnaryOperatorKind(syntax.OperatorToken.Kind, boundOperand.Type);
             return new BoundUnaryExpression(boundOperatorKind, boundOperand);
         }
 
         private BoundExpression BindBinaryExpression(BinaryExpressionSyntax syntax)
         {
             var boundLeft = BindExpression(syntax.Left);
-            var boundOperatorKind = BindBinaryOperatorKind(syntax.OperatorToken.Kind);
             var boundRight = BindExpression(syntax.Right);
+
+            var boundOperatorKind = BindBinaryOperatorKind(syntax.OperatorToken.Kind, boundLeft.Type, boundRight.Type);
             return new BoundBinaryExpression(boundLeft, boundOperatorKind, boundRight);
         }
 
-        private BoundUnaryOperatorKind BindUnaryOperatorKind(SyntaxKind kind)
+        private BoundUnaryOperatorKind? BindUnaryOperatorKind(SyntaxKind kind, Type operandType)
         {
-            throw new NotImplementedException();
+            if (operandType == typeof(int))
+                return null;
+            
+            switch (kind)
+            {
+                case SyntaxKind.PlusToken:
+                    return BoundUnaryOperatorKind.Identity;
+                case SyntaxKind.MinusToken:
+                    return BoundUnaryOperatorKind.Negation;
+                default:
+                    throw new Exception($"Unexpected unary operator: {kind}")
+            }
         }
 
-        private BoundBinaryOperatorKind BindBinaryOperatorKind(SyntaxKind kind)
+        private BoundBinaryOperatorKind? BindBinaryOperatorKind(SyntaxKind kind, Type leftType, Type rightType)
         {
-            throw new NotImplementedException();
+            if (leftType != typeof(int) || rightType != typeof(int))
+                return null;
+
+            switch (kind)
+            {
+                case SyntaxKind.PlusToken:
+                    return BoundBinaryOperatorKind.Addition;
+                case SyntaxKind.MinusToken:
+                    return BoundBinaryOperatorKind.Subtraction;
+                case SyntaxKind.StarToken:
+                    return BoundBinaryOperatorKind.Multiplication;
+                case SyntaxKind.SlashToken:
+                    return BoundBinaryOperatorKind.Division;
+                default:
+                    throw new Exception($"Unexpected binary operator: {kind}")
+            }
         }
     }
     
