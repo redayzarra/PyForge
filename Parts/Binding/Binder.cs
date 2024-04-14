@@ -83,6 +83,10 @@ namespace Compiler.Parts.Binding
 
     internal sealed class Binder
     {
+        private readonly List<string> _diagnostics = new List<string>();
+
+        public IEnumerable<string> Diagnostics => _diagnostics;
+
         public BoundExpression BindExpression(ExpressionSyntax syntax)
         {
             switch (syntax.Kind)
@@ -108,21 +112,34 @@ namespace Compiler.Parts.Binding
         {
             var boundOperand = BindExpression(syntax.Operand);
             var boundOperatorKind = BindUnaryOperatorKind(syntax.OperatorToken.Kind, boundOperand.Type);
-            return new BoundUnaryExpression(boundOperatorKind, boundOperand);
+
+            if (boundOperatorKind == null)
+            {
+                _diagnostics.Add($"Unary operator '{syntax.OperatorToken.Text}' is not defined for type: {boundOperand.Type}");
+                return boundOperand;
+            }
+
+            return new BoundUnaryExpression(boundOperatorKind.Value, boundOperand);
         }
 
         private BoundExpression BindBinaryExpression(BinaryExpressionSyntax syntax)
         {
             var boundLeft = BindExpression(syntax.Left);
             var boundRight = BindExpression(syntax.Right);
-
             var boundOperatorKind = BindBinaryOperatorKind(syntax.OperatorToken.Kind, boundLeft.Type, boundRight.Type);
-            return new BoundBinaryExpression(boundLeft, boundOperatorKind, boundRight);
+
+            if (boundOperatorKind == null)
+            {
+                _diagnostics.Add($"Binary operator '{syntax.OperatorToken.Text}' is not defined for types: {boundLeft.Type} and {boundRight.Type}");
+                return boundLeft;
+            }
+
+            return new BoundBinaryExpression(boundLeft, boundOperatorKind.Value, boundRight);
         }
 
         private BoundUnaryOperatorKind? BindUnaryOperatorKind(SyntaxKind kind, Type operandType)
         {
-            if (operandType == typeof(int))
+            if (operandType != typeof(int))
                 return null;
             
             switch (kind)
@@ -132,7 +149,7 @@ namespace Compiler.Parts.Binding
                 case SyntaxKind.MinusToken:
                     return BoundUnaryOperatorKind.Negation;
                 default:
-                    throw new Exception($"Unexpected unary operator: {kind}")
+                    throw new Exception($"Unexpected unary operator: {kind}");
             }
         }
 
@@ -152,7 +169,7 @@ namespace Compiler.Parts.Binding
                 case SyntaxKind.SlashToken:
                     return BoundBinaryOperatorKind.Division;
                 default:
-                    throw new Exception($"Unexpected binary operator: {kind}")
+                    throw new Exception($"Unexpected binary operator: {kind}");
             }
         }
     }
