@@ -54,10 +54,14 @@ namespace Compiler.Parts.Binding
 
     internal enum BoundBinaryOperatorKind
     {
-        Addition, 
-        Subtraction, 
-        Multiplication, 
-        Division
+        Addition,
+        Subtraction,
+        Multiplication,
+        Division,
+        LogicalAnd,
+        LogicalOr,
+        Equals,
+        NotEquals
     }
 
     internal sealed class BoundBinaryExpression : BoundExpression
@@ -79,7 +83,7 @@ namespace Compiler.Parts.Binding
 
     internal sealed class Binder
     {
-        public BoundExpression Bind(ExpressionSyntax syntax)
+        public BoundExpression BindExpression(ExpressionSyntax syntax)
         {
             switch (syntax.Kind)
             {
@@ -90,21 +94,37 @@ namespace Compiler.Parts.Binding
                 case SyntaxKind.BinaryExpression:
                     return BindBinaryExpression((BinaryExpressionSyntax)syntax);
                 default:
-                    throw new Exception($"Unexpected syntax: {syntax.Kind}")
+                    throw new Exception($"Unexpected syntax: {syntax.Kind}");
             }
         }
 
-        private BoundExpression BindBinaryExpression(BinaryExpressionSyntax syntax)
+        private BoundExpression BindLiteralExpression(LiteralExpressionSyntax syntax)
         {
-            throw new NotImplementedException();
+            var value = syntax.LiteralToken.Value as int? ?? 0;
+            return new BoundLiteralExpression(value);
         }
 
         private BoundExpression BindUnaryExpression(UnaryExpressionSyntax syntax)
         {
+            var boundOperand = BindExpression(syntax.Operand);
+            var boundOperatorKind = BindUnaryOperatorKind(syntax.OperatorToken.Kind);
+            return new BoundUnaryExpression(boundOperatorKind, boundOperand);
+        }
+
+        private BoundExpression BindBinaryExpression(BinaryExpressionSyntax syntax)
+        {
+            var boundLeft = BindExpression(syntax.Left);
+            var boundOperatorKind = BindBinaryOperatorKind(syntax.OperatorToken.Kind);
+            var boundRight = BindExpression(syntax.Right);
+            return new BoundBinaryExpression(boundLeft, boundOperatorKind, boundRight);
+        }
+
+        private BoundUnaryOperatorKind BindUnaryOperatorKind(SyntaxKind kind)
+        {
             throw new NotImplementedException();
         }
 
-        private BoundExpression BindLiteralExpression(LiteralExpressionSyntax syntax)
+        private BoundBinaryOperatorKind BindBinaryOperatorKind(SyntaxKind kind)
         {
             throw new NotImplementedException();
         }
