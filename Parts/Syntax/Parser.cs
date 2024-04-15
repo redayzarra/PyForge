@@ -79,26 +79,28 @@ namespace Compiler.Parts.Syntax
         {
             ExpressionSyntax left;
 
-            var unaryOperator = GetUnaryOperator(Current.Kind);
-            if (unaryOperator != 0 && unaryOperator >= parentPrecedence)
+            // Handling unary operators first, including "not"
+            var unaryOperatorPrecedence = GetUnaryOperator(Current.Kind);
+            if (unaryOperatorPrecedence != 0 && unaryOperatorPrecedence > parentPrecedence)
             {
                 var operatorToken = NextToken();
-                var operand = ParseExpression(unaryOperator);
+                var operand = ParseExpression(unaryOperatorPrecedence);
                 left = new UnaryExpressionSyntax(operatorToken, operand);
             }
-            else 
+            else
             {
                 left = ParsePrimaryExpression();
             }
 
-            while (true) 
+            // Handling binary operators, including "and" and "or"
+            while (true)
             {
                 var precedence = GetBinaryOperator(Current.Kind);
                 if (precedence == 0 || precedence <= parentPrecedence)
                     break;
-                
+
                 var operatorToken = NextToken();
-                var right = ParseExpression();
+                var right = ParseExpression(precedence);
                 left = new BinaryExpressionSyntax(left, operatorToken, right);
             }
 
@@ -124,12 +126,12 @@ namespace Compiler.Parts.Syntax
                 case SyntaxKind.FalseKeyword:
                 {
                     var keywordToken = NextToken();
-                    var value = Current.Kind == SyntaxKind.TrueKeyword;
+                    bool value = keywordToken.Kind == SyntaxKind.TrueKeyword; 
                     return new LiteralExpressionSyntax(keywordToken, value);
                 }
 
                 default:
-                { 
+                {
                     var numberToken = MatchToken(SyntaxKind.NumberToken);
                     return new LiteralExpressionSyntax(numberToken);
                 }

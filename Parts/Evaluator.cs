@@ -32,32 +32,42 @@ namespace Compiler.Parts
         }
 
         // Evaluates the left and right operands then applies the operation
-        private int EvaluateUnaryExpression(BoundUnaryExpression una)
+        private object EvaluateUnaryExpression(BoundUnaryExpression una)
         {
-            var operand = (int) EvaluateExpression(una.Operand);
+            var operand = EvaluateExpression(una.Operand);
+
             return una.OperatorKind switch
             {
-                BoundUnaryOperatorKind.Negation => -operand,
-                BoundUnaryOperatorKind.Identity => operand,
+                BoundUnaryOperatorKind.Negation => -(int)operand,
+                BoundUnaryOperatorKind.Identity => (int)operand,
+                BoundUnaryOperatorKind.LogicalNegation => !(bool)operand, // Correct handling for boolean negation
                 _ => throw new InvalidOperationException($"Unexpected unary operator {una.OperatorKind}")
             };
         }
 
         // Evaluates the left and right expressions then applies the operation
-        private int EvaluateBinaryExpression(BoundBinaryExpression bin)
+        private object EvaluateBinaryExpression(BoundBinaryExpression bin)
         {
-            var left = (int) EvaluateExpression(bin.Left);
-            var right = (int) EvaluateExpression(bin.Right);
+            var left = EvaluateExpression(bin.Left);
+            var right = EvaluateExpression(bin.Right);
 
-            return bin.OperatorKind switch
+            switch (bin.OperatorKind)
             {
-                BoundBinaryOperatorKind.Addition => left + right,
-                BoundBinaryOperatorKind.Subtraction => left - right,
-                BoundBinaryOperatorKind.Multiplication => left * right,
-                BoundBinaryOperatorKind.Division when right == 0 => throw new InvalidOperationException("Division by zero."),
-                BoundBinaryOperatorKind.Division => left / right,
-                _ => throw new InvalidOperationException($"Unexpected binary operator: '{bin.OperatorKind}'")
-            };
+                case BoundBinaryOperatorKind.Addition:
+                    return (int)left + (int)right;
+                case BoundBinaryOperatorKind.Subtraction:
+                    return (int)left - (int)right;
+                case BoundBinaryOperatorKind.Multiplication:
+                    return (int)left * (int)right;
+                case BoundBinaryOperatorKind.Division:
+                    return (int)left / (int)right; // Consider zero division case
+                case BoundBinaryOperatorKind.LogicalAnd:
+                    return (bool)left && (bool)right;
+                case BoundBinaryOperatorKind.LogicalOr:
+                    return (bool)left || (bool)right;
+                default:
+                    throw new InvalidOperationException($"Unexpected binary operator {bin.OperatorKind}");
+            }
         }
     }
 }

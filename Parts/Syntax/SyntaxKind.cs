@@ -1,33 +1,44 @@
 namespace Compiler.Parts.Syntax
 {
-    // Basically a list of all the things my compiler can recognize
     public enum SyntaxKind
     {
         // Special tokens
         BadToken,
         EndOfFileToken,
 
-        // Numerical tokens
+        #region Numerical Tokens
         NumberToken,
         PlusToken,
         MinusToken,
         StarToken,
         SlashToken,
+        #endregion
 
-        // Text tokens
-        WhitespaceToken,
+        #region Punctuation Tokens
         OpenParenthesisToken,
         CloseParenthesisToken,
+        #endregion
 
-        // Expressions
-        LiteralExpression, 
+        #region Whitespace Tokens
+        WhitespaceToken,
+        #endregion
+
+        #region Expressions
+        LiteralExpression,
         UnaryExpression,
         BinaryExpression,
         ParenthesizedExpression,
+        #endregion
 
-        // Keywords
+        // Identifiers
+        IdentifierToken, 
+
+        #region Keywords
         TrueKeyword,
         FalseKeyword,
-        IdentifierToken,
+        NotKeyword,
+        AndKeyword,
+        OrKeyword,
+        #endregion
     }
 }
