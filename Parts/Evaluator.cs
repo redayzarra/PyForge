@@ -1,5 +1,4 @@
 using Compiler.Parts.Binding;
-using Compiler.Parts.Syntax;
 
 namespace Compiler.Parts
 {
@@ -13,20 +12,20 @@ namespace Compiler.Parts
         }
 
         // Runs the EvaluateExpression function on the root of the tree
-        public int Evaluate()
+        public object Evaluate()
         {
             return EvaluateExpression(_root);
         }
 
         // Recursive function to evaluate the SyntaxTree
-        private int EvaluateExpression(BoundExpression root)
+        private object EvaluateExpression(BoundExpression root)
         {
             if (root == null) throw new ArgumentNullException(nameof(root));
 
             return root switch
             {
                 BoundUnaryExpression una => EvaluateUnaryExpression(una),
-                BoundLiteralExpression num => (int)(num.Value ?? throw new InvalidOperationException("Null value encountered.")),
+                BoundLiteralExpression num => num.Value ?? throw new InvalidOperationException("Null value encountered."),
                 BoundBinaryExpression bin => EvaluateBinaryExpression(bin),
                 _ => throw new InvalidOperationException($"Unexpected node type: '{root.Kind}'")
             };
@@ -35,7 +34,7 @@ namespace Compiler.Parts
         // Evaluates the left and right operands then applies the operation
         private int EvaluateUnaryExpression(BoundUnaryExpression una)
         {
-            var operand = EvaluateExpression(una.Operand);
+            var operand = (int) EvaluateExpression(una.Operand);
             return una.OperatorKind switch
             {
                 BoundUnaryOperatorKind.Negation => -operand,
@@ -47,8 +46,8 @@ namespace Compiler.Parts
         // Evaluates the left and right expressions then applies the operation
         private int EvaluateBinaryExpression(BoundBinaryExpression bin)
         {
-            var left = EvaluateExpression(bin.Left);
-            var right = EvaluateExpression(bin.Right);
+            var left = (int) EvaluateExpression(bin.Left);
+            var right = (int) EvaluateExpression(bin.Right);
 
             return bin.OperatorKind switch
             {
