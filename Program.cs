@@ -1,5 +1,6 @@
 ﻿using Compiler.Parts;
 using Compiler.Parts.Syntax;
+using Compiler.Parts.Binding;
 
 namespace Compiler
 {
@@ -48,6 +49,10 @@ namespace Compiler
 
                 // Parse the current line from the console
                 var syntaxTree = SyntaxTree.Parse(line);
+                var binder = new Binder();
+                var boundExpression = binder.BindExpression(syntaxTree.Root);
+
+                var diagnostics = syntaxTree.Diagnostics.Concat(binder.Diagnostics).ToArray();
 
                 // Console styling
                 Console.ForegroundColor = ConsoleColor.DarkGray;
@@ -61,9 +66,9 @@ namespace Compiler
                 }
 
                 // If we have no errors, then go ahead and evaluate tree
-                if (!syntaxTree.Diagnostics.Any())
+                if (!diagnostics.Any())
                 {
-                    var evaluator = new Evaluator(syntaxTree.Root);
+                    var evaluator = new Evaluator(boundExpression);
                     var result = evaluator.Evaluate();
 
                     // Console styling
@@ -76,7 +81,7 @@ namespace Compiler
                 {
                     // Console styling and printing diagnostic
                     Console.ForegroundColor = ConsoleColor.DarkRed;
-                    foreach (var diagnostic in syntaxTree.Diagnostics)
+                    foreach (var diagnostic in diagnostics)
                         Console.WriteLine(diagnostic);
                     Console.WriteLine(); 
                 }
