@@ -3,7 +3,7 @@ using Compiler.Parts.Syntax;
 
 namespace Compiler.Parts
 {
-    public sealed class Evaluator
+    internal sealed class Evaluator
     {
         private readonly BoundExpression _root;
 
@@ -27,8 +27,7 @@ namespace Compiler.Parts
             {
                 BoundUnaryExpression una => EvaluateUnaryExpression(una),
                 BoundLiteralExpression num => (int)(num.Value ?? throw new InvalidOperationException("Null value encountered.")),
-                BinaryExpressionSyntax bin => EvaluateBinaryExpression(bin),
-                ParenthesizedExpressionSyntax paren => EvaluateExpression(paren.Expression),
+                BoundBinaryExpression bin => EvaluateBinaryExpression(bin),
                 _ => throw new InvalidOperationException($"Unexpected node type: '{root.Kind}'")
             };
         }
@@ -46,19 +45,19 @@ namespace Compiler.Parts
         }
 
         // Evaluates the left and right expressions then applies the operation
-        private int EvaluateBinaryExpression(BinaryExpressionSyntax bin)
+        private int EvaluateBinaryExpression(BoundBinaryExpression bin)
         {
             var left = EvaluateExpression(bin.Left);
             var right = EvaluateExpression(bin.Right);
 
-            return bin.OperatorToken.Kind switch
+            return bin.OperatorKind switch
             {
-                SyntaxKind.PlusToken => left + right,
-                SyntaxKind.MinusToken => left - right,
-                SyntaxKind.StarToken => left * right,
-                SyntaxKind.SlashToken when right == 0 => throw new InvalidOperationException("Division by zero."),
-                SyntaxKind.SlashToken => left / right,
-                _ => throw new InvalidOperationException($"Unexpected binary operator: '{bin.OperatorToken.Kind}'")
+                BoundBinaryOperatorKind.Addition => left + right,
+                BoundBinaryOperatorKind.Subtraction => left - right,
+                BoundBinaryOperatorKind.Multiplication => left * right,
+                BoundBinaryOperatorKind.Division when right == 0 => throw new InvalidOperationException("Division by zero."),
+                BoundBinaryOperatorKind.Division => left / right,
+                _ => throw new InvalidOperationException($"Unexpected binary operator: '{bin.OperatorKind}'")
             };
         }
     }
