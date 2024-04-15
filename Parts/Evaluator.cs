@@ -1,12 +1,13 @@
+using Compiler.Parts.Binding;
 using Compiler.Parts.Syntax;
 
 namespace Compiler.Parts
 {
     public sealed class Evaluator
     {
-        private readonly ExpressionSyntax _root;
+        private readonly BoundExpression _root;
 
-        public Evaluator(ExpressionSyntax root)
+        public Evaluator(BoundExpression root)
         {
             _root = root;
         }
@@ -18,14 +19,14 @@ namespace Compiler.Parts
         }
 
         // Recursive function to evaluate the SyntaxTree
-        private int EvaluateExpression(ExpressionSyntax root)
+        private int EvaluateExpression(BoundExpression root)
         {
             if (root == null) throw new ArgumentNullException(nameof(root));
 
             return root switch
             {
-                UnaryExpressionSyntax una => EvaluateUnaryExpression(una),
-                LiteralExpressionSyntax num => (int)(num.LiteralToken.Value ?? throw new InvalidOperationException("Null value encountered.")),
+                BoundUnaryExpression una => EvaluateUnaryExpression(una),
+                BoundLiteralExpression num => (int)(num.Value ?? throw new InvalidOperationException("Null value encountered.")),
                 BinaryExpressionSyntax bin => EvaluateBinaryExpression(bin),
                 ParenthesizedExpressionSyntax paren => EvaluateExpression(paren.Expression),
                 _ => throw new InvalidOperationException($"Unexpected node type: '{root.Kind}'")
@@ -33,14 +34,14 @@ namespace Compiler.Parts
         }
 
         // Evaluates the left and right operands then applies the operation
-        private int EvaluateUnaryExpression(UnaryExpressionSyntax una)
+        private int EvaluateUnaryExpression(BoundUnaryExpression una)
         {
             var operand = EvaluateExpression(una.Operand);
-            return una.OperatorToken.Kind switch
+            return una.OperatorKind switch
             {
-                SyntaxKind.MinusToken => -operand,
-                SyntaxKind.PlusToken => operand,
-                _ => throw new InvalidOperationException($"Unexpected unary operator {una.OperatorToken.Kind}")
+                BoundUnaryOperatorKind.Negation => -operand,
+                BoundUnaryOperatorKind.Identity => operand,
+                _ => throw new InvalidOperationException($"Unexpected unary operator {una.OperatorKind}")
             };
         }
 
