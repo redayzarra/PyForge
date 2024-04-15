@@ -24,5 +24,10 @@ namespace Compiler.Parts.Syntax
         UnaryExpression,
         BinaryExpression,
         ParenthesizedExpression,
+
+        // Keywords
+        TrueKeyword,
+        FalseKeyword,
+        IdentifierToken,
     }
 }

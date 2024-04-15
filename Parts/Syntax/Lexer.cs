@@ -23,7 +23,7 @@ namespace Compiler.Parts.Syntax
 
         public SyntaxToken Lex()
         {
-            // Skip any whitespace
+            // Get the entire whitespace segment and create the token
             if (char.IsWhiteSpace(Current))
             {
                 var start = _position;
@@ -34,6 +34,20 @@ namespace Compiler.Parts.Syntax
                 var length = _position - start;
                 var text = _text.Substring(start, length);
                 return new SyntaxToken(SyntaxKind.WhitespaceToken, start, text, null);
+            }
+
+            // Get the entire letter segment
+            if (char.IsLetter(Current))
+            {
+                var start = _position;
+
+                while (char.IsLetter(Current))
+                    Next();
+
+                var length = _position - start;
+                var text = _text.Substring(start, length);
+                var kind = SyntaxFacts.GetKeywordKind(text);
+                return new SyntaxToken(kind, start, text, null);
             }
 
             // After skipping whitespaces, check if we're at the end of the text

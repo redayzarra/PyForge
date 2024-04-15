@@ -1,3 +1,6 @@
+
+using System.Runtime.InteropServices;
+
 namespace Compiler.Parts.Syntax
 {
     internal static class SyntaxFacts
@@ -31,6 +34,19 @@ namespace Compiler.Parts.Syntax
                 
                 default:
                     return 0;
+            }
+        }
+
+        public static SyntaxKind GetKeywordKind(string text)
+        {
+            switch (text)
+            {
+                case "True":
+                    return SyntaxKind.TrueKeyword;
+                case "False":
+                    return SyntaxKind.FalseKeyword;
+                default:
+                    return SyntaxKind.IdentifierToken;
             }
         }
     }
