@@ -109,23 +109,32 @@ namespace Compiler.Parts.Syntax
         // Parses a primary expression (simplest form) into syntax node
         private ExpressionSyntax ParsePrimaryExpression()
         {
-            if (Current.Kind == SyntaxKind.OpenParenthesisToken)
+            switch (Current.Kind)
             {
-                var left = NextToken();
-                var expression = ParseExpression();
-                var right = MatchToken(SyntaxKind.CloseParenthesisToken);
+                case SyntaxKind.OpenParenthesisToken:
+                {
+                    var left = NextToken();
+                    var expression = ParseExpression();
+                    var right = MatchToken(SyntaxKind.CloseParenthesisToken);
 
-                return new ParenthesizedExpressionSyntax(left, expression, right);
+                    return new ParenthesizedExpressionSyntax(left, expression, right);
+                }
+
+                case SyntaxKind.TrueKeyword:
+                case SyntaxKind.FalseKeyword:
+                {
+                    var keywordToken = NextToken();
+                    var value = Current.Kind == SyntaxKind.TrueKeyword;
+                    return new LiteralExpressionSyntax(keywordToken, value);
+                }
+
+                default:
+                { 
+                    var numberToken = MatchToken(SyntaxKind.NumberToken);
+                    return new LiteralExpressionSyntax(numberToken);
+                }
             }
-            else if (Current.Kind == SyntaxKind.TrueKeyword ||
-                     Current.Kind == SyntaxKind.FalseKeyword)
-            {
-                var value = Current.Kind == SyntaxKind.TrueKeyword;
-                return new LiteralExpressionSyntax(Current, value);
-            }            
 
-            var numberToken = MatchToken(SyntaxKind.NumberToken);
-            return new LiteralExpressionSyntax(numberToken);
         }
     }
 }
