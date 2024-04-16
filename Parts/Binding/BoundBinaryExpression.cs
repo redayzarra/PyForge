@@ -9,7 +9,7 @@ namespace Compiler.Parts.Binding
             Right = right;
         }
 
-        public override Type Type => Left.Type;
+        public override Type Type => Operate.ResultType;
         public override BoundNodeKind Kind => BoundNodeKind.UnaryExpression;
 
         public BoundExpression Left { get; }

@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using Compiler.Parts.Binding;
 
 namespace Compiler.Parts
@@ -65,6 +66,10 @@ namespace Compiler.Parts
                     return (bool)left || (bool)right;
                 case BoundBinaryOperatorKind.LogicalAnd:
                     return (bool)left && (bool)right;
+                case BoundBinaryOperatorKind.Equals:
+                    return Equals(left, right);
+                case BoundBinaryOperatorKind.NotEquals:
+                    return !Equals(left, right);
                 default:
                     throw new Exception($"Unexpected binary operator {bin.Operate}");
             }

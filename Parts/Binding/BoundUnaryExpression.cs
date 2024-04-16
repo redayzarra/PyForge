@@ -8,7 +8,7 @@ namespace Compiler.Parts.Binding
             Operand = operand;
         }
 
-        public override Type Type => Operand.Type;
+        public override Type Type => Operate.ResultType;
         public override BoundNodeKind Kind => BoundNodeKind.UnaryExpression;
 
         public BoundUnaryOperator Operate { get; }
