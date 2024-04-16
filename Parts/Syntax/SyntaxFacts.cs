@@ -9,11 +9,8 @@ namespace Compiler.Parts.Syntax
             {
                 case SyntaxKind.PlusToken: 
                 case SyntaxKind.MinusToken: 
-                    return 6; // Higher precedence for unary operators
-
                 case SyntaxKind.NotKeyword: 
-                    return 5; // Logical NOT has higher precedence than binary operators but below arithmetic unary
-
+                    return 6; // Higher precedence for unary operators
                 default:
                     return 0;
             }

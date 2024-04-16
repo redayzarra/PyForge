@@ -59,20 +59,30 @@ namespace Compiler.Parts.Binding
 
         private BoundUnaryOperatorKind? BindUnaryOperatorKind(SyntaxKind kind, Type operandType)
         {
-            if (operandType != typeof(int) && operandType != typeof(bool))
-                return null;
-
-            switch (kind)
+            // If we are dealing with integers, then use arithmetic
+            if (operandType == typeof(int))
             {
-                case SyntaxKind.PlusToken:
-                    return BoundUnaryOperatorKind.Identity;
-                case SyntaxKind.MinusToken:
-                    return BoundUnaryOperatorKind.Negation;
-                case SyntaxKind.NotKeyword:
-                    return BoundUnaryOperatorKind.LogicalNegation;
-                default:
-                    throw new Exception($"Unexpected unary operator: {kind}");
+                switch (kind)
+                {
+                    case SyntaxKind.PlusToken:
+                        return BoundUnaryOperatorKind.Identity;
+                    case SyntaxKind.MinusToken:
+                        return BoundUnaryOperatorKind.Negation;
+                }
             }
+
+            // If we are dealing with booleans, then use "NOT" keyword
+            if (operandType == typeof(bool))
+            {
+                switch(kind)
+                {
+                    case SyntaxKind.NotKeyword:
+                        return BoundUnaryOperatorKind.LogicalNegation;
+                }
+            }
+
+            // Let it fall through if we don't get anything valid
+            return null;
         }
 
         private BoundBinaryOperatorKind? BindBinaryOperatorKind(SyntaxKind kind, Type leftType, Type rightType)
@@ -89,7 +99,7 @@ namespace Compiler.Parts.Binding
                 }
             }
 
-            // Continue to handle integer operations
+            // Handle integer operations
             if (leftType == typeof(int) && rightType == typeof(int))
             {
                 switch (kind)
