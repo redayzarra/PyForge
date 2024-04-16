@@ -6,8 +6,7 @@ namespace Compiler.Parts.Binding
     {
         private BoundUnaryOperator(SyntaxKind syntaxKind, BoundUnaryOperatorKind kind, Type operandType)
         : this (syntaxKind, kind, operandType, operandType)
-        {
-        }
+        {}
 
         private BoundUnaryOperator(SyntaxKind syntaxKind, BoundUnaryOperatorKind kind, Type operandType, Type resultType)
         {
