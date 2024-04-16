@@ -23,7 +23,7 @@ namespace Compiler.Parts.Binding
 
         private static BoundUnaryOperator[] _operators = 
         {
-            new BoundUnaryOperator(SyntaxKind.AndKeyword, BoundUnaryOperatorKind.LogicalNegation, typeof(bool)),
+            new BoundUnaryOperator(SyntaxKind.NotKeyword, BoundUnaryOperatorKind.LogicalNegation, typeof(bool)),
             new BoundUnaryOperator(SyntaxKind.PlusToken, BoundUnaryOperatorKind.Identity, typeof(int)),
             new BoundUnaryOperator(SyntaxKind.MinusToken, BoundUnaryOperatorKind.LogicalNegation, typeof(int)),
         };
