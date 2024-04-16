@@ -36,12 +36,12 @@ namespace Compiler.Parts
         {
             var operand = EvaluateExpression(una.Operand);
 
-            return una.OperatorKind switch
+            return una.Operate.Kind switch
             {
                 BoundUnaryOperatorKind.Negation => -(int)operand,
                 BoundUnaryOperatorKind.Identity => (int)operand,
                 BoundUnaryOperatorKind.LogicalNegation => !(bool)operand, // Correct handling for boolean negation
-                _ => throw new InvalidOperationException($"Unexpected unary operator {una.OperatorKind}")
+                _ => throw new InvalidOperationException($"Unexpected unary operator {una.Operate}")
             };
         }
 
@@ -51,7 +51,7 @@ namespace Compiler.Parts
             var left = EvaluateExpression(bin.Left);
             var right = EvaluateExpression(bin.Right);
 
-            switch (bin.OperatorKind)
+            switch (bin.Operate.Kind)
             {
                 case BoundBinaryOperatorKind.Multiplication:
                     return (int)left * (int)right;
@@ -66,7 +66,7 @@ namespace Compiler.Parts
                 case BoundBinaryOperatorKind.LogicalAnd:
                     return (bool)left && (bool)right;
                 default:
-                    throw new Exception($"Unexpected binary operator {bin.OperatorKind}");
+                    throw new Exception($"Unexpected binary operator {bin.Operate}");
             }
         }
     }
