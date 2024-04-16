@@ -28,6 +28,14 @@ namespace Compiler.Parts.Syntax
             _position++;
         }
 
+        private string ConsumeWhile(Func<char, bool> condition)
+        {
+            var start = _position;
+            while (condition(Current))
+                Next();
+            return _text.Substring(start, _position - start);
+        }
+
         public SyntaxToken Lex()
         {
             while (char.IsWhiteSpace(Current))
@@ -37,34 +45,37 @@ namespace Compiler.Parts.Syntax
                 return new SyntaxToken(SyntaxKind.EndOfFileToken, _position, string.Empty, null);
 
             var start = _position;
+
+            // Check for two-character tokens
+            if (Current == '=' && LookAhead == '=')
+            {
+                _position += 2; // Advance past both characters
+                return new SyntaxToken(SyntaxKind.EqualsEqualsToken, start, "==", null);
+            }
+
+            if (Current == '!' && LookAhead == '=')
+            {
+                _position += 2; // Advance past both characters
+                return new SyntaxToken(SyntaxKind.NotEqualsToken, start, "!=", null);
+            }
+
             if (char.IsLetter(Current))
             {
-                while (char.IsLetter(Current))
-                    Next();
-
-                var length = _position - start;
-                var text = _text.Substring(start, length);
+                var text = ConsumeWhile(char.IsLetter);
                 var kind = SyntaxFacts.GetKeywordKind(text);
                 return new SyntaxToken(kind, start, text, null);
             }
 
             if (char.IsDigit(Current))
             {
-                while (char.IsDigit(Current))
-                    Next();
-
-                var length = _position - start;
-                var text = _text.Substring(start, length);
+                var text = ConsumeWhile(char.IsDigit);
                 if (!int.TryParse(text, out var value))
                     _diagnostics.Add($"The number {text} isn't a valid Int32");
-
                 return new SyntaxToken(SyntaxKind.NumberToken, start, text, value);
             }
 
-            // Handling single character tokens
-            var current = Current;
-            Next();
-            var tokenKind = current switch
+            var currentChar = Current;  // Save the current character before potentially calling Next()
+            var tokenKind = currentChar switch
             {
                 '+' => SyntaxKind.PlusToken,
                 '-' => SyntaxKind.MinusToken,
@@ -75,10 +86,13 @@ namespace Compiler.Parts.Syntax
                 _ => SyntaxKind.BadToken,
             };
 
-            if (tokenKind == SyntaxKind.BadToken)
-                _diagnostics.Add($"ERROR: Bad character in input: '{current}'");
+            Next(); // Advance the position for single character token
 
-            return new SyntaxToken(tokenKind, start, current.ToString(), null);
+            if (tokenKind == SyntaxKind.BadToken)
+                _diagnostics.Add($"ERROR: Bad character in input: '{currentChar}'");
+
+            return new SyntaxToken(tokenKind, start, currentChar.ToString(), null);
         }
     }
 }
+

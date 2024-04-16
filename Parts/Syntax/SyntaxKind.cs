@@ -3,15 +3,21 @@ namespace Compiler.Parts.Syntax
     public enum SyntaxKind
     {
         // Special tokens
-        BadToken,
         EndOfFileToken,
+        BadToken,
 
-        #region Numerical Tokens
+        #region Literal Tokens
         NumberToken,
+        IdentifierToken,
+        #endregion
+
+        #region Operator Tokens
         PlusToken,
         MinusToken,
         StarToken,
         SlashToken,
+        EqualsEqualsToken,
+        NotEqualsToken,
         #endregion
 
         #region Punctuation Tokens
@@ -19,8 +25,12 @@ namespace Compiler.Parts.Syntax
         CloseParenthesisToken,
         #endregion
 
-        #region Whitespace Tokens
-        WhitespaceToken,
+        #region Keywords
+        TrueKeyword,
+        FalseKeyword,
+        NotKeyword,
+        AndKeyword,
+        OrKeyword,
         #endregion
 
         #region Expressions
@@ -30,15 +40,8 @@ namespace Compiler.Parts.Syntax
         ParenthesizedExpression,
         #endregion
 
-        // Identifiers
-        IdentifierToken, 
-
-        #region Keywords
-        TrueKeyword,
-        FalseKeyword,
-        NotKeyword,
-        AndKeyword,
-        OrKeyword,
+        #region Whitespace
+        WhitespaceToken,
         #endregion
     }
 }
