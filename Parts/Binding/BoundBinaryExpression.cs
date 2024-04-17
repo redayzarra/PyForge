@@ -16,5 +16,4 @@ namespace Compiler.Parts.Binding
         public BoundBinaryOperator Operate { get; }
         public BoundExpression Right { get; }
     }
-    
 }
