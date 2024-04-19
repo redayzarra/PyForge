@@ -28,3 +28,6 @@ C:\Users\reday\Documents\Compiler\obj\Debug\net7.0\cp.pdb
 C:\Users\reday\Documents\Compiler\obj\Debug\net7.0\cp.genruntimeconfig.cache
 C:\Users\reday\Documents\Compiler\obj\Debug\net7.0\ref\cp.dll
 C:\Users\reday\Documents\compiler\obj\Debug\net7.0\cp.sourcelink.json
+C:\Users\reday\Documents\PyForge\api\obj\Debug\net7.0\cp.dll
+C:\Users\reday\Documents\PyForge\api\obj\Debug\net7.0\refint\cp.dll
+C:\Users\reday\Documents\PyForge\api\obj\Debug\net7.0\cp.pdb
