@@ -49,10 +49,9 @@ namespace Compiler
 
                 // Parse the current line from the console
                 var syntaxTree = SyntaxTree.Parse(line);
-                var binder = new Binder();
-                var boundExpression = binder.BindExpression(syntaxTree.Root);
-
-                var diagnostics = syntaxTree.Diagnostics.Concat(binder.Diagnostics).ToArray();
+                var compilation = new Compilation(syntaxTree);
+                var result = compilation.Evaluate();
+                var diagnostics = result.Diagnostics;
 
                 // Console styling
                 Console.ForegroundColor = ConsoleColor.DarkGray;
@@ -68,12 +67,9 @@ namespace Compiler
                 // If we have no errors, then go ahead and evaluate tree
                 if (!diagnostics.Any())
                 {
-                    var evaluator = new Evaluator(boundExpression);
-                    var result = evaluator.Evaluate();
-
                     // Console styling
                     Console.ForegroundColor = ConsoleColor.DarkGray;
-                    Console.Write($"Result: {result}");
+                    Console.Write($"Result: {result.Value}");
                     Console.WriteLine();
                 }
                 // If we have any diagnostics, list them all 

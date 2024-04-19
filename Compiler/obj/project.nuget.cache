@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "zE9+OyLjf85gwBZ2OZYl5JiTPXyO/QBDObDPp6bKmInwZeBp5cCcSwOeBoZrZoKeJPTQsWa9vSoL1HTw2tv16w==",
+  "dgSpecHash": "wRLwhtTJlo9JPMs7z7YrQMrJ3tO093zWndiBj9xl4+cB2bcNVuOS0XBeZHtAtb9Oqyq57mFT0Uxm07u+ZufN6g==",
   "success": true,
-  "projectFilePath": "C:\\Users\\reday\\Documents\\PyForge\\compiler\\Compiler.csproj",
+  "projectFilePath": "C:\\Users\\reday\\Documents\\PyForge\\Compiler\\Compiler.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\reday\\.nuget\\packages\\microsoft.netcore.app.ref\\7.0.17\\microsoft.netcore.app.ref.7.0.17.nupkg.sha512",
     "C:\\Users\\reday\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\7.0.17\\microsoft.windowsdesktop.app.ref.7.0.17.nupkg.sha512",
