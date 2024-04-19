@@ -1,6 +1,5 @@
 ﻿using Compiler.Parts;
 using Compiler.Parts.Syntax;
-using Compiler.Parts.Binding;
 
 namespace Compiler
 {
@@ -46,7 +45,6 @@ namespace Compiler
                 else if (line == "exit")
                     break;
                 
-
                 // Parse the current line from the console
                 var syntaxTree = SyntaxTree.Parse(line);
                 var compilation = new Compilation(syntaxTree);

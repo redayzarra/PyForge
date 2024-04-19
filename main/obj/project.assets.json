@@ -32,11 +32,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\reday\\Documents\\PyForge\\API\\cp.csproj",
+      "projectUniqueName": "C:\\Users\\reday\\Documents\\PyForge\\main\\cp.csproj",
       "projectName": "cp",
-      "projectPath": "C:\\Users\\reday\\Documents\\PyForge\\API\\cp.csproj",
+      "projectPath": "C:\\Users\\reday\\Documents\\PyForge\\main\\cp.csproj",
       "packagesPath": "C:\\Users\\reday\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\reday\\Documents\\PyForge\\API\\obj\\",
+      "outputPath": "C:\\Users\\reday\\Documents\\PyForge\\main\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\reday\\AppData\\Roaming\\NuGet\\NuGet.Config"
