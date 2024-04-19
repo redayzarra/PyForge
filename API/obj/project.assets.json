@@ -1,11 +1,30 @@
 {
   "version": 3,
   "targets": {
-    "net7.0": {}
+    "net7.0": {
+      "Compiler/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v7.0",
+        "compile": {
+          "bin/placeholder/Compiler.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Compiler.dll": {}
+        }
+      }
+    }
   },
-  "libraries": {},
+  "libraries": {
+    "Compiler/1.0.0": {
+      "type": "project",
+      "path": "../Compiler/Compiler.csproj",
+      "msbuildProject": "../Compiler/Compiler.csproj"
+    }
+  },
   "projectFileDependencyGroups": {
-    "net7.0": []
+    "net7.0": [
+      "Compiler >= 1.0.0"
+    ]
   },
   "packageFolders": {
     "C:\\Users\\reday\\.nuget\\packages\\": {}
@@ -13,11 +32,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\reday\\Documents\\compiler\\cp.csproj",
+      "projectUniqueName": "C:\\Users\\reday\\Documents\\PyForge\\API\\cp.csproj",
       "projectName": "cp",
-      "projectPath": "C:\\Users\\reday\\Documents\\compiler\\cp.csproj",
+      "projectPath": "C:\\Users\\reday\\Documents\\PyForge\\API\\cp.csproj",
       "packagesPath": "C:\\Users\\reday\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\reday\\Documents\\compiler\\obj\\",
+      "outputPath": "C:\\Users\\reday\\Documents\\PyForge\\API\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\reday\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -31,7 +50,11 @@
       "frameworks": {
         "net7.0": {
           "targetAlias": "net7.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Users\\reday\\Documents\\PyForge\\Compiler\\Compiler.csproj": {
+              "projectPath": "C:\\Users\\reday\\Documents\\PyForge\\Compiler\\Compiler.csproj"
+            }
+          }
         }
       },
       "warningProperties": {
