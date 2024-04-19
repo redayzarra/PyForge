@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\reday\\Documents\\PyForge\\API\\cp.csproj": {}
+    "C:\\Users\\reday\\Documents\\PyForge\\api\\cp.csproj": {}
   },
   "projects": {
-    "C:\\Users\\reday\\Documents\\PyForge\\API\\cp.csproj": {
+    "C:\\Users\\reday\\Documents\\PyForge\\api\\cp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\reday\\Documents\\PyForge\\API\\cp.csproj",
+        "projectUniqueName": "C:\\Users\\reday\\Documents\\PyForge\\api\\cp.csproj",
         "projectName": "cp",
-        "projectPath": "C:\\Users\\reday\\Documents\\PyForge\\API\\cp.csproj",
+        "projectPath": "C:\\Users\\reday\\Documents\\PyForge\\api\\cp.csproj",
         "packagesPath": "C:\\Users\\reday\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\reday\\Documents\\PyForge\\API\\obj\\",
+        "outputPath": "C:\\Users\\reday\\Documents\\PyForge\\api\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\reday\\AppData\\Roaming\\NuGet\\NuGet.Config"

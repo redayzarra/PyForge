@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\reday\\Documents\\PyForge\\Compiler\\Compiler.csproj": {}
+    "C:\\Users\\reday\\Documents\\PyForge\\compiler\\Compiler.csproj": {}
   },
   "projects": {
-    "C:\\Users\\reday\\Documents\\PyForge\\Compiler\\Compiler.csproj": {
+    "C:\\Users\\reday\\Documents\\PyForge\\compiler\\Compiler.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\reday\\Documents\\PyForge\\Compiler\\Compiler.csproj",
+        "projectUniqueName": "C:\\Users\\reday\\Documents\\PyForge\\compiler\\Compiler.csproj",
         "projectName": "Compiler",
-        "projectPath": "C:\\Users\\reday\\Documents\\PyForge\\Compiler\\Compiler.csproj",
+        "projectPath": "C:\\Users\\reday\\Documents\\PyForge\\compiler\\Compiler.csproj",
         "packagesPath": "C:\\Users\\reday\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\reday\\Documents\\PyForge\\Compiler\\obj\\",
+        "outputPath": "C:\\Users\\reday\\Documents\\PyForge\\compiler\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\reday\\AppData\\Roaming\\NuGet\\NuGet.Config"
