@@ -5,14 +5,14 @@ namespace Compiler.Parts.Syntax
     {
         private readonly string _text;
         private int _position;
-        private List<string> _diagnostics = new List<string>();
+        private DiagnosticBag _diagnostics = new DiagnosticBag();
 
         public Lexer(string text)
         {
             _text = text;
         }
 
-        public IEnumerable<string> Diagnostics => _diagnostics;
+        public DiagnosticBag Diagnostics => _diagnostics;
 
         private char Current => Peek(0);
         private char LookAhead => Peek(1);
@@ -20,7 +20,9 @@ namespace Compiler.Parts.Syntax
         private char Peek(int offset)
         {
             var index = _position + offset;
-            return index >= _text.Length ? '\0' : _text[index];
+            if (index >= _text.Length)
+                return '\0';
+            return _text[index];
         }
 
         private void Next()
@@ -69,8 +71,9 @@ namespace Compiler.Parts.Syntax
             if (char.IsDigit(Current))
             {
                 var text = ConsumeWhile(char.IsDigit);
+                var length = _position - start;  // Calculate the length correctly
                 if (!int.TryParse(text, out var value))
-                    _diagnostics.Add($"The number {text} isn't a valid Int32");
+                    _diagnostics.ReportInvalidNumber(new TextSpan(start, length), _text, typeof(int));
                 return new SyntaxToken(SyntaxKind.NumberToken, start, text, value);
             }
 
@@ -95,4 +98,3 @@ namespace Compiler.Parts.Syntax
         }
     }
 }
-

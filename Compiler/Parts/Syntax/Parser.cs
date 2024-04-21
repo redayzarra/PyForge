@@ -6,7 +6,7 @@ namespace Compiler.Parts.Syntax
     internal sealed class Parser 
     {
         private readonly SyntaxToken[] _tokens;
-        private List<string> _diagnostics = new List<string>();
+        private List<Diagnostic> _diagnostics = new List<Diagnostic>();
         private int _position;
 
         // Creates a list of tokens from a given text

@@ -1,6 +1,6 @@
 namespace Compiler.Parts
 {
-    public class Diagnostic
+    public sealed class Diagnostic
     {
         public Diagnostic(TextSpan span, string message)
         {
