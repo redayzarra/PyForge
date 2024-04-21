@@ -35,9 +35,21 @@ namespace Compiler.Parts
             Report(span, message);
         }
 
-        internal void ReportUnexpectedToken(TextSpan span, SyntaxKind actualKind, SyntaxKind expectedKind)
+        public void ReportUnexpectedToken(TextSpan span, SyntaxKind actualKind, SyntaxKind expectedKind)
         {
             var message = $"Unexpected token <{actualKind}>, expected <{expectedKind}>.";
+            Report(span, message);
+        }
+
+        public void ReportUndefinedUnaryOperator(TextSpan span, string operatorText, Type operandType)
+        {
+            var message = $"Unary operator '{operatorText}' is not defined for type: {operandType}.";
+            Report(span, message);
+        }
+
+        internal void ReportUndefinedBinaryOperator(TextSpan span, string operatorText, Type boundLeftType, Type boundRightType)
+        {
+            var message = $"Binary operator '{operatorText}' is not defined for types: {boundLeftType} and {boundRightType}.";
             Report(span, message);
         }
     }
