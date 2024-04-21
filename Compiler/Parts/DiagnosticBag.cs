@@ -1,4 +1,5 @@
 using System.Collections;
+using Compiler.Parts.Syntax;
 
 namespace Compiler.Parts
 {
@@ -10,6 +11,11 @@ namespace Compiler.Parts
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
+        public void AddRange(DiagnosticBag diagnostics)
+        {
+            _diagnostics.AddRange(diagnostics._diagnostics);
+        }
+
         private void Report(TextSpan span, string message)
         {
             var diagnostic = new Diagnostic(span, message);
@@ -18,14 +24,20 @@ namespace Compiler.Parts
 
         public void ReportInvalidNumber(TextSpan span, string text, Type type)
         {
-            var message = $"The number {text} isn't a valid {type}";
+            var message = $"The number {text} isn't a valid {type}.";
             Report(span, message);
         }
 
-        internal void ReportBadCharacter(int position, char character)
+        public void ReportBadCharacter(int position, char character)
         {
             var span = new TextSpan(position, 1);
-            var message = $"ERROR: Bad character in input: '{character}'";
+            var message = $"Bad character in input: '{character}'.";
+            Report(span, message);
+        }
+
+        internal void ReportUnexpectedToken(TextSpan span, SyntaxKind actualKind, SyntaxKind expectedKind)
+        {
+            var message = $"Unexpected token <{actualKind}>, expected <{expectedKind}>.";
             Report(span, message);
         }
     }

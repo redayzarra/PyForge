@@ -6,7 +6,7 @@ namespace Compiler.Parts.Syntax
     internal sealed class Parser 
     {
         private readonly SyntaxToken[] _tokens;
-        private List<Diagnostic> _diagnostics = new List<Diagnostic>();
+        private DiagnosticBag _diagnostics = new DiagnosticBag();
         private int _position;
 
         // Creates a list of tokens from a given text
@@ -30,7 +30,7 @@ namespace Compiler.Parts.Syntax
             _diagnostics.AddRange(lexer.Diagnostics);
         }
 
-        public IEnumerable<string> Diagnostics => _diagnostics;
+        public DiagnosticBag Diagnostics => _diagnostics;
 
         // Given a certain offset, look at the token at that index
         private SyntaxToken Peek(int offset)
@@ -62,7 +62,7 @@ namespace Compiler.Parts.Syntax
                 return NextToken(); // But move the Parser's focus to next
 
             // Otherwise, return a placeholder token with null content
-            _diagnostics.Add($"ERROR: Unexpected token <{Current.Kind}>, expected <{kind}>");
+            _diagnostics.ReportUnexpectedToken(Current.Span, Current.Kind, kind);
             return new SyntaxToken(kind, Current.Position, "", null);
         }
 
