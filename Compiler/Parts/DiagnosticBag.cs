@@ -21,5 +21,12 @@ namespace Compiler.Parts
             var message = $"The number {text} isn't a valid {type}";
             Report(span, message);
         }
+
+        internal void ReportBadCharacter(int position, char character)
+        {
+            var span = new TextSpan(position, 1);
+            var message = $"ERROR: Bad character in input: '{character}'";
+            Report(span, message);
+        }
     }
 }

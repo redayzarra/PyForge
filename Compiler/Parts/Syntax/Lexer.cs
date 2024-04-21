@@ -92,7 +92,7 @@ namespace Compiler.Parts.Syntax
             Next(); // Advance the position for single character token
 
             if (tokenKind == SyntaxKind.BadToken)
-                _diagnostics.Add($"ERROR: Bad character in input: '{currentChar}'");
+                _diagnostics.ReportBadCharacter(_position, Current);
 
             return new SyntaxToken(tokenKind, start, currentChar.ToString(), null);
         }
