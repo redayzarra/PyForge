@@ -39,6 +39,7 @@ namespace Compiler.Parts.Syntax
         BinaryExpression,
         ParenthesizedExpression,
         NameExpression,
+        AssignmentExpression,
         #endregion
 
         #region Whitespace
