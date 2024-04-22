@@ -10,14 +10,13 @@ namespace Compiler
             var showTree = true;
             while (true)
             {
-                // Input: Extracts the input from console in 'line'
                 Console.WriteLine();
                 Console.Write("Enter an expression: ");
                 var line = Console.ReadLine();
                 if (string.IsNullOrWhiteSpace(line))
                     return;
 
-                // Setting up tree visibility feature
+                // Switch for visibility features and command handling
                 switch (line)
                 {
                     case "#showTree":
@@ -26,77 +25,62 @@ namespace Compiler
                     case "#hideTree":
                         showTree = false;
                         break;
-                    default:
-                        break;
+                    case "clear":
+                    case "cleawr":
+                        Console.Clear();
+                        continue;
+                    case "exit":
+                        return;
                 }
 
-                // Making the console more convenient
-                if (line == "#showTree" || line == "#hideTree")
-                {
-                    Console.ForegroundColor = ConsoleColor.DarkGray;
-                    Console.WriteLine(showTree ? "Showing parse tree." : "Hiding parse tree.");
-                    Console.ResetColor();
-                    continue;
-                }
-                else if (line == "clear" || line == "cleawr") {
-                    Console.Clear();
-                    continue;
-                }
-                else if (line == "exit")
-                    break;
-                
-                // Parse the current line from the console
+                // Parse and evaluate the expression
                 var syntaxTree = SyntaxTree.Parse(line);
                 var compilation = new Compilation(syntaxTree);
                 var result = compilation.Evaluate();
                 var diagnostics = result.Diagnostics;
 
-                // Console styling
-                Console.ForegroundColor = ConsoleColor.DarkGray;
-                Console.WriteLine();
-
-                if (showTree) {
-                    // Pretty print the synax tree from the parser
+                if (showTree)
+                {
                     PrettyPrint(syntaxTree.Root);
                     Console.WriteLine();
-                    Console.ResetColor();
                 }
 
-                // If we have no errors, then go ahead and evaluate tree
+                // Display results or diagnostics
                 if (!diagnostics.Any())
                 {
-                    // Console styling
                     Console.ForegroundColor = ConsoleColor.DarkGray;
-                    Console.Write($"Result: {result.Value}");
-                    Console.WriteLine();
+                    Console.WriteLine($"Result: {result.Value}");
+                    Console.ResetColor();
                 }
-                // If we have any diagnostics, list them all 
-                else 
+                else
                 {
-                    // Console styling and printing diagnostic
-                    Console.ForegroundColor = ConsoleColor.DarkRed;
-                    foreach (var diagnostic in diagnostics)
-                    {
-                        Console.WriteLine(diagnostic);
-                        Console.ResetColor();
-
-                        var prefix = line.Substring(0, diagnostic.Span.Start);
-                        var error = line.Substring(diagnostic.Span.Start, diagnostic.Span.Length);
-                        var suffix = line.Substring(diagnostic.Span.End);
-                
-                        Console.Write("    ");
-                        Console.Write(prefix);
-
-                        Console.ForegroundColor = ConsoleColor.DarkRed;
-                        Console.Write(error);
-                        Console.ResetColor();
-
-                        Console.Write(suffix);
-                    }
-                    Console.WriteLine(); 
+                    DisplayDiagnostics(diagnostics, line);
                 }
-                Console.ResetColor();
             }
+        }
+
+        private static void DisplayDiagnostics(IEnumerable<Diagnostic> diagnostics, string line)
+        {
+            foreach (var diagnostic in diagnostics)
+            {
+                Console.WriteLine(diagnostic);
+                HighlightErrorInLine(line, diagnostic.Span);
+            }
+        }
+
+        private static void HighlightErrorInLine(string line, TextSpan span)
+        {
+            var prefix = line.Substring(0, span.Start);
+            var error = line.Substring(span.Start, span.Length);
+            var suffix = line.Substring(span.End);
+
+            Console.Write("    ");
+            Console.Write(prefix);
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write(error);
+            Console.ResetColor();
+            Console.WriteLine(suffix);
+            Console.WriteLine(new string(' ', span.Start + 4) + new string('^', span.Length));
         }
 
         // Creates a really pretty tree similar to Unix tree (folders)
