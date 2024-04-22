@@ -51,13 +51,13 @@ namespace Compiler.Parts.Syntax
             // Check for two-character tokens
             if (Current == '=' && LookAhead == '=')
             {
-                _position += 2; // Advance past both characters
+                _position += 2; 
                 return new SyntaxToken(SyntaxKind.EqualsEqualsToken, start, "==", null);
             }
 
             if (Current == '!' && LookAhead == '=')
             {
-                _position += 2; // Advance past both characters
+                _position += 2;
                 return new SyntaxToken(SyntaxKind.NotEqualsToken, start, "!=", null);
             }
 
@@ -71,7 +71,7 @@ namespace Compiler.Parts.Syntax
             if (char.IsDigit(Current))
             {
                 var text = ConsumeWhile(char.IsDigit);
-                var length = _position - start;  // Calculate the length correctly
+                var length = _position - start;  // Calculate the length
                 if (!int.TryParse(text, out var value))
                     _diagnostics.ReportInvalidNumber(new TextSpan(start, length), _text, typeof(int));
                 return new SyntaxToken(SyntaxKind.NumberToken, start, text, value);

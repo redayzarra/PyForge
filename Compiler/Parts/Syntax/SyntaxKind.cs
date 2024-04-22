@@ -38,6 +38,7 @@ namespace Compiler.Parts.Syntax
         UnaryExpression,
         BinaryExpression,
         ParenthesizedExpression,
+        NameExpression,
         #endregion
 
         #region Whitespace
