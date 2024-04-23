@@ -75,7 +75,18 @@ namespace Compiler.Parts.Syntax
             return new SyntaxTree(_diagnostics, expression, endOfFileToken);
         }
 
-        private ExpressionSyntax ParseExpression(int parentPrecedence = 0)
+        private ExpressionSyntax ParseExpression()
+        {
+            return ParseAssignmentExpression();
+        }
+
+        private ExpressionSyntax ParseAssignmentExpression()
+        {
+            var left = ParseBinaryExpression();
+            while (Current.Kind == SyntaxKind.EqualsToken)
+        }
+
+        private ExpressionSyntax ParseBinaryExpression(int parentPrecedence = 0)
         {
             ExpressionSyntax left;
 
@@ -84,7 +95,7 @@ namespace Compiler.Parts.Syntax
             if (unaryOperatorPrecedence != 0 && unaryOperatorPrecedence > parentPrecedence)
             {
                 var operatorToken = NextToken();
-                var operand = ParseExpression(unaryOperatorPrecedence);
+                var operand = ParseBinaryExpression(unaryOperatorPrecedence);
                 left = new UnaryExpressionSyntax(operatorToken, operand);
             }
             else
@@ -100,7 +111,7 @@ namespace Compiler.Parts.Syntax
                     break;
 
                 var operatorToken = NextToken();
-                var right = ParseExpression(precedence);
+                var right = ParseBinaryExpression(precedence);
                 left = new BinaryExpressionSyntax(left, operatorToken, right);
             }
 

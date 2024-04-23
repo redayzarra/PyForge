@@ -44,6 +44,7 @@ namespace Compiler.Parts.Syntax
 
         #region Whitespace
         WhitespaceToken,
+        EqualsToken,
         #endregion
     }
 }

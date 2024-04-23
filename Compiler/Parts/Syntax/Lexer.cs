@@ -54,11 +54,20 @@ namespace Compiler.Parts.Syntax
                 _position += 2; 
                 return new SyntaxToken(SyntaxKind.EqualsEqualsToken, start, "==", null);
             }
-
-            if (Current == '!' && LookAhead == '=')
+            
+            // Check for tokens starting with '='
+            if (Current == '=')
             {
-                _position += 2;
-                return new SyntaxToken(SyntaxKind.NotEqualsToken, start, "!=", null);
+                if (LookAhead == '=') // If we are looking at "=="
+                {
+                    _position += 2; // Skip past '=='
+                    return new SyntaxToken(SyntaxKind.EqualsEqualsToken, start, "==", null);
+                }
+                else // If we are looking at just '="
+                {
+                    Next(); 
+                    return new SyntaxToken(SyntaxKind.EqualsToken, start, "=", null);
+                }
             }
 
             if (char.IsLetter(Current))
@@ -77,7 +86,7 @@ namespace Compiler.Parts.Syntax
                 return new SyntaxToken(SyntaxKind.NumberToken, start, text, value);
             }
 
-            var currentChar = Current;  // Save the current character before potentially calling Next()
+            var currentChar = Current;  // Save the current character before calling Next()
             var tokenKind = currentChar switch
             {
                 '+' => SyntaxKind.PlusToken,
@@ -96,5 +105,6 @@ namespace Compiler.Parts.Syntax
 
             return new SyntaxToken(tokenKind, start, currentChar.ToString(), null);
         }
+
     }
 }

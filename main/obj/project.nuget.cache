@@ -1,13 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "1Xe+Yj7dTGNw1RGn7uuDriYqjbd3lGFE2qML0T17MYrlKCdAgrcaCLQzQIt9i3tREsuekp/IzRAyU9ZklzH/9A==",
+  "dgSpecHash": "o0KCblpCXrUnsxw6NPM3g1vifGGmbkUmup93lY4J6b85oKWFLjrLZbnk/m8IweZ9FTvQj+KEWlG7TVnZwLEruA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\reday\\Documents\\PyForge\\main\\cp.csproj",
-  "expectedPackageFiles": [
-    "C:\\Users\\reday\\.nuget\\packages\\microsoft.netcore.app.ref\\7.0.17\\microsoft.netcore.app.ref.7.0.17.nupkg.sha512",
-    "C:\\Users\\reday\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\7.0.17\\microsoft.windowsdesktop.app.ref.7.0.17.nupkg.sha512",
-    "C:\\Users\\reday\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\7.0.17\\microsoft.aspnetcore.app.ref.7.0.17.nupkg.sha512",
-    "C:\\Users\\reday\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\7.0.17\\microsoft.netcore.app.host.win-x64.7.0.17.nupkg.sha512"
-  ],
+  "projectFilePath": "C:\\Users\\reday\\Documents\\Compiler\\main\\cp.csproj",
+  "expectedPackageFiles": [],
   "logs": []
 }
