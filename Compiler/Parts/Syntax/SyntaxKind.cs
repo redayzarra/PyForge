@@ -18,6 +18,7 @@ namespace Compiler.Parts.Syntax
         SlashToken,
         EqualsEqualsToken,
         NotEqualsToken,
+        EqualsToken,
         #endregion
 
         #region Punctuation Tokens
@@ -44,7 +45,7 @@ namespace Compiler.Parts.Syntax
 
         #region Whitespace
         WhitespaceToken,
-        EqualsToken,
         #endregion
+
     }
 }

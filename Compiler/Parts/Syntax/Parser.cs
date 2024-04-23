@@ -82,8 +82,16 @@ namespace Compiler.Parts.Syntax
 
         private ExpressionSyntax ParseAssignmentExpression()
         {
-            var left = ParseBinaryExpression();
-            while (Current.Kind == SyntaxKind.EqualsToken)
+            if (Peek(0).Kind == SyntaxKind.IdentifierToken &&
+                Peek(1).Kind == SyntaxKind.EqualsToken)
+            {
+                var identifierToken = NextToken();
+                var operatorToken = NextToken();
+                var right = ParseAssignmentExpression();
+                return new AssignmentExpressionSyntax(identifierToken, operatorToken, right);
+            }
+
+            return ParseBinaryExpression();
         }
 
         private ExpressionSyntax ParseBinaryExpression(int parentPrecedence = 0)

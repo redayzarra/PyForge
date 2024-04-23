@@ -48,26 +48,25 @@ namespace Compiler.Parts.Syntax
 
             var start = _position;
 
-            // Check for two-character tokens
+            // Check for equality operator
             if (Current == '=' && LookAhead == '=')
             {
                 _position += 2; 
                 return new SyntaxToken(SyntaxKind.EqualsEqualsToken, start, "==", null);
             }
             
-            // Check for tokens starting with '='
-            if (Current == '=')
+            // Check for inequality operator
+            if (Current == '!' && LookAhead == '=')
             {
-                if (LookAhead == '=') // If we are looking at "=="
-                {
-                    _position += 2; // Skip past '=='
-                    return new SyntaxToken(SyntaxKind.EqualsEqualsToken, start, "==", null);
-                }
-                else // If we are looking at just '="
-                {
-                    Next(); 
-                    return new SyntaxToken(SyntaxKind.EqualsToken, start, "=", null);
-                }
+                _position += 2;
+                return new SyntaxToken(SyntaxKind.NotEqualsToken, start, "!=", null);
+            }
+
+            // Check for single equals sign, which signifies assignment
+            if (Current == '=' && LookAhead != '=')
+            {
+                Next();
+                return new SyntaxToken(SyntaxKind.EqualsToken, start, "=", null);
             }
 
             if (char.IsLetter(Current))
