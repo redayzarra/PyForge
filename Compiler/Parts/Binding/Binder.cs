@@ -43,13 +43,13 @@ namespace Compiler.Parts.Binding
         private BoundExpression BindNameExpression(NameExpressionSyntax syntax)
         {
             var name = syntax.IdentifierToken.Text;
-            if (!_variables.ContainsKey(name))  // Check if the variable does NOT exist
+            if (!_variables.TryGetValue(name, out var value))  // Check if the variable does NOT exist
             {
                 _diagnostics.ReportUndefinedName(syntax.IdentifierToken.Span, name);
                 return new BoundLiteralExpression(0); 
             }
 
-            var type = typeof(int); 
+            var type = value.GetType(); 
             return new BoundVariableExpression(name, type);
         }
 
@@ -57,7 +57,18 @@ namespace Compiler.Parts.Binding
         {
             var name = syntax.IdentifierToken.Text;
             var boundExpression = BindExpression(syntax.Expression);
-            _variables[name] = 0;
+
+            var defaultValue = 
+                boundExpression.Type == typeof(int)
+                    ? (object)0
+                    : boundExpression.Type == typeof(bool)
+                        ? false
+                        : null;
+
+            if (defaultValue == null)
+                throw new Exception($"Unsupported variable type: {boundExpression.Type}");
+
+            _variables[name] = defaultValue;
             return new BoundAssignmentExpression(name, boundExpression);
         }
 

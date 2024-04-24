@@ -7,12 +7,12 @@ namespace Compiler
     {
         private static void Main()
         {
+            Console.Clear();
             var variables = new Dictionary<string, object>();
 
-            var showTree = true;
+            var showTree = false;
             while (true)
             {
-                Console.WriteLine();
                 Console.Write("> ");
                 var line = Console.ReadLine();
                 if (string.IsNullOrWhiteSpace(line))
@@ -23,10 +23,18 @@ namespace Compiler
                 {
                     case "#showTree":
                         showTree = true;
-                        break;
+                        Console.ForegroundColor = ConsoleColor.DarkGray;
+                        Console.WriteLine("Showing parse tree.");
+                        Console.ResetColor();
+                        Console.WriteLine();
+                        continue;
                     case "#hideTree":
                         showTree = false;
-                        break;
+                        Console.ForegroundColor = ConsoleColor.DarkGray;
+                        Console.WriteLine("Hiding parse tree.");
+                        Console.ResetColor();
+                        Console.WriteLine();
+                        continue;
                     case "clear":
                     case "cleawr":
                         Console.Clear();
@@ -58,6 +66,7 @@ namespace Compiler
                 {
                     DisplayDiagnostics(diagnostics, line);
                 }
+                Console.WriteLine();
             }
         }
 
@@ -65,7 +74,10 @@ namespace Compiler
         {
             foreach (var diagnostic in diagnostics)
             {
+                Console.WriteLine();
+                Console.ForegroundColor = ConsoleColor.DarkRed;
                 Console.WriteLine(diagnostic);
+                Console.ResetColor();
                 HighlightErrorInLine(line, diagnostic.Span);
             }
         }
