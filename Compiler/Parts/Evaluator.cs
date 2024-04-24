@@ -6,9 +6,9 @@ namespace Compiler.Parts
     internal sealed class Evaluator
     {
         private readonly BoundExpression _root;
-        private readonly Dictionary<string, object> _variables;
+        private readonly Dictionary<VariableSymbol, object> _variables;
 
-        public Evaluator(BoundExpression root, Dictionary<string, object> variables)
+        public Evaluator(BoundExpression root, Dictionary<VariableSymbol, object> variables)
         {
             _root = root;
             _variables = variables;
@@ -30,7 +30,7 @@ namespace Compiler.Parts
                 BoundUnaryExpression una => EvaluateUnaryExpression(una),
                 BoundLiteralExpression num => num.Value ?? throw new InvalidOperationException("Null value encountered."),
                 BoundBinaryExpression bin => EvaluateBinaryExpression(bin),
-                BoundVariableExpression var => _variables.TryGetValue(var.Name, out var value) ? value : throw new Exception($"Variable '{var.Name}' not found."),
+                BoundVariableExpression var => _variables.TryGetValue(var.Variable, out var value) ? value : throw new Exception($"Variable '{var.Variable}' not found."),
                 BoundAssignmentExpression asn => EvaluateAssignmentExpression(asn),
                 _ => throw new InvalidOperationException($"Unexpected node type: '{root.Kind}'")
             };
@@ -39,7 +39,7 @@ namespace Compiler.Parts
         private object EvaluateAssignmentExpression(BoundAssignmentExpression asn)
         {
             var value = EvaluateExpression(asn.Expression);
-            _variables[asn.Name] = value;
+            _variables[asn.Variable] = value;
             return value;
         }
 

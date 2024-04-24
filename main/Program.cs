@@ -8,7 +8,7 @@ namespace Compiler
         private static void Main()
         {
             Console.Clear();
-            var variables = new Dictionary<string, object>();
+            var variables = new Dictionary<VariableSymbol, object>();
 
             var showTree = false;
             while (true)
