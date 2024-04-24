@@ -27,7 +27,8 @@ public class LexerTest
             yield return (SyntaxKind.NumberToken, "123");
             yield return (SyntaxKind.IdentifierToken, "a");
             yield return (SyntaxKind.IdentifierToken, "reday");
-            yield return (SyntaxKind.IdentifierToken, "zarra");
+            yield return (SyntaxKind.IdentifierToken, "loves");
+            yield return (SyntaxKind.IdentifierToken, "ashley");
 
             // Operator Tokens
             yield return (SyntaxKind.PlusToken, "+");
