@@ -23,14 +23,14 @@ namespace Compiler
                 {
                     case "#showTree":
                         showTree = true;
-                        Console.ForegroundColor = ConsoleColor.DarkGray;
+                        Console.ForegroundColor = ConsoleColor.Green;
                         Console.WriteLine("Showing parse tree.");
                         Console.ResetColor();
                         Console.WriteLine();
                         continue;
                     case "#hideTree":
                         showTree = false;
-                        Console.ForegroundColor = ConsoleColor.DarkGray;
+                        Console.ForegroundColor = ConsoleColor.Green;
                         Console.WriteLine("Hiding parse tree.");
                         Console.ResetColor();
                         Console.WriteLine();
@@ -39,6 +39,9 @@ namespace Compiler
                     case "cleawr":
                         Console.Clear();
                         continue;
+                    case "rerun":
+                        Environment.Exit(2);  // Exit code 2 to indicate a rerun request
+                        return;
                     case "exit":
                         return;
                 }

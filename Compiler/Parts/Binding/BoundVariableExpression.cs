@@ -12,6 +12,5 @@ namespace Compiler.Parts.Binding
         public override Type Type { get; }
 
         public override BoundNodeKind Kind => BoundNodeKind.VariableExpression;
-
     }
 }
