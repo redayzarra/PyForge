@@ -43,20 +43,21 @@ namespace Compiler.Parts.Binding
         private BoundExpression BindNameExpression(NameExpressionSyntax syntax)
         {
             var name = syntax.IdentifierToken.Text;
-            if (_variables.TryGetValue(name, out var value))
+            if (!_variables.ContainsKey(name))  // Check if the variable does NOT exist
             {
                 _diagnostics.ReportUndefinedName(syntax.IdentifierToken.Span, name);
-                return new BoundLiteralExpression(0);
+                return new BoundLiteralExpression(0); 
             }
 
-            var type = typeof(int);
-            return new BoundVariableExpression(name, type); 
+            var type = typeof(int); 
+            return new BoundVariableExpression(name, type);
         }
 
         private BoundExpression BindAssignmentExpression(AssignmentExpressionSyntax syntax)
         {
             var name = syntax.IdentifierToken.Text;
             var boundExpression = BindExpression(syntax.Expression);
+            _variables[name] = 0;
             return new BoundAssignmentExpression(name, boundExpression);
         }
 

@@ -7,11 +7,13 @@ namespace Compiler
     {
         private static void Main()
         {
+            var variables = new Dictionary<string, object>();
+
             var showTree = true;
             while (true)
             {
                 Console.WriteLine();
-                Console.Write("Enter an expression: ");
+                Console.Write("> ");
                 var line = Console.ReadLine();
                 if (string.IsNullOrWhiteSpace(line))
                     return;
@@ -36,7 +38,7 @@ namespace Compiler
                 // Parse and evaluate the expression
                 var syntaxTree = SyntaxTree.Parse(line);
                 var compilation = new Compilation(syntaxTree);
-                var result = compilation.Evaluate();
+                var result = compilation.Evaluate(variables);
                 var diagnostics = result.Diagnostics;
 
                 if (showTree)

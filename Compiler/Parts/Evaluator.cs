@@ -1,3 +1,4 @@
+using System.Formats.Asn1;
 using Compiler.Parts.Binding;
 
 namespace Compiler.Parts
@@ -29,8 +30,17 @@ namespace Compiler.Parts
                 BoundUnaryExpression una => EvaluateUnaryExpression(una),
                 BoundLiteralExpression num => num.Value ?? throw new InvalidOperationException("Null value encountered."),
                 BoundBinaryExpression bin => EvaluateBinaryExpression(bin),
+                BoundVariableExpression var => _variables.TryGetValue(var.Name, out var value) ? value : throw new Exception($"Variable '{var.Name}' not found."),
+                BoundAssignmentExpression asn => EvaluateAssignmentExpression(asn),
                 _ => throw new InvalidOperationException($"Unexpected node type: '{root.Kind}'")
             };
+        }
+
+        private object EvaluateAssignmentExpression(BoundAssignmentExpression asn)
+        {
+            var value = EvaluateExpression(asn.Expression);
+            _variables[asn.Name] = value;
+            return value;
         }
 
         // Evaluates the left and right operands then applies the operation
