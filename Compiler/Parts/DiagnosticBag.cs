@@ -47,9 +47,15 @@ namespace Compiler.Parts
             Report(span, message);
         }
 
-        internal void ReportUndefinedBinaryOperator(TextSpan span, string operatorText, Type boundLeftType, Type boundRightType)
+        public void ReportUndefinedBinaryOperator(TextSpan span, string operatorText, Type boundLeftType, Type boundRightType)
         {
             var message = $"Binary operator '{operatorText}' is not defined for types: {boundLeftType} and {boundRightType}.";
+            Report(span, message);
+        }
+
+        public void ReportUndefinedName(TextSpan span, string name)
+        {
+            var message = $"Variable '{name}' does not exist.";
             Report(span, message);
         }
     }

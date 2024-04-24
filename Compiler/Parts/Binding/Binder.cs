@@ -5,6 +5,12 @@ namespace Compiler.Parts.Binding
     internal sealed class Binder
     {
         private readonly DiagnosticBag _diagnostics = new DiagnosticBag();
+        private readonly Dictionary<string, object> _variables;
+
+        public Binder(Dictionary<string, object> variables)
+        {
+            _variables = variables;
+        }
 
         public DiagnosticBag Diagnostics => _diagnostics;
 
@@ -36,12 +42,22 @@ namespace Compiler.Parts.Binding
 
         private BoundExpression BindNameExpression(NameExpressionSyntax syntax)
         {
-            throw new NotImplementedException();
+            var name = syntax.IdentifierToken.Text;
+            if (_variables.TryGetValue(name, out var value))
+            {
+                _diagnostics.ReportUndefinedName(syntax.IdentifierToken.Span, name);
+                return new BoundLiteralExpression(0);
+            }
+
+            var type = typeof(int);
+            return new BoundVariableExpression(name, type); 
         }
 
         private BoundExpression BindAssignmentExpression(AssignmentExpressionSyntax syntax)
         {
-            return BindExpression(syntax.Expression);
+            var name = syntax.IdentifierToken.Text;
+            var boundExpression = BindExpression(syntax.Expression);
+            return new BoundAssignmentExpression(name, boundExpression);
         }
 
         private BoundExpression BindLiteralExpression(LiteralExpressionSyntax syntax)
