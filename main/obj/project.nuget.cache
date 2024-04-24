@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "o0KCblpCXrUnsxw6NPM3g1vifGGmbkUmup93lY4J6b85oKWFLjrLZbnk/m8IweZ9FTvQj+KEWlG7TVnZwLEruA==",
+  "dgSpecHash": "m/0uFSgt22JC0RCB8Ig2RO/PhzZCV7zKN+7yXHpmvW5XBh1aPKs5mY9iq5zg99N/+5+szSWoQeV2Cnlu0Vg1xQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\reday\\Documents\\Compiler\\main\\cp.csproj",
+  "projectFilePath": "C:\\Users\\reday\\Documents\\Compiler\\main\\main.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }
