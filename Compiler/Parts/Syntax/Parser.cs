@@ -149,6 +149,12 @@ namespace Compiler.Parts.Syntax
                     return new LiteralExpressionSyntax(keywordToken, value);
                 }
 
+                case SyntaxKind.IdentifierToken:
+                {
+                    var identifierToken = NextToken();
+                    return new NameExpressionSyntax(identifierToken);
+                }
+
                 default:
                 {
                     var numberToken = MatchToken(SyntaxKind.NumberToken);
