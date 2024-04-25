@@ -47,6 +47,7 @@ namespace Compiler
                         Environment.Exit(2);  // Exit code 2 to indicate a rerun request
                         return;
                     case "exit":
+                        Console.Clear();
                         return;
                 }
 

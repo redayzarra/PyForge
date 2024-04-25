@@ -63,8 +63,6 @@ namespace Compiler.Parts.Syntax
                     return SyntaxKind.NotKeyword;
                 case "is":
                     return SyntaxKind.IsKeyword;
-                case "is not":
-                    return SyntaxKind.IsNotKeyword;
                 default:
                     return SyntaxKind.IdentifierToken;
             }
