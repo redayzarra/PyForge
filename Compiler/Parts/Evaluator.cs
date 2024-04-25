@@ -1,4 +1,3 @@
-using System.Formats.Asn1;
 using Compiler.Parts.Binding;
 
 namespace Compiler.Parts
@@ -81,6 +80,8 @@ namespace Compiler.Parts
                     return Equals(left, right);
                 case BoundBinaryOperatorKind.NotEquals:
                     return !Equals(left, right);
+                case BoundBinaryOperatorKind.Identity:
+                    return ReferenceEquals(left, right);
                 default:
                     throw new Exception($"Unexpected binary operator {bin.Operate}");
             }

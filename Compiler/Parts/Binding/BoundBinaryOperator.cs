@@ -36,6 +36,7 @@ namespace Compiler.Parts.Binding
 
             new BoundBinaryOperator(SyntaxKind.EqualsEqualsToken, BoundBinaryOperatorKind.Equals, typeof(int), typeof(bool)),
             new BoundBinaryOperator(SyntaxKind.NotEqualsToken, BoundBinaryOperatorKind.NotEquals, typeof(int), typeof(bool)),
+            new BoundBinaryOperator(SyntaxKind.IsKeyword, BoundBinaryOperatorKind.Identity, typeof(object), typeof(object), typeof(bool)),
 
             new BoundBinaryOperator(SyntaxKind.AndKeyword, BoundBinaryOperatorKind.LogicalAnd, typeof(bool)),
             new BoundBinaryOperator(SyntaxKind.OrKeyword, BoundBinaryOperatorKind.LogicalOr, typeof(bool)),
@@ -47,12 +48,14 @@ namespace Compiler.Parts.Binding
         {
             foreach (var op in _operators)
             {
-                if (op.SyntaxKind == syntaxKind && op.LeftType == leftType && op.RightType == rightType)
+                bool leftMatches = op.LeftType == typeof(object) ? true : op.LeftType == leftType;
+                bool rightMatches = op.RightType == typeof(object) ? true : op.RightType == rightType;
+
+                if (op.SyntaxKind == syntaxKind && leftMatches && rightMatches)
                     return op; 
             }
-        
+
             return null;
         }
     }
-    
 }

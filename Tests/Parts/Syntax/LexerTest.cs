@@ -47,6 +47,7 @@ public class LexerTest
             yield return (SyntaxKind.TrueKeyword, "True");
             yield return (SyntaxKind.FalseKeyword, "False");
             yield return (SyntaxKind.NotKeyword, "not");
+            yield return (SyntaxKind.IsKeyword, "is");
             yield return (SyntaxKind.AndKeyword, "and");
             yield return (SyntaxKind.OrKeyword, "or");
 

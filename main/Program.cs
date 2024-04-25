@@ -8,6 +8,10 @@ namespace Compiler
         private static void Main()
         {
             Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Welcome to my compiler! Please type valid Python expressions.");
+            Console.WriteLine();
+            Console.ResetColor();
             var variables = new Dictionary<VariableSymbol, object>();
 
             var showTree = false;

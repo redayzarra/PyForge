@@ -9,7 +9,8 @@ namespace Compiler.Parts.Binding
         LogicalAnd,
         LogicalOr,
         Equals,
-        NotEquals
+        NotEquals,
+        Identity
     }
     
 }

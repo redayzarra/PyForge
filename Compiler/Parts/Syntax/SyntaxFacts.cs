@@ -31,6 +31,7 @@ namespace Compiler.Parts.Syntax
 
                 case SyntaxKind.EqualsEqualsToken:
                 case SyntaxKind.NotEqualsToken:
+                case SyntaxKind.IsKeyword:
                     return 3; // Equality and inequality have specific precedence
 
                 case SyntaxKind.AndKeyword: 
@@ -59,6 +60,8 @@ namespace Compiler.Parts.Syntax
                     return SyntaxKind.OrKeyword;
                 case "not":
                     return SyntaxKind.NotKeyword;
+                case "is":
+                    return SyntaxKind.IsKeyword;
                 default:
                     return SyntaxKind.IdentifierToken;
             }
