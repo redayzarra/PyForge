@@ -36,7 +36,9 @@ namespace Compiler.Parts.Binding
 
             new BoundBinaryOperator(SyntaxKind.EqualsEqualsToken, BoundBinaryOperatorKind.Equals, typeof(int), typeof(bool)),
             new BoundBinaryOperator(SyntaxKind.NotEqualsToken, BoundBinaryOperatorKind.NotEquals, typeof(int), typeof(bool)),
+
             new BoundBinaryOperator(SyntaxKind.IsKeyword, BoundBinaryOperatorKind.Identity, typeof(object), typeof(object), typeof(bool)),
+            new BoundBinaryOperator(SyntaxKind.IsNotKeyword, BoundBinaryOperatorKind.NonIdentity, typeof(object), typeof(object), typeof(bool)),
 
             new BoundBinaryOperator(SyntaxKind.AndKeyword, BoundBinaryOperatorKind.LogicalAnd, typeof(bool)),
             new BoundBinaryOperator(SyntaxKind.OrKeyword, BoundBinaryOperatorKind.LogicalOr, typeof(bool)),

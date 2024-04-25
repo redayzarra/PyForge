@@ -97,9 +97,8 @@ namespace Compiler.Parts.Syntax
         private ExpressionSyntax ParseBinaryExpression(int parentPrecedence = 0)
         {
             ExpressionSyntax left;
-
-            // Handling unary operators first, including "not"
             var unaryOperatorPrecedence = GetUnaryOperator(Current.Kind);
+
             if (unaryOperatorPrecedence != 0 && unaryOperatorPrecedence > parentPrecedence)
             {
                 var operatorToken = NextToken();
@@ -111,7 +110,6 @@ namespace Compiler.Parts.Syntax
                 left = ParsePrimaryExpression();
             }
 
-            // Handling binary operators, including "and" and "or"
             while (true)
             {
                 var precedence = GetBinaryOperator(Current.Kind);
@@ -119,13 +117,23 @@ namespace Compiler.Parts.Syntax
                     break;
 
                 var operatorToken = NextToken();
+
+                // Check for "is not"
+                if (operatorToken.Kind == SyntaxKind.IsKeyword && Peek(0).Kind == SyntaxKind.NotKeyword)
+                {
+                    // Consume "not" token
+                    NextToken();
+                    // Create a compound "is not" operator token (you might need to create a new SyntaxToken manually here)
+                    operatorToken = new SyntaxToken(SyntaxKind.IsNotKeyword, operatorToken.Position, "is not", null);
+                    precedence = GetBinaryOperator(SyntaxKind.IsNotKeyword);
+                }
+
                 var right = ParseBinaryExpression(precedence);
                 left = new BinaryExpressionSyntax(left, operatorToken, right);
             }
 
             return left;
         }
-
 
         // Parses a primary expression (simplest form) into syntax node
         private ExpressionSyntax ParsePrimaryExpression()

@@ -82,6 +82,8 @@ namespace Compiler.Parts
                     return !Equals(left, right);
                 case BoundBinaryOperatorKind.Identity:
                     return ReferenceEquals(left, right);
+                case BoundBinaryOperatorKind.NonIdentity:
+                    return !ReferenceEquals(left, right);
                 default:
                     throw new Exception($"Unexpected binary operator {bin.Operate}");
             }

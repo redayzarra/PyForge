@@ -29,10 +29,11 @@ namespace Compiler.Parts.Syntax
         #region Keywords
         TrueKeyword,
         FalseKeyword,
-        IsKeyword,
         NotKeyword,
         AndKeyword,
         OrKeyword,
+        IsKeyword,
+        IsNotKeyword,
         #endregion
 
         #region Expressions
