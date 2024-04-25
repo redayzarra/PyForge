@@ -40,8 +40,12 @@ namespace Compiler.Parts.Syntax
 
         public SyntaxToken Lex()
         {
-            while (char.IsWhiteSpace(Current))
-                Next();
+            if (char.IsWhiteSpace(Current))
+            {
+                var starting = _position;
+                var whitespace = ConsumeWhile(char.IsWhiteSpace);
+                return new SyntaxToken(SyntaxKind.WhitespaceToken, starting, whitespace, null);
+            }
 
             if (_position >= _text.Length)
                 return new SyntaxToken(SyntaxKind.EndOfFileToken, _position, string.Empty, null);

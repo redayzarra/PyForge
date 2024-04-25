@@ -49,5 +49,14 @@ public class LexerTest
             yield return (SyntaxKind.NotKeyword, "not");
             yield return (SyntaxKind.AndKeyword, "and");
             yield return (SyntaxKind.OrKeyword, "or");
+
+                // Whitespace Tokens
+            yield return (SyntaxKind.WhitespaceToken, " ");
+            yield return (SyntaxKind.WhitespaceToken, "   ");
+            yield return (SyntaxKind.WhitespaceToken, "\t");
+            yield return (SyntaxKind.WhitespaceToken, "\n");
+            yield return (SyntaxKind.WhitespaceToken, "\r");
+            yield return (SyntaxKind.WhitespaceToken, "\r\n");
+            yield return (SyntaxKind.WhitespaceToken, "\r\t");
         }
 }
