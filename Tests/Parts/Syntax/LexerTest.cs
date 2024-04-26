@@ -18,7 +18,7 @@ public class LexerTest
     }
 
     [Theory]
-    [MemberData(nameof(GetTokenPairsData))]
+    [MemberData(nameof(GetTokenPairs))]
     public void Lexes_TokenPairs(SyntaxKind firstKind, string firstText, SyntaxKind secondKind, string secondText)
     {
         void TestTokenPair(string separator)
@@ -43,13 +43,39 @@ public class LexerTest
         }
     }
 
+    [Theory]
+    [MemberData(nameof(GetTokenPairsWithSeparators))]
+    public void Lexes_TokenPairs_WithSeparators(SyntaxKind firstKind, string firstText,
+                                                SyntaxKind separatorKind, string separatorText,
+                                                SyntaxKind secondKind, string secondText)
+    {
+        var text = firstText + separatorText + secondText;
+        var tokens = SyntaxTree.ParseTokens(text).ToArray();
+        Assert.Equal(3, tokens.Length);
+        Assert.Equal(firstKind, tokens[0].Kind);
+        Assert.Equal(firstText, tokens[0].Text);
+        Assert.Equal(separatorKind, tokens[1].Kind);
+        Assert.Equal(separatorText, tokens[1].Text);
+        Assert.Equal(secondKind, tokens[2].Kind);
+        Assert.Equal(secondText, tokens[2].Text);
+    }
+
     public static IEnumerable<object[]> GetTokensData() => AllTokens.Select(t => new object[] { t.kind, t.text });
 
-    public static IEnumerable<object[]> GetTokenPairsData() =>
+    public static IEnumerable<object[]> GetTokenPairs() =>
         from first in AllTokens
         from second in AllTokens
         where !RequiresSeparator(first.kind, second.kind)
+        
         select new object[] { first.kind, first.text, second.kind, second.text };
+
+    public static IEnumerable<object[]> GetTokenPairsWithSeparators() =>
+        from first in AllTokens
+        from second in AllTokens
+        where RequiresSeparator(first.kind, second.kind)
+        from sep in AllSeparators
+
+        select new object[] { first.kind, first.text, sep.kind, sep.text, second.kind, second.text };
 
     private static IEnumerable<(SyntaxKind kind, string text)> GetTokens()
     {
@@ -119,6 +145,4 @@ public class LexerTest
         // Determine if a token kind is a keyword based on naming convention
         return Enum.GetName(typeof(SyntaxKind), kind)?.EndsWith("Keyword") ?? false;
     }
-
-    
 }
