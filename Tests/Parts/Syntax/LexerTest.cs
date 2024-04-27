@@ -4,9 +4,11 @@ namespace Compiler.Tests.Parts.Syntax;
 
 public class LexerTest
 {
+    // Cache all tokens and separators for use in tests.
     private static readonly List<(SyntaxKind kind, string text)> AllTokens = GetTokens().ToList();
     private static readonly List<(SyntaxKind kind, string text)> AllSeparators = GetSeparators().ToList();
 
+    // Tests lexing of individual tokens to ensure they are parsed correctly.
     [Theory]
     [MemberData(nameof(GetTokensData))]
     public void Lexes_Token(SyntaxKind kind, string text)
@@ -17,6 +19,7 @@ public class LexerTest
         Assert.Equal(text, token.Text);
     }
 
+    // Tests lexing of token pairs to ensure they are parsed correctly without additional separators when not needed.
     [Theory]
     [MemberData(nameof(GetTokenPairs))]
     public void Lexes_TokenPairs(SyntaxKind firstKind, string firstText, SyntaxKind secondKind, string secondText)
@@ -32,6 +35,7 @@ public class LexerTest
             Assert.Equal(secondText, tokens[1].Text);
         }
 
+        // Insert a separator if required by the syntax rules.
         if (RequiresSeparator(firstKind, secondKind))
         {
             TestTokenPair(" ");
@@ -43,6 +47,7 @@ public class LexerTest
         }
     }
 
+    // Tests lexing of token pairs with separators to ensure correct parsing with explicit separators.
     [Theory]
     [MemberData(nameof(GetTokenPairsWithSeparators))]
     public void Lexes_TokenPairs_WithSeparators(SyntaxKind firstKind, string firstText,
@@ -60,23 +65,25 @@ public class LexerTest
         Assert.Equal(secondText, tokens[2].Text);
     }
 
+    // Provides data for token lexing tests.
     public static IEnumerable<object[]> GetTokensData() => AllTokens.Select(t => new object[] { t.kind, t.text });
 
+    // Generates pairs of tokens that do not require separators.
     public static IEnumerable<object[]> GetTokenPairs() =>
         from first in AllTokens
         from second in AllTokens
         where !RequiresSeparator(first.kind, second.kind)
-        
         select new object[] { first.kind, first.text, second.kind, second.text };
 
+    // Generates pairs of tokens that require separators.
     public static IEnumerable<object[]> GetTokenPairsWithSeparators() =>
         from first in AllTokens
         from second in AllTokens
         where RequiresSeparator(first.kind, second.kind)
         from sep in AllSeparators
-
         select new object[] { first.kind, first.text, sep.kind, sep.text, second.kind, second.text };
 
+    // Defines all tokens
     private static IEnumerable<(SyntaxKind kind, string text)> GetTokens()
     {
         // Literal Tokens
@@ -108,9 +115,10 @@ public class LexerTest
         yield return (SyntaxKind.OrKeyword, "or");
     }
 
+    // Defines separators
     private static IEnumerable<(SyntaxKind kind, string text)> GetSeparators()
     {
-        // Whitespace Tokens
+        // Whitespace Tokens: spaces, tabs, and new lines.
         yield return (SyntaxKind.WhitespaceToken, " ");
         yield return (SyntaxKind.WhitespaceToken, "   ");
         yield return (SyntaxKind.WhitespaceToken, "\t");
@@ -120,6 +128,7 @@ public class LexerTest
         yield return (SyntaxKind.WhitespaceToken, "\r\t");
     }
 
+    // Determines if a separator is required between two tokens.
     private static bool RequiresSeparator(SyntaxKind firstKind, SyntaxKind secondKind)
     {
         switch (firstKind)
