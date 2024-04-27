@@ -25,7 +25,7 @@ namespace Compiler.Parts.Binding
         {
             new BoundUnaryOperator(SyntaxKind.NotKeyword, BoundUnaryOperatorKind.LogicalNegation, typeof(bool)),
             new BoundUnaryOperator(SyntaxKind.PlusToken, BoundUnaryOperatorKind.Identity, typeof(int)),
-            new BoundUnaryOperator(SyntaxKind.MinusToken, BoundUnaryOperatorKind.LogicalNegation, typeof(int)),
+            new BoundUnaryOperator(SyntaxKind.MinusToken, BoundUnaryOperatorKind.Negation, typeof(int)),
         };
 
         public static BoundUnaryOperator? Bind(SyntaxKind syntaxKind, Type operandType)
@@ -39,5 +39,4 @@ namespace Compiler.Parts.Binding
             return null;
         }
     }
-    
 }
