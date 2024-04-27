@@ -149,6 +149,7 @@ public class LexerTest
         }
     }
 
+    // Checks if a token is a keyword: my naming convention is "Keyword"
     private static bool IsKeyword(SyntaxKind kind)
     {
         // Determine if a token kind is a keyword based on naming convention
