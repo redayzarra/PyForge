@@ -101,10 +101,10 @@ namespace Compiler.Parts.Syntax
                 _ => SyntaxKind.BadToken,
             };
 
-            Next(); // Advance the position for single character token
-
             if (tokenKind == SyntaxKind.BadToken)
                 _diagnostics.ReportBadCharacter(_position, Current);
+
+            Next(); // Advance the position for single character token
 
             return new SyntaxToken(tokenKind, start, currentChar.ToString(), null);
         }
