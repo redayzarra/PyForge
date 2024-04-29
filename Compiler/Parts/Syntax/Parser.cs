@@ -118,14 +118,13 @@ namespace Compiler.Parts.Syntax
 
                 var operatorToken = NextToken();
 
-                // Check for "is not"
+                // Handle compound binary operators like "is not"
                 if (operatorToken.Kind == SyntaxKind.IsKeyword && Peek(0).Kind == SyntaxKind.NotKeyword)
                 {
-                    // Consume "not" token
-                    NextToken();
-                    // Create a compound "is not" operator token (you might need to create a new SyntaxToken manually here)
+                    NextToken(); // Consume "not" token
+                    // Combine "is" and "not" into a new compound operator token
                     operatorToken = new SyntaxToken(SyntaxKind.IsNotKeyword, operatorToken.Position, "is not", null);
-                    precedence = GetBinaryOperator(SyntaxKind.IsNotKeyword);
+                    precedence = GetBinaryOperator(SyntaxKind.IsNotKeyword); // Update precedence for compound operator
                 }
 
                 var right = ParseBinaryExpression(precedence);
@@ -169,7 +168,6 @@ namespace Compiler.Parts.Syntax
                     return new LiteralExpressionSyntax(numberToken);
                 }
             }
-
         }
     }
 }

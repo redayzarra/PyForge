@@ -1,9 +1,9 @@
 namespace Compiler.Parts.Syntax
 {
-    internal static class SyntaxFacts
+    public static class SyntaxFacts
     {
         // Get the precedence of unary operators (e.g., -1 + 2)
-        internal static int GetUnaryOperator(SyntaxKind kind)
+        public static int GetUnaryOperator(SyntaxKind kind)
         {
             switch (kind)
             {
@@ -17,7 +17,7 @@ namespace Compiler.Parts.Syntax
         }
 
         // Get the precedence of binary operators (PEMDAS and logical)
-        internal static int GetBinaryOperator(SyntaxKind kind)
+        public static int GetBinaryOperator(SyntaxKind kind)
         {
             switch (kind)
             {

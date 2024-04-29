@@ -39,14 +39,16 @@ namespace Compiler
                         Console.ResetColor();
                         Console.WriteLine();
                         continue;
-                    case "clear":
-                    case "cleawr":
+                    case "#clear":
                         Console.Clear();
                         continue;
-                    case "rerun":
+                    case "#rerun":
                         Environment.Exit(2);  // Exit code 2 to indicate a rerun request
                         return;
-                    case "exit":
+                    case "#test":
+                        Environment.Exit(3);  // Exit code 2 to indicate a rerun request
+                        return;
+                    case "#exit":
                         Console.Clear();
                         return;
                 }

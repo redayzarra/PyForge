@@ -2,12 +2,11 @@ using Compiler.Parts.Syntax;
 
 namespace Compiler.Tests.Parts.Syntax;
 
-public class ParserTests
+public partial class ParserTests
 {
-
-    [Theory]
-    public void BinaryExpression_Precedence(SyntaxKind firstOperator, SyntaxKind secondOperator)
-    {
+    // [Theory]
+    // public void BinaryExpression_Precedence(SyntaxKind firstOperator, SyntaxKind secondOperator)
+    // {
         
-    }
+    // }
 }
