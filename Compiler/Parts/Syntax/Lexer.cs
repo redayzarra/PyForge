@@ -108,6 +108,5 @@ namespace Compiler.Parts.Syntax
 
             return new SyntaxToken(tokenKind, start, currentChar.ToString(), null);
         }
-
     }
 }

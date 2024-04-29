@@ -2,7 +2,7 @@ using Compiler.Parts.Syntax;
 
 namespace Compiler.Tests.Parts.Syntax;
 
-public class LexerTest
+public class LexerTests
 {
     // Cache all tokens and separators for use in tests.
     private static readonly List<(SyntaxKind kind, string text)> AllTokens = GetTokens().ToList();

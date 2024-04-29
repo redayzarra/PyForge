@@ -67,5 +67,40 @@ namespace Compiler.Parts.Syntax
                     return SyntaxKind.IdentifierToken;
             }
         }
+
+        public static string? GetText(SyntaxKind kind)
+        {
+            switch (kind)
+            {
+                case SyntaxKind.PlusToken:
+                    return "+";
+                case SyntaxKind.MinusToken:
+                    return "-";
+                case SyntaxKind.StarToken:
+                    return "*";
+                case SyntaxKind.SlashToken:
+                    return "/";
+                case SyntaxKind.EqualsEqualsToken:
+                    return "==";
+                case SyntaxKind.NotEqualsToken:
+                    return "!=";
+                case SyntaxKind.AndKeyword:
+                    return "and";
+                case SyntaxKind.OrKeyword:
+                    return "or";
+                case SyntaxKind.NotKeyword:
+                    return "not";
+                case SyntaxKind.IsKeyword:
+                    return "is";
+                case SyntaxKind.IsNotKeyword:
+                    return "is not";
+                case SyntaxKind.TrueKeyword:
+                    return "True";
+                case SyntaxKind.FalseKeyword:
+                    return "False";
+                default:
+                    return null;
+            }
+        }
     }
 }
