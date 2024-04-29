@@ -4,9 +4,11 @@ namespace Compiler.Tests.Parts.Syntax;
 
 public partial class ParserTests
 {
-    // [Theory]
-    // public void BinaryExpression_Precedence(SyntaxKind firstOperator, SyntaxKind secondOperator)
-    // {
+    [Theory]
+    [MemberData(GetBinaryOperatorParis)]
+    public void BinaryExpression_Precedence(SyntaxKind firstOperator, SyntaxKind secondOperator)
+    {
         
-    // }
+    }
+
 }

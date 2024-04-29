@@ -2,105 +2,75 @@ namespace Compiler.Parts.Syntax
 {
     public static class SyntaxFacts
     {
-        // Get the precedence of unary operators (e.g., -1 + 2)
-        public static int GetUnaryOperator(SyntaxKind kind)
+        private static readonly SyntaxKind[] _allKinds = Enum.GetValues(typeof(SyntaxKind)).Cast<SyntaxKind>().ToArray();
+
+        public static int GetUnaryOperator(SyntaxKind kind) => kind switch
         {
-            switch (kind)
-            {
-                case SyntaxKind.PlusToken: 
-                case SyntaxKind.MinusToken: 
-                case SyntaxKind.NotKeyword: 
-                    return 6; // Higher precedence for unary operators
-                default:
-                    return 0;
-            }
-        }
+            // Higher precedence for unary operators
+            SyntaxKind.PlusToken => 6,
+            SyntaxKind.MinusToken => 6,
+            SyntaxKind.NotKeyword => 6,
+            _ => 0
+        };
 
-        // Get the precedence of binary operators (PEMDAS and logical)
-        public static int GetBinaryOperator(SyntaxKind kind)
+        public static int GetBinaryOperator(SyntaxKind kind) => kind switch
         {
-            switch (kind)
-            {
-                case SyntaxKind.StarToken:
-                case SyntaxKind.SlashToken:
-                    return 5; // Multiplication and division have high precedence
+            // Multiplication and division have high precedence
+            SyntaxKind.StarToken => 5,
+            SyntaxKind.SlashToken => 5,
 
-                case SyntaxKind.PlusToken:
-                case SyntaxKind.MinusToken:
-                    return 4; // Addition and subtraction have medium precedence
+            // Addition and subtraction have medium precedence
+            SyntaxKind.PlusToken => 4,
+            SyntaxKind.MinusToken => 4,
 
-                case SyntaxKind.EqualsEqualsToken:
-                case SyntaxKind.NotEqualsToken:
-                case SyntaxKind.IsKeyword:
-                case SyntaxKind.IsNotKeyword:
-                    return 3; // Equality and inequality have specific precedence
+            // Equality and inequality have specific precedence
+            SyntaxKind.EqualsEqualsToken => 3,
+            SyntaxKind.NotEqualsToken => 3,
+            SyntaxKind.IsKeyword => 3,
+            SyntaxKind.IsNotKeyword => 3,
 
-                case SyntaxKind.AndKeyword: 
-                    return 2; // Logical AND has lower precedence than equality checks
+            // Logical AND has lower precedence than equality checks
+            SyntaxKind.AndKeyword => 2,
 
-                case SyntaxKind.OrKeyword: 
-                    return 1; // Logical OR has the lowest precedence among binary operators
+            // Logical OR has the lowest precedence among binary 
+            SyntaxKind.OrKeyword => 1,
+            _ => 0
+        };
 
-                default:
-                    return 0;
-            }
-        }
+        public static IEnumerable<SyntaxKind> GetBinaryOperatorKinds() =>
+            _allKinds.Where(kind => GetBinaryOperator(kind) > 0);
 
-        // Map text to SyntaxKind for keywords and logical operators
-        public static SyntaxKind GetKeywordKind(string text)
+        public static IEnumerable<SyntaxKind> GetUnaryOperatorKinds() =>
+            _allKinds.Where(kind => GetUnaryOperator(kind) > 0);
+
+        public static SyntaxKind GetKeywordKind(string text) => text switch
         {
-            switch (text)
-            {
-                case "True":
-                    return SyntaxKind.TrueKeyword;
-                case "False":
-                    return SyntaxKind.FalseKeyword;
-                case "and":
-                    return SyntaxKind.AndKeyword;
-                case "or":
-                    return SyntaxKind.OrKeyword;
-                case "not":
-                    return SyntaxKind.NotKeyword;
-                case "is":
-                    return SyntaxKind.IsKeyword;
-                default:
-                    return SyntaxKind.IdentifierToken;
-            }
-        }
+            "True" => SyntaxKind.TrueKeyword,
+            "False" => SyntaxKind.FalseKeyword,
+            "and" => SyntaxKind.AndKeyword,
+            "or" => SyntaxKind.OrKeyword,
+            "not" => SyntaxKind.NotKeyword,
+            "is" => SyntaxKind.IsKeyword,
+            _ => SyntaxKind.IdentifierToken
+        };
 
-        public static string? GetText(SyntaxKind kind)
+        public static string? GetText(SyntaxKind kind) => kind switch
         {
-            switch (kind)
-            {
-                case SyntaxKind.PlusToken:
-                    return "+";
-                case SyntaxKind.MinusToken:
-                    return "-";
-                case SyntaxKind.StarToken:
-                    return "*";
-                case SyntaxKind.SlashToken:
-                    return "/";
-                case SyntaxKind.EqualsEqualsToken:
-                    return "==";
-                case SyntaxKind.NotEqualsToken:
-                    return "!=";
-                case SyntaxKind.AndKeyword:
-                    return "and";
-                case SyntaxKind.OrKeyword:
-                    return "or";
-                case SyntaxKind.NotKeyword:
-                    return "not";
-                case SyntaxKind.IsKeyword:
-                    return "is";
-                case SyntaxKind.IsNotKeyword:
-                    return "is not";
-                case SyntaxKind.TrueKeyword:
-                    return "True";
-                case SyntaxKind.FalseKeyword:
-                    return "False";
-                default:
-                    return null;
-            }
-        }
+            SyntaxKind.PlusToken => "+",
+            SyntaxKind.MinusToken => "-",
+            SyntaxKind.StarToken => "*",
+            SyntaxKind.SlashToken => "/",
+            SyntaxKind.EqualsEqualsToken => "==",
+            SyntaxKind.NotEqualsToken => "!=",
+            SyntaxKind.AndKeyword => "and",
+            SyntaxKind.OrKeyword => "or",
+            SyntaxKind.NotKeyword => "not",
+            SyntaxKind.IsKeyword => "is",
+            SyntaxKind.IsNotKeyword => "is not",
+            SyntaxKind.TrueKeyword => "True",
+            SyntaxKind.FalseKeyword => "False",
+            _ => null
+        };
     }
 }
+
