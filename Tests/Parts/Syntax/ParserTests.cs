@@ -5,6 +5,7 @@ namespace Compiler.Tests.Parts.Syntax;
 internal sealed class AssertingEnumerator : IDisposable
 {
     private readonly IEnumerator<SyntaxNode> _enumerator;
+    private bool _hasErrors;
 
     public AssertingEnumerator(SyntaxNode node)
     {
@@ -18,24 +19,55 @@ internal sealed class AssertingEnumerator : IDisposable
 
         while (stack.Count > 0)
         {
-            var n = stack.Pop();
-            yield return n;
+            var currentNode = stack.Pop();
+            yield return currentNode;
 
-            foreach (var child in n.GetChildren().Reverse())
+            // Push the child nodes in reverse order to process them in original order
+            foreach (var child in currentNode.GetChildren().Reverse())
                 stack.Push(child);
         }
     }
 
     public void AssertToken(SyntaxKind kind, string text)
     {
-        Assert.True(_enumerator.MoveNext());
-        var token = Assert.IsType<SyntaxToken>(_enumerator.Current);
-        Assert.Equal(kind, token.Kind);
-        Assert.Equal(text, token.Text);
+        try
+        {
+            Assert.True(_enumerator.MoveNext());
+            var token = Assert.IsType<SyntaxToken>(_enumerator.Current);
+            Assert.Equal(kind, token.Kind);
+            Assert.Equal(text, token.Text);
+        }
+        catch when (MarkFailed())
+        {
+            throw;
+        }
+    }
+
+    public void AssertNode(SyntaxKind kind)
+    {
+        try
+        {
+            Assert.True(_enumerator.MoveNext());
+            var node = _enumerator.Current;
+            Assert.IsNotType<SyntaxToken>(node);
+            Assert.Equal(kind, node.Kind);
+        }
+        catch when (MarkFailed())
+        {
+            throw;
+        }
+    }
+
+    private bool MarkFailed()
+    {
+        _hasErrors = true;
+        return false;
     }
 
     public void Dispose()
     {
+        if (!_hasErrors)
+            Assert.False(_enumerator.MoveNext());
         _enumerator.Dispose();
     }
 }
@@ -48,28 +80,46 @@ public partial class ParserTests
     {
         var firstPrecedence = SyntaxFacts.GetBinaryOperator(firstOperator);
         var secondPrecedence = SyntaxFacts.GetBinaryOperator(secondOperator);
-        var firstText = SyntaxFacts.GetText(firstOperator);
-        var secondText = SyntaxFacts.GetText(secondOperator);
+        var text = $"a {SyntaxFacts.GetText(firstOperator)} b {SyntaxFacts.GetText(secondOperator)} c";
+        var expression = SyntaxTree.Parse(text).Root;
 
-        var text = $"a {firstText} b {secondText} c";
+        using (var exp = new AssertingEnumerator(expression))
+        {
+            exp.AssertNode(SyntaxKind.BinaryExpression);
 
-        // Example check
-        if (firstPrecedence >= secondPrecedence)
-        {
-            Assert.False(true);
-        }
-        else
-        {
-            Assert.False(true);
+            if (firstPrecedence >= secondPrecedence)
+            {
+                exp.AssertNode(SyntaxKind.BinaryExpression);
+                exp.AssertNode(SyntaxKind.NameExpression);
+                exp.AssertToken(SyntaxKind.IdentifierToken, "a");
+                exp.AssertNode(SyntaxKind.NameExpression);
+                exp.AssertToken(SyntaxKind.IdentifierToken, "b");
+                exp.AssertNode(SyntaxKind.NameExpression);
+                exp.AssertToken(SyntaxKind.IdentifierToken, "c");
+            }
+            else
+            {
+                exp.AssertNode(SyntaxKind.NameExpression);
+                exp.AssertToken(SyntaxKind.IdentifierToken, "a");
+                exp.AssertNode(SyntaxKind.BinaryExpression);
+                exp.AssertNode(SyntaxKind.NameExpression);
+                exp.AssertToken(SyntaxKind.IdentifierToken, "b");
+                exp.AssertNode(SyntaxKind.NameExpression);
+                exp.AssertToken(SyntaxKind.IdentifierToken, "c");
+            }
         }
     }
 
     public static IEnumerable<object[]> GetBinaryOperatorPairs()
     {
-        var operators = SyntaxFacts.GetBinaryOperatorKinds().ToList();
-        return from firstOperator in operators
-               from secondOperator in operators
-               select new object[] { firstOperator, secondOperator };
+        foreach (var firstOperator in SyntaxFacts.GetBinaryOperatorKinds())
+        {
+            foreach (var secondOperator in SyntaxFacts.GetBinaryOperatorKinds())
+            {
+                yield return new object[] { firstOperator, secondOperator };
+                yield break;
+            }
+        }
     }
 }
 
