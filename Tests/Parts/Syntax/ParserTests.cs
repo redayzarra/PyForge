@@ -2,76 +2,6 @@ using Compiler.Parts.Syntax;
 
 namespace Compiler.Tests.Parts.Syntax;
 
-internal sealed class AssertingEnumerator : IDisposable
-{
-    private readonly IEnumerator<SyntaxNode> _enumerator;
-    private bool _hasErrors;
-
-    public AssertingEnumerator(SyntaxNode node)
-    {
-        _enumerator = Flatten(node).GetEnumerator();
-    }
-
-    private static IEnumerable<SyntaxNode> Flatten(SyntaxNode node)
-    {
-        var stack = new Stack<SyntaxNode>();
-        stack.Push(node);
-
-        while (stack.Count > 0)
-        {
-            var currentNode = stack.Pop();
-            yield return currentNode;
-
-            // Push the child nodes in reverse order to process them in original order
-            foreach (var child in currentNode.GetChildren().Reverse())
-                stack.Push(child);
-        }
-    }
-
-    public void AssertToken(SyntaxKind kind, string text)
-    {
-        try
-        {
-            Assert.True(_enumerator.MoveNext());
-            Assert.Equal(kind, _enumerator.Current.Kind);
-            var token = Assert.IsType<SyntaxToken>(_enumerator.Current);
-            Assert.Equal(text, token.Text);
-        }
-        catch when (MarkFailed())
-        {
-            throw;
-        }
-    }
-
-    public void AssertNode(SyntaxKind kind)
-    {
-        try
-        {
-            Assert.True(_enumerator.MoveNext());
-            var node = _enumerator.Current;
-            Assert.Equal(kind, node.Kind);
-            Assert.IsNotType<SyntaxToken>(node);
-        }
-        catch when (MarkFailed())
-        {
-            throw;
-        }
-    }
-
-    private bool MarkFailed()
-    {
-        _hasErrors = true;
-        return false;
-    }
-
-    public void Dispose()
-    {
-        if (!_hasErrors)
-            Assert.False(_enumerator.MoveNext());
-        _enumerator.Dispose();
-    }
-}
-
 public partial class ParserTests
 {
     [Theory]
@@ -122,6 +52,50 @@ public partial class ParserTests
         }
     }
 
+    [Theory]
+    [MemberData(nameof(GetUnaryOperatorPairs))]
+    public void UnaryExpression_Precedence(SyntaxKind unaryKind, SyntaxKind binaryKind)
+    {
+        // Get the unary and binary operator precendeces
+        var unaryPrecedence = SyntaxFacts.GetUnaryOperator(unaryKind);
+        var binaryPrecedence = SyntaxFacts.GetBinaryOperator(binaryKind);
+
+        // Get the text or "symbol" associated with the operator
+        var unaryText = SyntaxFacts.GetText(unaryKind) ?? "[Undefined Operator]";
+        var binaryText = SyntaxFacts.GetText(binaryKind) ?? "[Undefined Operator]";
+
+        // Arrange operator text into expression and parse it using SyntaxTree
+        var text = $"{unaryText} a {binaryText} b";
+        var expression = SyntaxTree.Parse(text).Root;
+
+        using (var exp = new AssertingEnumerator(expression))
+        {
+
+            if (unaryPrecedence >= binaryPrecedence)
+            {
+                exp.AssertNode(SyntaxKind.BinaryExpression);
+                exp.AssertNode(SyntaxKind.UnaryExpression);
+                exp.AssertToken(unaryKind, unaryText);
+                exp.AssertNode(SyntaxKind.NameExpression);
+                exp.AssertToken(SyntaxKind.IdentifierToken, "a");
+                exp.AssertToken(binaryKind, binaryText);
+                exp.AssertNode(SyntaxKind.NameExpression);
+                exp.AssertToken(SyntaxKind.IdentifierToken, "b");
+            }
+            else
+            {
+                exp.AssertNode(SyntaxKind.UnaryExpression);
+                exp.AssertToken(unaryKind, unaryText);
+                exp.AssertNode(SyntaxKind.BinaryExpression);
+                exp.AssertNode(SyntaxKind.NameExpression);
+                exp.AssertToken(SyntaxKind.IdentifierToken, "a");
+                exp.AssertToken(binaryKind, binaryText);
+                exp.AssertNode(SyntaxKind.NameExpression);
+                exp.AssertToken(SyntaxKind.IdentifierToken, "b");
+            }
+        }
+    }
+
     public static IEnumerable<object[]> GetBinaryOperatorPairs()
     {
         foreach (var firstOperator in SyntaxFacts.GetBinaryOperatorKinds())
@@ -132,5 +106,15 @@ public partial class ParserTests
             }
         }
     }
-}
 
+    public static IEnumerable<object[]> GetUnaryOperatorPairs()
+    {
+        foreach (var unaryOperator in SyntaxFacts.GetUnaryOperatorKinds())
+        {
+            foreach (var binaryOperator in SyntaxFacts.GetBinaryOperatorKinds())
+            {
+                yield return new object[] { unaryOperator, binaryOperator };
+            }
+        }
+    }
+}
