@@ -1,0 +1,14 @@
+Type "notepad $PROFILE" in the command line (powershell) and then 
+copy and paste the following:
+
+function run-compiler{
+    Set-Location "C:\Users\reday\Documents\Compiler\main"
+    clear
+    .\run.bat
+}
+
+function test-compiler{
+    Set-Location "C:\Users\reday\Documents\Compiler"
+    clear
+    .\test.bat
+}
