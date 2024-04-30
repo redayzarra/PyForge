@@ -33,8 +33,8 @@ internal sealed class AssertingEnumerator : IDisposable
         try
         {
             Assert.True(_enumerator.MoveNext());
+            Assert.Equal(kind, _enumerator.Current.Kind);
             var token = Assert.IsType<SyntaxToken>(_enumerator.Current);
-            Assert.Equal(kind, token.Kind);
             Assert.Equal(text, token.Text);
         }
         catch when (MarkFailed())
@@ -49,8 +49,8 @@ internal sealed class AssertingEnumerator : IDisposable
         {
             Assert.True(_enumerator.MoveNext());
             var node = _enumerator.Current;
-            Assert.IsNotType<SyntaxToken>(node);
             Assert.Equal(kind, node.Kind);
+            Assert.IsNotType<SyntaxToken>(node);
         }
         catch when (MarkFailed())
         {
@@ -78,32 +78,44 @@ public partial class ParserTests
     [MemberData(nameof(GetBinaryOperatorPairs))]
     public void BinaryExpression_Precedence(SyntaxKind firstOperator, SyntaxKind secondOperator)
     {
+        // Get the binary operator precendece for both operators
         var firstPrecedence = SyntaxFacts.GetBinaryOperator(firstOperator);
         var secondPrecedence = SyntaxFacts.GetBinaryOperator(secondOperator);
-        var text = $"a {SyntaxFacts.GetText(firstOperator)} b {SyntaxFacts.GetText(secondOperator)} c";
+
+        // Get the text or "symbol" associated with the operator
+        var firstText = SyntaxFacts.GetText(firstOperator) ?? "[Undefined Operator]";
+        var secondText = SyntaxFacts.GetText(secondOperator) ?? "[Undefined Operator]";
+
+        // Arrange operator text into expression and parse it using SyntaxTree
+        var text = $"a {firstText} b {secondText} c";
         var expression = SyntaxTree.Parse(text).Root;
 
         using (var exp = new AssertingEnumerator(expression))
         {
-            exp.AssertNode(SyntaxKind.BinaryExpression);
 
             if (firstPrecedence >= secondPrecedence)
             {
                 exp.AssertNode(SyntaxKind.BinaryExpression);
+                exp.AssertNode(SyntaxKind.BinaryExpression);
                 exp.AssertNode(SyntaxKind.NameExpression);
                 exp.AssertToken(SyntaxKind.IdentifierToken, "a");
+                exp.AssertToken(firstOperator, firstText);
                 exp.AssertNode(SyntaxKind.NameExpression);
                 exp.AssertToken(SyntaxKind.IdentifierToken, "b");
+                exp.AssertToken(secondOperator, secondText);
                 exp.AssertNode(SyntaxKind.NameExpression);
                 exp.AssertToken(SyntaxKind.IdentifierToken, "c");
             }
             else
             {
+                exp.AssertNode(SyntaxKind.BinaryExpression);
                 exp.AssertNode(SyntaxKind.NameExpression);
                 exp.AssertToken(SyntaxKind.IdentifierToken, "a");
+                exp.AssertToken(firstOperator, firstText);
                 exp.AssertNode(SyntaxKind.BinaryExpression);
                 exp.AssertNode(SyntaxKind.NameExpression);
                 exp.AssertToken(SyntaxKind.IdentifierToken, "b");
+                exp.AssertToken(secondOperator, secondText);
                 exp.AssertNode(SyntaxKind.NameExpression);
                 exp.AssertToken(SyntaxKind.IdentifierToken, "c");
             }
@@ -117,7 +129,6 @@ public partial class ParserTests
             foreach (var secondOperator in SyntaxFacts.GetBinaryOperatorKinds())
             {
                 yield return new object[] { firstOperator, secondOperator };
-                yield break;
             }
         }
     }
