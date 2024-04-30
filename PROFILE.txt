@@ -1,5 +1,4 @@
-Type "notepad $PROFILE" in the command line (powershell) and then 
-copy and paste the following:
+Type "notepad $PROFILE" in the terminal and then copy & paste:
 
 function run-compiler{
     Set-Location "C:\Users\reday\Documents\Compiler\main"
@@ -10,5 +9,6 @@ function run-compiler{
 function test-compiler{
     Set-Location "C:\Users\reday\Documents\Compiler"
     clear
-    .\test.bat
+    dotnet build
+    dotnet test .\Tests\Tests.csproj
 }
