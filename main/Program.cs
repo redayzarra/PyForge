@@ -7,14 +7,10 @@ namespace Compiler
     {
         private static void Main()
         {
-            Console.Clear();
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("Welcome to my compiler! Please type valid Python expressions.");
-            Console.WriteLine();
-            Console.ResetColor();
+            Welcome();
             var variables = new Dictionary<VariableSymbol, object>();
-
             var showTree = false;
+            
             while (true)
             {
                 Console.Write("> ");
@@ -22,42 +18,12 @@ namespace Compiler
                 if (string.IsNullOrWhiteSpace(line))
                     return;
 
-                // Switch for visibility features and command handling
-                switch (line)
-                {
-                    case "#showTree":
-                        showTree = true;
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine("Showing parse tree.");
-                        Console.ResetColor();
-                        Console.WriteLine();
-                        continue;
-                    case "#hideTree":
-                        showTree = false;
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine("Hiding parse tree.");
-                        Console.ResetColor();
-                        Console.WriteLine();
-                        continue;
-                    case "#clear":
-                        Console.Clear();
-                        continue;
-                    case "#rerun":
-                        Environment.Exit(2);  // Exit code 2 to indicate a rerun request
-                        return;
-                    case "#test":
-                        Environment.Exit(3);  // Exit code 2 to indicate a rerun request
-                        return;
-                    case "#exit":
-                        Console.Clear();
-                        return;
-                }
+                if (!HandleCommand(line, ref showTree, variables))
+                    continue; // Skip parsing and evaluating if HandleCommand processed a command
 
-                // Parse and evaluate the expression
                 var syntaxTree = SyntaxTree.Parse(line);
                 var compilation = new Compilation(syntaxTree);
                 var result = compilation.Evaluate(variables);
-                var diagnostics = result.Diagnostics;
 
                 if (showTree)
                 {
@@ -65,19 +31,57 @@ namespace Compiler
                     Console.WriteLine();
                 }
 
-                // Display results or diagnostics
-                if (!diagnostics.Any())
-                {
-                    Console.ForegroundColor = ConsoleColor.DarkGray;
-                    Console.WriteLine($"Result: {result.Value}");
-                    Console.ResetColor();
-                }
+                if (!result.Diagnostics.Any())
+                    PrintWithColor($"Result: {result.Value}", ConsoleColor.DarkGray);
                 else
-                {
-                    DisplayDiagnostics(diagnostics, line);
-                }
+                    DisplayDiagnostics(result.Diagnostics, line);
+
                 Console.WriteLine();
             }
+        }
+
+        private static void Welcome()
+        {
+            Console.Clear();
+            PrintWithColor("Welcome to my compiler! Please type valid Python expressions.", ConsoleColor.Green);
+            Console.WriteLine();
+        }
+
+        private static bool HandleCommand(string line, ref bool showTree, Dictionary<VariableSymbol, object> variables)
+        {
+            switch (line)
+            {
+                case "#showTree":
+                    showTree = true;
+                    PrintWithColor("Showing parse tree.", ConsoleColor.Green);
+                    return false;
+                case "#hideTree":
+                    showTree = false;
+                    PrintWithColor("Hiding parse tree.", ConsoleColor.Green);
+                    return false;
+                case "#clear":
+                    variables.Clear(); // Clear variables - depends if I want to
+                    Welcome();
+                    return false;
+                case "#rerun":
+                    Environment.Exit(2);
+                    return false;
+                case "#test":
+                    Environment.Exit(3);
+                    return false;
+                case "#exit":
+                    Console.Clear();
+                    return false;
+                default:
+                    return true;
+            }
+        }
+
+        private static void PrintWithColor(string message, ConsoleColor color)
+        {
+            Console.ForegroundColor = color;
+            Console.WriteLine(message);
+            Console.ResetColor();
         }
 
         private static void DisplayDiagnostics(IEnumerable<Diagnostic> diagnostics, string line)
@@ -85,9 +89,7 @@ namespace Compiler
             foreach (var diagnostic in diagnostics)
             {
                 Console.WriteLine();
-                Console.ForegroundColor = ConsoleColor.DarkRed;
-                Console.WriteLine(diagnostic);
-                Console.ResetColor();
+                PrintWithColor(diagnostic.ToString(), ConsoleColor.DarkRed);
                 HighlightErrorInLine(line, diagnostic.Span);
             }
         }
@@ -103,12 +105,12 @@ namespace Compiler
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Write(error);
             Console.ResetColor();
-            Console.WriteLine(suffix);
+            Console.Write(suffix);
+            Console.WriteLine();
             Console.WriteLine(new string(' ', span.Start + 4) + new string('^', span.Length));
         }
 
-        // Creates a really pretty tree similar to Unix tree (folders)
-        static void PrettyPrint(SyntaxNode node, string indent = "", bool isLast = true)
+        private static void PrettyPrint(SyntaxNode node, string indent = "", bool isLast = true)
         {
             var marker = isLast ? "└──" : "├──";
 
