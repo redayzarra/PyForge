@@ -1,4 +1,5 @@
 using Compiler.Parts.Syntax;
+using Xunit.Abstractions;
 
 namespace Compiler.Tests.Parts.Syntax;
 
@@ -8,6 +9,14 @@ public class LexerTests
     private static readonly List<(SyntaxKind kind, string text)> AllTokens = GetTokens().ToList();
     private static readonly List<(SyntaxKind kind, string text)> AllSeparators = GetSeparators().ToList();
 
+    private readonly ITestOutputHelper _output;
+
+    public LexerTests(ITestOutputHelper output)
+    {
+        _output = output;
+        // dotnet test --logger "trx;LogFileName=test_results.xml"
+    }
+
     // Tests lexing of individual tokens to ensure they are parsed correctly.
     [Theory]
     [MemberData(nameof(GetTokensData))]
@@ -15,6 +24,10 @@ public class LexerTests
     {
         var tokens = SyntaxTree.ParseTokens(text);
         var token = Assert.Single(tokens);
+
+        _output.WriteLine($"Expected kind: {kind}, Actual kind: {token.Kind}");
+        _output.WriteLine($"Expected text: '{text}', Actual text: '{token.Text}'");
+
         Assert.Equal(kind, token.Kind);
         Assert.Equal(text, token.Text);
     }
@@ -26,6 +39,7 @@ public class LexerTests
     {
         void TestTokenPair(string separator)
         {
+            _output.WriteLine($"Testing pair: '{firstText}{separator}{secondText}'");
             var text = firstText + separator + secondText;
             var tokens = SyntaxTree.ParseTokens(text).ToArray();
             Assert.Equal(2, tokens.Length);
@@ -54,6 +68,7 @@ public class LexerTests
                                                 SyntaxKind separatorKind, string separatorText,
                                                 SyntaxKind secondKind, string secondText)
     {
+        _output.WriteLine($"Testing pair with explicit separator: '{firstText}{separatorText}{secondText}'");
         var text = firstText + separatorText + secondText;
         var tokens = SyntaxTree.ParseTokens(text).ToArray();
         Assert.Equal(3, tokens.Length);

@@ -40,13 +40,6 @@ namespace Compiler
             }
         }
 
-        private static void Welcome()
-        {
-            Console.Clear();
-            PrintWithColor("Welcome to my compiler! Please type valid Python expressions.", ConsoleColor.Green);
-            Console.WriteLine();
-        }
-
         private static bool HandleCommand(string line, ref bool showTree, Dictionary<VariableSymbol, object> variables)
         {
             switch (line)
@@ -78,6 +71,13 @@ namespace Compiler
                 default:
                     return false;
             }
+        }
+
+        private static void Welcome()
+        {
+            Console.Clear();
+            PrintWithColor("Welcome to my compiler! Please type valid Python expressions.", ConsoleColor.Green);
+            Console.WriteLine();
         }
 
         private static void PrintWithColor(string message, ConsoleColor color)
