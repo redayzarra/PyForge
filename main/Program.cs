@@ -10,15 +10,15 @@ namespace Compiler
             Welcome();
             var variables = new Dictionary<VariableSymbol, object>();
             var showTree = false;
-            
+
             while (true)
             {
                 Console.Write("> ");
                 var line = Console.ReadLine();
                 if (string.IsNullOrWhiteSpace(line))
-                    return;
+                    continue;
 
-                if (!HandleCommand(line, ref showTree, variables))
+                if (HandleCommand(line, ref showTree, variables))
                     continue; // Skip parsing and evaluating if HandleCommand processed a command
 
                 var syntaxTree = SyntaxTree.Parse(line);
@@ -53,27 +53,30 @@ namespace Compiler
             {
                 case "#showTree":
                     showTree = true;
-                    PrintWithColor("Showing parse tree.", ConsoleColor.Green);
-                    return false;
+                    PrintWithColor("Showing parse tree.", ConsoleColor.DarkGreen);
+                    Console.WriteLine();
+                    return true;
                 case "#hideTree":
                     showTree = false;
-                    PrintWithColor("Hiding parse tree.", ConsoleColor.Green);
-                    return false;
+                    PrintWithColor("Hiding parse tree.", ConsoleColor.DarkGreen);
+                    Console.WriteLine();
+                    return true;
                 case "#clear":
                     variables.Clear(); // Clear variables - depends if I want to
                     Welcome();
-                    return false;
+                    return true;
                 case "#rerun":
                     Environment.Exit(2);
-                    return false;
+                    return true;
                 case "#test":
                     Environment.Exit(3);
-                    return false;
+                    return true;
                 case "#exit":
                     Console.Clear();
-                    return false;
-                default:
+                    Environment.Exit(0);
                     return true;
+                default:
+                    return false;
             }
         }
 
