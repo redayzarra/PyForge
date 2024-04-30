@@ -67,6 +67,11 @@ namespace Compiler.Parts
                 case BoundBinaryOperatorKind.Multiplication:
                     return (int)left * (int)right;
                 case BoundBinaryOperatorKind.Division:
+                    // Check for division by zero before performing division
+                    if ((int)right == 0)
+                    {
+                        throw new DivideByZeroException("Attempted to divide by zero.");
+                    }
                     return (int)left / (int)right;
                 case BoundBinaryOperatorKind.Addition:
                     return (int)left + (int)right;
