@@ -13,7 +13,7 @@ namespace Compiler
 
             while (true)
             {
-                Console.Write("> ");
+                Console.Write(">>> ");
                 var line = Console.ReadLine();
                 if (string.IsNullOrWhiteSpace(line))
                     continue;
@@ -32,7 +32,7 @@ namespace Compiler
                 }
 
                 if (!result.Diagnostics.Any())
-                    PrintWithColor($"Result: {result.Value}", ConsoleColor.DarkGray);
+                    PrintWithColor($"{result.Value}", ConsoleColor.DarkGray);
                 else
                     DisplayDiagnostics(result.Diagnostics, line);
 
@@ -51,27 +51,27 @@ namespace Compiler
         {
             switch (line)
             {
-                case "#showTree":
+                case "showtree()":
                     showTree = true;
                     PrintWithColor("Showing parse tree.", ConsoleColor.DarkGreen);
                     Console.WriteLine();
                     return true;
-                case "#hideTree":
+                case "hidetree()":
                     showTree = false;
                     PrintWithColor("Hiding parse tree.", ConsoleColor.DarkGreen);
                     Console.WriteLine();
                     return true;
-                case "#clear":
+                case "clear()":
                     variables.Clear(); // Clear variables - depends if I want to
                     Welcome();
                     return true;
-                case "#rerun":
+                case "run()":
                     Environment.Exit(2);
                     return true;
-                case "#test":
+                case "test()":
                     Environment.Exit(3);
                     return true;
-                case "#exit":
+                case "exit()":
                     Console.Clear();
                     Environment.Exit(0);
                     return true;
