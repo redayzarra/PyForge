@@ -8,7 +8,6 @@ namespace Compiler.Parts.Syntax
 
         private SyntaxKind _kind;
         private int _start;
-        private object? _value;
 
         private readonly DiagnosticBag _diagnostics = new DiagnosticBag();
 
@@ -147,7 +146,6 @@ namespace Compiler.Parts.Syntax
                     return new SyntaxToken(SyntaxKind.NumberToken, _start, text, null);
                 }
 
-                _value = value;
                 _kind = SyntaxKind.NumberToken;
                 return new SyntaxToken(_kind, _start, text, value);
             }
