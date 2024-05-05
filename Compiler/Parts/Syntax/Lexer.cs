@@ -9,7 +9,7 @@ namespace Compiler.Parts.Syntax
         private int _position;
         private SyntaxKind _kind;
         private int _start;
-        private object _value;
+        private object? _value;
 
         public Lexer(string text)
         {
@@ -36,79 +36,97 @@ namespace Compiler.Parts.Syntax
 
         private string ConsumeWhile(Func<char, bool> condition)
         {
-            var start = _position;
+            _start = _position;
             while (condition(Current))
                 Next();
-            return _text.Substring(start, _position - start);
+            return _text.Substring(_start, _position - _start);
+        }
+
+        private void SetToken(SyntaxKind kind, object? value = null)
+        {
+            _kind = kind;
+            _value = value;
         }
 
         public SyntaxToken Lex()
         {
+            _start = _position; 
+
             if (char.IsWhiteSpace(Current))
             {
-                var starting = _position;
                 var whitespace = ConsumeWhile(char.IsWhiteSpace);
-                return new SyntaxToken(SyntaxKind.WhitespaceToken, starting, whitespace, null);
+                SetToken(SyntaxKind.WhitespaceToken, whitespace);
             }
-
-            var start = _position;
-
-            // Check for equality operator
-            if (Current == '=' && LookAhead == '=')
-            {
-                _position += 2; 
-                return new SyntaxToken(SyntaxKind.EqualsEqualsToken, start, "==", null);
-            }
-            
-            // Check for inequality operator
-            if (Current == '!' && LookAhead == '=')
+            else if (Current == '=' && LookAhead == '=')
             {
                 _position += 2;
-                return new SyntaxToken(SyntaxKind.NotEqualsToken, start, "!=", null);
+                SetToken(SyntaxKind.EqualsEqualsToken, "==");
             }
-
-            // Check for single equals sign, which signifies assignment
-            if (Current == '=' && LookAhead != '=')
+            else if (Current == '!' && LookAhead == '=')
+            {
+                _position += 2;
+                SetToken(SyntaxKind.NotEqualsToken, "!=");
+            }
+            else if (Current == '=' && LookAhead != '=')
             {
                 Next();
-                return new SyntaxToken(SyntaxKind.EqualsToken, start, "=", null);
+                SetToken(SyntaxKind.EqualsToken, "=");
             }
-
-            if (char.IsLetter(Current))
+            else if (char.IsLetter(Current))
             {
                 var text = ConsumeWhile(char.IsLetter);
-                var kind = SyntaxFacts.GetKeywordKind(text);
-                return new SyntaxToken(kind, start, text, null);
+                SetToken(SyntaxFacts.GetKeywordKind(text), text);
             }
-
-            if (char.IsDigit(Current))
+            else if (char.IsDigit(Current))
             {
                 var text = ConsumeWhile(char.IsDigit);
-                var length = _position - start;  // Calculate the length
-                if (!int.TryParse(text, out var value))
-                    _diagnostics.ReportInvalidNumber(new TextSpan(start, length), _text, typeof(int));
-                return new SyntaxToken(SyntaxKind.NumberToken, start, text, value);
+                if (int.TryParse(text, out var value))
+                {
+                    SetToken(SyntaxKind.NumberToken, value);
+                }
+                else
+                {
+                    _diagnostics.ReportInvalidNumber(new TextSpan(_start, text.Length), text, typeof(int));
+                    SetToken(SyntaxKind.NumberToken, null);
+                }
+            }
+            else
+            {
+                switch (Current)
+                {
+                    case '\0':
+                        SetToken(SyntaxKind.EndOfFileToken);
+                        break;
+                    case '+':
+                        SetToken(SyntaxKind.PlusToken);
+                        break;
+                    case '-':
+                        SetToken(SyntaxKind.MinusToken);
+                        break;
+                    case '*':
+                        SetToken(SyntaxKind.StarToken);
+                        break;
+                    case '/':
+                        SetToken(SyntaxKind.SlashToken);
+                        break;
+                    case '(':
+                        SetToken(SyntaxKind.OpenParenthesisToken);
+                        break;
+                    case ')':
+                        SetToken(SyntaxKind.CloseParenthesisToken);
+                        break;
+                    default:
+                        _diagnostics.ReportBadCharacter(_position, Current);
+                        SetToken(SyntaxKind.BadToken);
+                        break;
+                }
+                _value = Current.ToString();
+                Next(); // Advance the position for single character token
             }
 
-            var currentChar = Current;  // Save the current character before calling Next()
-            var tokenKind = currentChar switch
-            {
-                '\0' => SyntaxKind.EndOfFileToken,
-                '+' => SyntaxKind.PlusToken,
-                '-' => SyntaxKind.MinusToken,
-                '*' => SyntaxKind.StarToken,
-                '/' => SyntaxKind.SlashToken,
-                '(' => SyntaxKind.OpenParenthesisToken,
-                ')' => SyntaxKind.CloseParenthesisToken,
-                _ => SyntaxKind.BadToken,
-            };
-
-            if (tokenKind == SyntaxKind.BadToken)
-                _diagnostics.ReportBadCharacter(_position, Current);
-
-            Next(); // Advance the position for single character token
-
-            return new SyntaxToken(tokenKind, start, currentChar.ToString(), null);
+            // Ensuring text is not null when creating a SyntaxToken
+            string textRepresentation = _value?.ToString() ?? string.Empty;
+            return new SyntaxToken(_kind, _start, textRepresentation, _value);
         }
     }
 }
