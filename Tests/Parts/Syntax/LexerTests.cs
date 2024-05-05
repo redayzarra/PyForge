@@ -17,7 +17,32 @@ public class LexerTests
         // dotnet test --logger "trx;LogFileName=test_results.xml"
     }
 
-    // Tests lexing of individual tokens to ensure they are parsed correctly.
+    [Fact]
+    public void LexesAllTokensCorrectly()
+    {
+        // Retrieve all SyntaxKinds that are either keywords or tokens
+        var relevantKinds = Enum.GetValues(typeof(SyntaxKind))
+                                .Cast<SyntaxKind>()
+                                .Select(kind => new { Kind = kind, Name = kind.ToString() })
+                                .Where(item => item.Name.EndsWith("Keyword") || item.Name.EndsWith("Token"))
+                                .Select(item => item.Kind);
+
+        // Get kinds already tested by combining tokens and separators
+        var testedKinds = GetTokens().Concat(GetSeparators()).Select(t => t.kind);
+
+        // Create a sorted set of relevant kinds and remove exceptions
+        var untestedKinds = new SortedSet<SyntaxKind>(relevantKinds);
+        untestedKinds.Remove(SyntaxKind.BadToken);
+        untestedKinds.Remove(SyntaxKind.EndOfFileToken);
+        untestedKinds.Remove(SyntaxKind.IsNotKeyword);
+
+        // Remove all tested kinds from the set of relevant kinds
+        untestedKinds.ExceptWith(testedKinds);
+
+        // Assert that there are no untested kinds left
+        Assert.Empty(untestedKinds);
+    }
+    
     [Theory]
     [MemberData(nameof(GetTokensData))]
     public void Lexes_Token(SyntaxKind kind, string text)
@@ -32,7 +57,7 @@ public class LexerTests
         Assert.Equal(text, token.Text);
     }
 
-    // Tests lexing of token pairs to ensure they are parsed correctly without additional separators when not needed.
+    // Tests lexing of token pairs to ensure they are parsed correctly without separators
     [Theory]
     [MemberData(nameof(GetTokenPairs))]
     public void Lexes_TokenPairs(SyntaxKind firstKind, string firstText, SyntaxKind secondKind, string secondText)
