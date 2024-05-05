@@ -39,6 +39,44 @@ namespace Compiler.Parts.Syntax
                 }
             }
         }
+
+        public void WriteTo(TextWriter writer)
+        {
+            PrettyPrint(writer, this);
+        }
+
+        private static void PrettyPrint(TextWriter writer, SyntaxNode node, string indent = "", bool isLast = true)
+        {
+            var marker = isLast ? "└──" : "├──";
+
+            writer.Write(indent);
+            writer.Write(marker);
+            writer.Write(node.Kind);
+
+            if (node is SyntaxToken token && token.Value != null)
+            {
+                writer.Write(": '");
+                writer.Write(token.Value);
+                writer.Write("'");
+            }
+            writer.WriteLine();
+
+            indent += isLast ? "   " : "│  ";
+            
+            var lastChild = node.GetChildren().LastOrDefault();
+
+            foreach (var child in node.GetChildren())
+                PrettyPrint(writer, child, indent, child == lastChild);
+        }
+
+        public override string ToString()
+        {
+            using (var writer = new StringWriter())
+            {
+                WriteTo(writer);
+                return writer.ToString();
+            }
+        }
     }
 }
 

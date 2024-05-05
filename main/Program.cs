@@ -27,7 +27,10 @@ namespace Compiler
 
                 if (showTree)
                 {
-                    PrettyPrint(syntaxTree.Root);
+                    Console.WriteLine();
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    syntaxTree.Root.WriteTo(Console.Out);
+                    Console.ResetColor();
                     Console.WriteLine();
                 }
 
@@ -44,12 +47,12 @@ namespace Compiler
         {
             switch (line)
             {
-                case "showtree()":
+                case "showTree()":
                     showTree = true;
                     PrintWithColor("Showing parse tree.", ConsoleColor.DarkGreen);
                     Console.WriteLine();
                     return true;
-                case "hidetree()":
+                case "hideTree()":
                     showTree = false;
                     PrintWithColor("Hiding parse tree.", ConsoleColor.DarkGreen);
                     Console.WriteLine();
@@ -111,29 +114,6 @@ namespace Compiler
             Console.Write(suffix);
             Console.WriteLine();
             Console.WriteLine(new string(' ', span.Start + 4) + new string('^', span.Length));
-        }
-
-        private static void PrettyPrint(SyntaxNode node, string indent = "", bool isLast = true)
-        {
-            var marker = isLast ? "└──" : "├──";
-
-            Console.Write(indent);
-            Console.Write(marker);
-            Console.Write(node.Kind);
-
-            if (node is SyntaxToken token && token.Value != null)
-            {
-                Console.Write(" ");
-                Console.Write(token.Value);
-            }
-            Console.WriteLine();
-
-            indent += isLast ? "   " : "│  ";
-            
-            var lastChild = node.GetChildren().LastOrDefault();
-
-            foreach (var child in node.GetChildren())
-                PrettyPrint(child, indent, child == lastChild);
         }
     }
 }
