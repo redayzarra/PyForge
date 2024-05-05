@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "9juSn0yeNSaPMMiQzBhFOndyvxvJuL2TtNKbvPBkohr0MrT42YQFY6VWoQfgaAx67NTF3FK2+PV0UJ3aEonUfg==",
+  "dgSpecHash": "uUPkN3XxgDK2PVGAEZ+FooR+H45nEsq7gOgBF0AoiWnvRxxRtNWDUQozhiYr2LliXbhK2D+lg4ChHIIywIwZtQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\reday\\Documents\\Compiler\\Compiler\\Compiler.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\reday\\.nuget\\packages\\system.collections.immutable\\8.0.0\\system.collections.immutable.8.0.0.nupkg.sha512"
+  ],
   "logs": []
 }

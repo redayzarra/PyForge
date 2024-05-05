@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using Compiler.Parts.Binding;
 using Compiler.Parts.Syntax;
 
@@ -25,14 +26,14 @@ namespace Compiler.Parts
             // Check for any error messages that have been collected, stops evaluation
             var diagnostics = Syntax.Diagnostics.Concat(binder.Diagnostics).ToArray();
             if (diagnostics.Any())
-                return new EvaluationResult(diagnostics, null);
+                return new EvaluationResult(diagnostics.ToImmutableArray(), null);
 
             // Use the bound expression for evaluation and compute the value of expression
             var evaluator = new Evaluator(boundExpression, variables);
             var value = evaluator.Evaluate();
 
             // Return the computed value and empty diagnostics (we checked)
-            return new EvaluationResult(Array.Empty<Diagnostic>(), value);
+            return new EvaluationResult(ImmutableArray<Diagnostic>.Empty, value);
         }
     }
 }

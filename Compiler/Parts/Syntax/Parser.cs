@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using static Compiler.Parts.Syntax.SyntaxFacts;
 
 namespace Compiler.Parts.Syntax
@@ -5,7 +6,7 @@ namespace Compiler.Parts.Syntax
     // Uses the tokens from the Lexer to create a syntax tree
     internal sealed class Parser 
     {
-        private readonly SyntaxToken[] _tokens;
+        private readonly ImmutableArray<SyntaxToken> _tokens;
         private readonly DiagnosticBag _diagnostics = new DiagnosticBag();
         private int _position;
 
@@ -26,7 +27,7 @@ namespace Compiler.Parts.Syntax
                 }
             } while (token.Kind != SyntaxKind.EndOfFileToken);
 
-            _tokens = tokens.ToArray();
+            _tokens = tokens.ToImmutableArray();
             _diagnostics.AddRange(lexer.Diagnostics);
         }
 
@@ -72,7 +73,7 @@ namespace Compiler.Parts.Syntax
             var expression = ParseExpression();
             var endOfFileToken = MatchToken(SyntaxKind.EndOfFileToken);
 
-            return new SyntaxTree(_diagnostics, expression, endOfFileToken);
+            return new SyntaxTree(_diagnostics.ToImmutableArray(), expression, endOfFileToken);
         }
 
         private ExpressionSyntax ParseExpression()

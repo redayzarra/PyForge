@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "LO5f7aeamAwo8BoDlFadxkHKR0jzBa3ssO4chhHuY1qugfY4CsZsrhfsQUIUuAZ6GVVkENZpkDQM+dXHIvjMLg==",
+  "dgSpecHash": "cufKVRg6VENH+HKFQeAz1nNb3VufG+bhjJEdynVlXwBvD64rJwws/QEzwfAVgx5LHaoSklnmnm/DE45Nrnf7aQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\reday\\Documents\\Compiler\\Tests\\Tests.csproj",
   "expectedPackageFiles": [
@@ -35,6 +35,7 @@
     "C:\\Users\\reday\\.nuget\\packages\\system.buffers\\4.3.0\\system.buffers.4.3.0.nupkg.sha512",
     "C:\\Users\\reday\\.nuget\\packages\\system.collections\\4.3.0\\system.collections.4.3.0.nupkg.sha512",
     "C:\\Users\\reday\\.nuget\\packages\\system.collections.concurrent\\4.3.0\\system.collections.concurrent.4.3.0.nupkg.sha512",
+    "C:\\Users\\reday\\.nuget\\packages\\system.collections.immutable\\8.0.0\\system.collections.immutable.8.0.0.nupkg.sha512",
     "C:\\Users\\reday\\.nuget\\packages\\system.console\\4.3.0\\system.console.4.3.0.nupkg.sha512",
     "C:\\Users\\reday\\.nuget\\packages\\system.diagnostics.debug\\4.3.0\\system.diagnostics.debug.4.3.0.nupkg.sha512",
     "C:\\Users\\reday\\.nuget\\packages\\system.diagnostics.diagnosticsource\\4.3.0\\system.diagnostics.diagnosticsource.4.3.0.nupkg.sha512",
