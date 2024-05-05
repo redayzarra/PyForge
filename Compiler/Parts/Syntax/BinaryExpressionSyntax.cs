@@ -15,6 +15,4 @@ namespace Compiler.Parts.Syntax
         public SyntaxToken OperatorToken { get; }
         public ExpressionSyntax Right { get; }
     }
-
-
 }
