@@ -101,33 +101,25 @@ public class LexerTests
     // Defines all tokens
     private static IEnumerable<(SyntaxKind kind, string text)> GetTokens()
     {
-        // Literal Tokens
-        yield return (SyntaxKind.NumberToken, "123");
-        yield return (SyntaxKind.IdentifierToken, "a");
-        yield return (SyntaxKind.IdentifierToken, "reday");
-        yield return (SyntaxKind.IdentifierToken, "loves");
-        yield return (SyntaxKind.IdentifierToken, "ashley");
+        // Obtain all fixed tokens and handle null text cases by converting them to empty strings
+        var fixedTokens = Enum.GetValues(typeof(SyntaxKind))
+                            .Cast<SyntaxKind>()
+                            .Select(k => (kind: k, text: SyntaxFacts.GetText(k)))
+                            .Where(t => t.text != null && t.text != "is not")  // Continue excluding 'is not'
+                            .Select(t => (t.kind, text: t.text ?? string.Empty));
 
-        // Operator Tokens
-        yield return (SyntaxKind.PlusToken, "+");
-        yield return (SyntaxKind.MinusToken, "-");
-        yield return (SyntaxKind.StarToken, "*");
-        yield return (SyntaxKind.SlashToken, "/");
-        yield return (SyntaxKind.EqualsEqualsToken, "==");
-        yield return (SyntaxKind.NotEqualsToken, "!=");
-        yield return (SyntaxKind.EqualsToken, "=");
+        var dynamicTokens = new[]
+        {
+            // Explicitly specifying non-null string literals
+            (SyntaxKind.NumberToken, "123"),
+            (SyntaxKind.IdentifierToken, "a"),
+            (SyntaxKind.IdentifierToken, "reday"),
+            (SyntaxKind.IdentifierToken, "loves"),
+            (SyntaxKind.IdentifierToken, "ashley"),
+        };
 
-        // Punctuation Tokens
-        yield return (SyntaxKind.OpenParenthesisToken, "(");
-        yield return (SyntaxKind.CloseParenthesisToken, ")");
-
-        // Keyword Tokens
-        yield return (SyntaxKind.TrueKeyword, "True");
-        yield return (SyntaxKind.FalseKeyword, "False");
-        yield return (SyntaxKind.NotKeyword, "not");
-        yield return (SyntaxKind.IsKeyword, "is");
-        yield return (SyntaxKind.AndKeyword, "and");
-        yield return (SyntaxKind.OrKeyword, "or");
+        // Concatenate fixed and dynamic tokens ensuring all have non-null strings
+        return fixedTokens.Concat(dynamicTokens);
     }
 
     // Defines separators

@@ -54,7 +54,7 @@ namespace Compiler
                     PrintWithColor("Hiding parse tree.", ConsoleColor.DarkGreen);
                     Console.WriteLine();
                     return true;
-                case "clear()":
+                case "cls":
                     variables.Clear(); // Clear variables - depends if I want to
                     Welcome();
                     return true;
