@@ -22,22 +22,27 @@ namespace Compiler.Parts.Text
             {
                 var lineBreakWidth = GetLineBreakWidth(text, position);
                 
-                if (lineBreakWidth > 0)
+                if (lineBreakWidth == 0)
                 {
-                    lineStart++;
+                    position++;
+                }
+                else
+                {
+                    position += lineBreakWidth;
+                    lineStart = position; 
                 }
             }
 
             return result.ToImmutable();
         }
 
-        private static int GetLineBreakWidth(string text, int i)
+        private static int GetLineBreakWidth(string text, int position)
         {
-            if (i < 0 || i >= text.Length)
-                throw new ArgumentOutOfRangeException(nameof(i), "Index is outside the bounds of the text string.");
+            if (position < 0 || position >= text.Length)
+                throw new ArgumentOutOfRangeException(nameof(position), "Index is outside the bounds of the text string.");
 
-            var character = text[i];
-            var lookAhead = i + 1 >= text.Length ? '\0' : text[i + 1];
+            var character = text[position];
+            var lookAhead = position + 1 >= text.Length ? '\0' : text[position + 1];
 
             if (character == '\r' && lookAhead == '\n')
                 return 2;
