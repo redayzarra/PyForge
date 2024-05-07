@@ -1,4 +1,4 @@
-namespace Compiler.Parts
+namespace Compiler.Parts.Text
 {
     public class TextSpan
     {

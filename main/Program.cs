@@ -1,5 +1,6 @@
 ﻿using Compiler.Parts;
 using Compiler.Parts.Syntax;
+using Compiler.Parts.Text;
 
 namespace Compiler
 {

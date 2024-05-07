@@ -1,5 +1,6 @@
 using System.Collections;
 using Compiler.Parts.Syntax;
+using Compiler.Parts.Text;
 
 namespace Compiler.Parts
 {

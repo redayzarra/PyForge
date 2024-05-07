@@ -1,3 +1,5 @@
+using Compiler.Parts.Text;
+
 namespace Compiler.Parts
 {
     // Diagnostics or error messages 

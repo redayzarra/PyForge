@@ -1,3 +1,5 @@
+using Compiler.Parts.Text;
+
 namespace Compiler.Parts.Syntax
 {
     // Analyzes text and breaks it down into syntax tokens for parsing

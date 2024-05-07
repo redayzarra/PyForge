@@ -1,4 +1,5 @@
 using System.Reflection;
+using Compiler.Parts.Text;
 
 namespace Compiler.Parts.Syntax
 {

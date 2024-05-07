@@ -1,3 +1,5 @@
+using Compiler.Parts.Text;
+
 namespace Compiler.Parts.Syntax
 {
     // A specific token in the given text (syntax of programming language)
