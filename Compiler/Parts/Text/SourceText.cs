@@ -1,4 +1,3 @@
-
 using System.Collections.Immutable;
 
 namespace Compiler.Parts.Text
@@ -28,12 +27,24 @@ namespace Compiler.Parts.Text
                 }
                 else
                 {
+                    AddLine(sourceText, position, lineStart, lineBreakWidth, result);
                     position += lineBreakWidth;
-                    lineStart = position; 
+                    lineStart = position;
                 }
             }
 
+            if (position > lineStart)
+                AddLine(sourceText, position, lineStart, 0, result); // Ensure this call also passes `result`
+
             return result.ToImmutable();
+        }
+
+        private static void AddLine(SourceText sourceText, int position, int lineStart, int lineBreakWidth, ImmutableArray<TextLine>.Builder result)
+        {
+            var lineLength = position - lineStart;
+            var lineLengthWithBreak = lineLength + lineBreakWidth;
+            var line = new TextLine(sourceText, lineStart, lineLength, lineLengthWithBreak);
+            result.Add(line);
         }
 
         private static int GetLineBreakWidth(string text, int position)
