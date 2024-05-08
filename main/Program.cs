@@ -63,9 +63,13 @@ namespace Compiler
                     Welcome();
                     return true;
                 case "run()":
+                    PrintWithColor("Restarting compiler...", ConsoleColor.DarkGray);
+                    Console.WriteLine();
                     Environment.Exit(2);
                     return true;
                 case "test()":
+                    PrintWithColor("Running tests...", ConsoleColor.DarkGray);
+                    Console.WriteLine();
                     Environment.Exit(3);
                     return true;
                 case "exit()":
