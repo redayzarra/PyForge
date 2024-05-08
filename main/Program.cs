@@ -59,6 +59,7 @@ namespace Compiler
                     Console.WriteLine();
                     return true;
                 case "cls":
+                case "clear()":
                     variables.Clear(); // Clear variables - depends if I want to
                     Welcome();
                     return true;
