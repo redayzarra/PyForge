@@ -4,12 +4,36 @@ namespace Compiler.Parts.Text
 {
     public class SourceText
     {
+        private readonly string _text;
+        public ImmutableArray<TextLine> Lines { get; }
+
         private SourceText(string text)
         {
+            _text = text;
             Lines = ParseLines(this, text);
         }
 
-        public ImmutableArray<TextLine> Lines { get; }
+        public int GetLineIndex(int position)
+        {
+            var left = 0;
+            var right = Lines.Length - 1;
+
+            while (left <= right)
+            {
+                var mid = (left + right) / 2;
+                var start = Lines[mid].Start;
+                var end = mid < Lines.Length - 1 ? Lines[mid + 1].Start - 1 : _text.Length;
+
+                if (position < start)
+                    right = mid - 1;
+                else if (position > end)
+                    left = mid + 1;
+                else
+                    return mid;
+            }
+
+            return -1; // position not found
+        }
 
         private static ImmutableArray<TextLine> ParseLines(SourceText sourceText, string text)
         {
