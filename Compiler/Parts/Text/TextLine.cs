@@ -17,5 +17,7 @@ namespace Compiler.Parts.Text
         public int LengthWithLineBreak { get; }
         public TextSpan Span => new TextSpan(Start, Length);
         public TextSpan SpanWithLineBreak => new TextSpan(Start, LengthWithLineBreak);
+
+        public override string ToString() => Text.ToString(Span);
     }
 }
