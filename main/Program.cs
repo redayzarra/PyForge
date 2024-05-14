@@ -38,7 +38,7 @@ namespace Compiler
                 if (!result.Diagnostics.Any())
                     PrintWithColor($"{result.Value}", ConsoleColor.DarkGray);
                 else
-                    DisplayDiagnostics(result.Diagnostics, line);
+                    DisplayDiagnostics(result.Diagnostics, syntaxTree, line);
 
                 Console.WriteLine();
             }
@@ -89,19 +89,29 @@ namespace Compiler
             Console.WriteLine();
         }
 
-        private static void PrintWithColor(string message, ConsoleColor color)
+        private static void PrintWithColor(string message, ConsoleColor color, bool inline = false)
         {
             Console.ForegroundColor = color;
-            Console.WriteLine(message);
+            if (inline)
+                Console.Write(message);
+            else 
+                Console.WriteLine(message);
             Console.ResetColor();
         }
 
-        private static void DisplayDiagnostics(IEnumerable<Diagnostic> diagnostics, string line)
+        private static void DisplayDiagnostics(IEnumerable<Diagnostic> diagnostics, SyntaxTree syntaxTree, string line)
         {
+            var text = syntaxTree.Text;
             foreach (var diagnostic in diagnostics)
             {
+                var lineIndex = text.GetLineIndex(diagnostic.Span.Start);
+                var lineNumber = lineIndex + 1;
+                var character = diagnostic.Span.Start - text.Lines[lineIndex].Start + 1;
+
                 Console.WriteLine();
-                PrintWithColor(diagnostic.ToString(), ConsoleColor.DarkRed);
+                PrintWithColor($"Line {lineNumber}, Char {character}: ", ConsoleColor.DarkRed, inline: true);
+                Console.WriteLine(diagnostic.ToString());
+                Console.WriteLine();
                 HighlightErrorInLine(line, diagnostic.Span);
             }
         }
