@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using Compiler.Parts.Text;
 using static Compiler.Parts.Syntax.SyntaxFacts;
 
 namespace Compiler.Parts.Syntax
@@ -11,7 +12,7 @@ namespace Compiler.Parts.Syntax
         private int _position;
 
         // Creates a list of tokens from a given text
-        public Parser(string text)
+        public Parser(SourceText text)
         {
             var tokens = new List<SyntaxToken>();
             var lexer = new Lexer(text);

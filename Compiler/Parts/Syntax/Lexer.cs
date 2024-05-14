@@ -5,7 +5,7 @@ namespace Compiler.Parts.Syntax
     // Analyzes text and breaks it down into syntax tokens for parsing
     internal sealed class Lexer
     {
-        private readonly string _text;
+        private readonly SourceText _text;
         private readonly DiagnosticBag _diagnostics = new DiagnosticBag();
 
         private int _position;
@@ -13,7 +13,7 @@ namespace Compiler.Parts.Syntax
         private int _start;
         private object? _value;
 
-        public Lexer(string text)
+        public Lexer(SourceText text)
         {
             _text = text;
         }
@@ -41,7 +41,7 @@ namespace Compiler.Parts.Syntax
             _start = _position;
             while (condition(Current))
                 Next();
-            return _text.Substring(_start, _position - _start);
+            return _text.ToString(_start, _position - _start);
         }
 
         private void SetToken(SyntaxKind kind, object? value = null)

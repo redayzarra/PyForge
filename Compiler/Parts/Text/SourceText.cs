@@ -13,6 +13,9 @@ namespace Compiler.Parts.Text
             Lines = ParseLines(this, text);
         }
 
+        public char this[int index] => _text[index];
+        public int Length => _text.Length;
+
         public int GetLineIndex(int position)
         {
             var left = 0;
