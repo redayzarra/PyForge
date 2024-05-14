@@ -1,4 +1,5 @@
-﻿using Compiler.Parts;
+﻿using System.Text;
+using Compiler.Parts;
 using Compiler.Parts.Syntax;
 using Compiler.Parts.Text;
 
@@ -11,18 +12,39 @@ namespace Compiler
             Welcome();
             var variables = new Dictionary<VariableSymbol, object>();
             var showTree = false;
+            var textBuilder = new StringBuilder();
 
             while (true)
             {
-                Console.Write(">>> ");
-                var line = Console.ReadLine();
-                if (string.IsNullOrWhiteSpace(line))
+                if (textBuilder.Length == 0)
+                    Console.Write(">>> ");
+                else
+                    Console.Write("> ");
+
+                var input = Console.ReadLine();
+                if (input == null)
+                    break; // Exit if ReadLine() returns null (end of input stream)
+
+                var isBlank = string.IsNullOrWhiteSpace(input);
+
+                if (textBuilder.Length == 0)
+                {
+                    if (isBlank)
+                        break;
+
+                    if (HandleCommand(input, ref showTree, variables))
+                        continue; // Skip parsing and evaluating if HandleCommand processed a command
+                }
+
+                textBuilder.AppendLine(input);
+
+                var text = textBuilder.ToString();
+                var syntaxTree = SyntaxTree.Parse(text);
+
+                // Check for syntax errors but allow blank lines in the middle of input
+                if (!isBlank && syntaxTree.Diagnostics.Any())
                     continue;
 
-                if (HandleCommand(line, ref showTree, variables))
-                    continue; // Skip parsing and evaluating if HandleCommand processed a command
-
-                var syntaxTree = SyntaxTree.Parse(line);
                 var compilation = new Compilation(syntaxTree);
                 var result = compilation.Evaluate(variables);
 
@@ -36,17 +58,22 @@ namespace Compiler
                 }
 
                 if (!result.Diagnostics.Any())
+                {
                     PrintWithColor($"{result.Value}", ConsoleColor.DarkGray);
+                }
                 else
-                    DisplayDiagnostics(result.Diagnostics, syntaxTree, line);
+                {
+                    DisplayDiagnostics(result.Diagnostics, syntaxTree);
+                }
 
+                textBuilder.Clear();
                 Console.WriteLine();
             }
         }
 
-        private static bool HandleCommand(string line, ref bool showTree, Dictionary<VariableSymbol, object> variables)
+        private static bool HandleCommand(string input, ref bool showTree, Dictionary<VariableSymbol, object> variables)
         {
-            switch (line)
+            switch (input.Trim())
             {
                 case "showTree()":
                     showTree = true;
@@ -60,7 +87,7 @@ namespace Compiler
                     return true;
                 case "cls":
                 case "clear()":
-                    variables.Clear(); // Clear variables - depends if I want to
+                    variables.Clear();
                     Welcome();
                     return true;
                 case "run()":
@@ -99,29 +126,39 @@ namespace Compiler
             Console.ResetColor();
         }
 
-        private static void DisplayDiagnostics(IEnumerable<Diagnostic> diagnostics, SyntaxTree syntaxTree, string line)
+        private static void DisplayDiagnostics(IEnumerable<Diagnostic> diagnostics, SyntaxTree syntaxTree)
         {
-            var text = syntaxTree.Text;
             foreach (var diagnostic in diagnostics)
             {
-                var lineIndex = text.GetLineIndex(diagnostic.Span.Start);
+                var lineIndex = syntaxTree.Text.GetLineIndex(diagnostic.Span.Start);
+                var line = syntaxTree.Text.Lines[lineIndex];
                 var lineNumber = lineIndex + 1;
-                var character = diagnostic.Span.Start - text.Lines[lineIndex].Start + 1;
+                var character = diagnostic.Span.Start - line.Start + 1;
 
                 Console.WriteLine();
-                PrintWithColor($"Line {lineNumber}, Char {character}: ", ConsoleColor.DarkRed, inline: true);
-                PrintWithColor(diagnostic.ToString(), ConsoleColor.DarkGray);
-                Console.WriteLine();
-                HighlightErrorInLine(line, diagnostic.Span);
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+                Console.Write($"Line {lineNumber}, Char {character}: ");
+                Console.ResetColor();
+                Console.WriteLine(diagnostic);
+
+                HighlightErrorInLine(line.ToString(), diagnostic.Span, line.Start);
             }
         }
 
-        private static void HighlightErrorInLine(string line, TextSpan span)
+        private static void HighlightErrorInLine(string line, TextSpan span, int lineStart)
         {
-            var prefix = line.Substring(0, Math.Min(span.Start, line.Length));
-            var errorLength = Math.Min(span.Length, line.Length - span.Start);
-            var error = line.Substring(span.Start, errorLength > 0 ? errorLength : 0);
-            var suffix = line.Substring(span.Start + error.Length);
+            int startIndex = span.Start - lineStart;
+            int length = span.Length;
+
+            // Ensure startIndex and length are within the bounds of the line
+            if (startIndex > line.Length)
+                startIndex = line.Length;
+            if (startIndex + length > line.Length)
+                length = line.Length - startIndex;
+
+            var prefix = line.Substring(0, startIndex);
+            var error = line.Substring(startIndex, length);
+            var suffix = line.Substring(startIndex + length);
 
             Console.Write("    ");
             Console.Write(prefix);
@@ -130,13 +167,14 @@ namespace Compiler
             Console.ResetColor();
             Console.Write(suffix);
             Console.WriteLine();
-            if (errorLength > 0)
+
+            if (length > 0)
             {
-                Console.WriteLine(new string(' ', span.Start + 4) + new string('^', error.Length));
+                Console.WriteLine(new string(' ', startIndex + 4) + new string('^', length));
             }
             else
             {
-                Console.WriteLine(new string(' ', span.Start + 4) + "^");
+                Console.WriteLine(new string(' ', startIndex + 4) + "^");
             }
         }
     }
