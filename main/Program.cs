@@ -110,7 +110,7 @@ namespace Compiler
 
                 Console.WriteLine();
                 PrintWithColor($"Line {lineNumber}, Char {character}: ", ConsoleColor.DarkRed, inline: true);
-                Console.WriteLine(diagnostic.ToString());
+                PrintWithColor(diagnostic.ToString(), ConsoleColor.DarkGray);
                 Console.WriteLine();
                 HighlightErrorInLine(line, diagnostic.Span);
             }
