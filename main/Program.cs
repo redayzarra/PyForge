@@ -118,9 +118,10 @@ namespace Compiler
 
         private static void HighlightErrorInLine(string line, TextSpan span)
         {
-            var prefix = line.Substring(0, span.Start);
-            var error = line.Substring(span.Start, span.Length);
-            var suffix = line.Substring(span.End);
+            var prefix = line.Substring(0, Math.Min(span.Start, line.Length));
+            var errorLength = Math.Min(span.Length, line.Length - span.Start);
+            var error = line.Substring(span.Start, errorLength > 0 ? errorLength : 0);
+            var suffix = line.Substring(span.Start + error.Length);
 
             Console.Write("    ");
             Console.Write(prefix);
@@ -129,7 +130,14 @@ namespace Compiler
             Console.ResetColor();
             Console.Write(suffix);
             Console.WriteLine();
-            Console.WriteLine(new string(' ', span.Start + 4) + new string('^', span.Length));
+            if (errorLength > 0)
+            {
+                Console.WriteLine(new string(' ', span.Start + 4) + new string('^', error.Length));
+            }
+            else
+            {
+                Console.WriteLine(new string(' ', span.Start + 4) + "^");
+            }
         }
     }
 }
