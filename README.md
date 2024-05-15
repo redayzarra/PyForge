@@ -56,13 +56,13 @@ PyForge is a custom Python compiler built using .NET and C#. It provides an inte
      
      ```powershell
      function run-compiler {
-         Set-Location "C:\Users\reday\Documents\Compiler\main"
+         Set-Location "C:\YOUR\PATH\TO\PyForge\main"
          clear
          .\run.bat
      }
 
      function test-compiler {
-         Set-Location "C:\Users\reday\Documents\Compiler"
+         Set-Location "C:\YOUR\PATH\TO\PyForge"
          clear
          dotnet build
          dotnet test .\Tests\Tests.csproj
