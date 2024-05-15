@@ -53,31 +53,14 @@ namespace Compiler.Parts.Syntax
 
             // Write the indent with the correct color
             if (isConsole)
-            {
                 Console.ForegroundColor = ConsoleColor.DarkGray;
-                writer.Write(indent);
-                Console.ResetColor();
-            }
-            else
-            {
-                writer.Write(indent);
-            }
+
+            writer.Write(indent);       
+            writer.Write(marker);
+            Console.ResetColor();
 
             if (isConsole)
-            {
-                Console.ForegroundColor = ConsoleColor.DarkGray;
-                writer.Write(marker);
-                Console.ResetColor();
-            }
-            else
-            {
-                writer.Write(marker);
-            }
-
-            if (isConsole)
-            {
                 Console.ForegroundColor = node is SyntaxToken ? ConsoleColor.Cyan : ConsoleColor.DarkBlue;
-            }
 
             writer.Write($"{node.Kind.ToString()}:");
 
@@ -85,18 +68,15 @@ namespace Compiler.Parts.Syntax
             {
                 writer.Write(" ");
                 if (isConsole)
-                {
                     Console.ForegroundColor = ConsoleColor.Yellow;
-                }
+                
                 writer.Write($"\"{token.Value}\"");
-
             }
 
             if (isConsole)
                 Console.ResetColor();
 
             writer.WriteLine();
-
             indent += isLast ? "   " : "│  ";
 
             var lastChild = node.GetChildren().LastOrDefault();
