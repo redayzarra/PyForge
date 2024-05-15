@@ -47,7 +47,7 @@ namespace Compiler.Parts.Text
             while (position < text.Length)
             {
                 var lineBreakWidth = GetLineBreakWidth(text, position);
-                
+
                 if (lineBreakWidth == 0)
                 {
                     position++;
@@ -60,8 +60,9 @@ namespace Compiler.Parts.Text
                 }
             }
 
-            if (position > lineStart)
-                AddLine(sourceText, position, lineStart, 0, result); // Ensure this call also passes `result`
+            // Add the last line if it doesn't end with a newline
+            if (position > lineStart || (text.Length > 0 && GetLineBreakWidth(text, text.Length - 1) > 0))
+                AddLine(sourceText, position, lineStart, 0, result);
 
             return result.ToImmutable();
         }

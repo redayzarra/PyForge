@@ -15,6 +15,7 @@ public class SyntaxFactTests
                                 .Where(t => t.Kind != SyntaxKind.WhitespaceToken)
                                 .ToList(); // Filter out whitespace tokens once and for all
 
+        // Make sure "is not" keyword is parsed correctly
         if (kind == SyntaxKind.IsNotKeyword)
         {
             // Assert that we only have the "is" and "not" tokens
