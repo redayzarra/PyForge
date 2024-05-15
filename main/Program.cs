@@ -27,7 +27,7 @@ namespace Compiler
 
                 var isBlank = string.IsNullOrWhiteSpace(input);
 
-                if (textBuilder.Length == 0)
+            if (textBuilder.Length == 0)
                 {
                     if (isBlank)
                         break;
@@ -50,8 +50,8 @@ namespace Compiler
 
                 if (showTree)
                 {
-                    Console.WriteLine();
                     Console.ForegroundColor = ConsoleColor.DarkGray;
+                    Console.WriteLine("│");
                     syntaxTree.Root.WriteTo(Console.Out);
                     Console.ResetColor();
                     Console.WriteLine();
@@ -59,6 +59,7 @@ namespace Compiler
 
                 if (!result.Diagnostics.Any())
                 {
+                    PrintWithColor($"Result: ", ConsoleColor.Black, inline: true);
                     PrintWithColor($"{result.Value}", ConsoleColor.Magenta);
                 }
                 else
