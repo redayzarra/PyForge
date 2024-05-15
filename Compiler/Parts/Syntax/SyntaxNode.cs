@@ -48,22 +48,57 @@ namespace Compiler.Parts.Syntax
 
         private static void PrettyPrint(TextWriter writer, SyntaxNode node, string indent = "", bool isLast = true)
         {
+            var isConsole = writer == Console.Out;
             var marker = isLast ? "└──" : "├──";
 
-            writer.Write(indent);
-            writer.Write(marker);
-            writer.Write(node.Kind);
+            // Write the indent with the correct color
+            if (isConsole)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkGray;
+                writer.Write(indent);
+                Console.ResetColor();
+            }
+            else
+            {
+                writer.Write(indent);
+            }
+
+            if (isConsole)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkGray;
+                writer.Write(marker);
+                Console.ResetColor();
+            }
+            else
+            {
+                writer.Write(marker);
+            }
+
+            if (isConsole)
+            {
+                Console.ForegroundColor = node is SyntaxToken ? ConsoleColor.Cyan : ConsoleColor.DarkBlue;
+            }
+
+            writer.Write($"{node.Kind.ToString()}:");
 
             if (node is SyntaxToken token && token.Value != null)
             {
-                writer.Write(": '");
-                writer.Write(token.Value);
-                writer.Write("'");
+                writer.Write(" ");
+                if (isConsole)
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                }
+                writer.Write($"\"{token.Value}\"");
+
             }
+
+            if (isConsole)
+                Console.ResetColor();
+
             writer.WriteLine();
 
             indent += isLast ? "   " : "│  ";
-            
+
             var lastChild = node.GetChildren().LastOrDefault();
 
             foreach (var child in node.GetChildren())

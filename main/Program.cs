@@ -17,9 +17,9 @@ namespace Compiler
             while (true)
             {
                 if (textBuilder.Length == 0)
-                    Console.Write(">>> ");
+                    PrintWithColor(">>> ", ConsoleColor.White, inline: true);
                 else
-                    Console.Write("> ");
+                    PrintWithColor("└─ ", ConsoleColor.Gray, inline: true);
 
                 var input = Console.ReadLine();
                 if (input == null)
@@ -59,7 +59,7 @@ namespace Compiler
 
                 if (!result.Diagnostics.Any())
                 {
-                    PrintWithColor($"{result.Value}", ConsoleColor.DarkGray);
+                    PrintWithColor($"{result.Value}", ConsoleColor.Magenta);
                 }
                 else
                 {
