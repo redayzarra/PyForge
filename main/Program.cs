@@ -54,11 +54,11 @@ namespace Compiler
                     Console.WriteLine("│");
                     syntaxTree.Root.WriteTo(Console.Out);
                     Console.ResetColor();
-                    Console.WriteLine();
                 }
 
                 if (!result.Diagnostics.Any())
                 {
+                    Console.WriteLine();
                     PrintWithColor($"Result: ", ConsoleColor.Black, inline: true);
                     PrintWithColor($"{result.Value}", ConsoleColor.Magenta);
                 }

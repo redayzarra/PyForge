@@ -57,7 +57,6 @@ namespace Compiler.Parts.Syntax
 
             writer.Write(indent);       
             writer.Write(marker);
-            Console.ResetColor();
 
             if (isConsole)
                 Console.ForegroundColor = node is SyntaxToken ? ConsoleColor.Cyan : ConsoleColor.DarkBlue;
@@ -73,8 +72,7 @@ namespace Compiler.Parts.Syntax
                 writer.Write($"\"{token.Value}\"");
             }
 
-            if (isConsole)
-                Console.ResetColor();
+            Console.ResetColor();
 
             writer.WriteLine();
             indent += isLast ? "   " : "│  ";
@@ -95,4 +93,3 @@ namespace Compiler.Parts.Syntax
         }
     }
 }
-
