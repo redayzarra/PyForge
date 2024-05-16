@@ -49,5 +49,6 @@ namespace Compiler.Parts.Syntax
         WhitespaceToken,
         #endregion
 
+        CompilationUnit,
     }
 }

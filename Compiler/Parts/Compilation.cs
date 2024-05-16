@@ -7,24 +7,24 @@ namespace Compiler.Parts
     // Manages the compilation process: parsing and calculating results
     public class Compilation
     {
-        // Initialize the compilation with the syntax tree
-        public Compilation(SyntaxTree syntax)
+        // Initialize the compilation with the syntaxTree tree
+        public Compilation(SyntaxTree syntaxTree)
         {
-            Syntax = syntax;
+            SyntaxTree = syntaxTree;
         }
 
-        public SyntaxTree Syntax { get; }
+        public SyntaxTree SyntaxTree { get; }
 
-        // Evaluate: expression provided by the syntax tree 
+        // Evaluate: expression provided by the syntaxTree tree 
         public EvaluationResult Evaluate(Dictionary<VariableSymbol, object> variables)
         {
             // Binder with dictionary of variables -> links them to expressions
             var binder = new Binder(variables);
-            // Root of syntax tree is processed into an expression, suitable format for evaluation
-            var boundExpression = binder.BindExpression(Syntax.Root);
+            // Root of syntaxTree tree is processed into an expression, suitable format for evaluation
+            var boundExpression = binder.BindExpression(SyntaxTree.Root.Expression);
 
             // Check for any error messages that have been collected, stops evaluation
-            var diagnostics = Syntax.Diagnostics.Concat(binder.Diagnostics).ToArray();
+            var diagnostics = SyntaxTree.Diagnostics.Concat(binder.Diagnostics).ToArray();
             if (diagnostics.Any())
                 return new EvaluationResult(diagnostics.ToImmutableArray(), null);
 
