@@ -13,23 +13,47 @@ namespace Compiler.Parts.Binding
             _scope = new BoundScope(parent);
         }
 
-        public static BoundGlobalScope BindGlobalScope(CompilationUnitSyntax syntax)
+        public static BoundGlobalScope BindGlobalScope(BoundGlobalScope? previous, CompilationUnitSyntax syntax)
         {
-            // Pass a valid BoundScope to Binder
-            var binder = new Binder(new BoundScope(null));
+            var parentScope = CreateParentScope(previous);
+            var binder = new Binder(parentScope);
             var expression = binder.BindExpression(syntax.Expression);
             var variables = binder._scope.GetDeclaredVariables();
             var diagnostics = binder.Diagnostics.ToImmutableArray();
 
-            // Assuming BoundGlobalScope constructor can handle null for first parameter
-            return new BoundGlobalScope(null, diagnostics, variables, expression);
+            return new BoundGlobalScope(previous, diagnostics, variables, expression);
+        }
+
+        private static BoundScope CreateParentScope(BoundGlobalScope? previous)
+        {
+            var stack = new Stack<BoundGlobalScope>();
+            while (previous != null)
+            {
+                stack.Push(previous);
+                previous = previous.Previous;
+            }
+
+            BoundScope? parent = null;
+
+            while (stack.Count > 0)
+            {
+                previous = stack.Pop();
+                var scope = new BoundScope(parent);
+                foreach (var variable in previous.Variables)
+                {
+                    scope.TryDeclare(variable);
+                }
+
+                parent = scope;
+            }
+
+            return parent ?? new BoundScope(null);
         }
 
         public DiagnosticBag Diagnostics => _diagnostics;
 
-        public BoundExpression BindExpression(ExpressionSyntax syntax)
-        {
-            return syntax.Kind switch
+        public BoundExpression BindExpression(ExpressionSyntax syntax) =>
+            syntax.Kind switch
             {
                 SyntaxKind.LiteralExpression => BindLiteralExpression((LiteralExpressionSyntax)syntax),
                 SyntaxKind.UnaryExpression => BindUnaryExpression((UnaryExpressionSyntax)syntax),
@@ -37,14 +61,11 @@ namespace Compiler.Parts.Binding
                 SyntaxKind.ParenthesizedExpression => BindParenthesizedExpression((ParenthesizedExpressionSyntax)syntax),
                 SyntaxKind.NameExpression => BindNameExpression((NameExpressionSyntax)syntax),
                 SyntaxKind.AssignmentExpression => BindAssignmentExpression((AssignmentExpressionSyntax)syntax),
-                _ => throw new Exception($"Unexpected syntax: {syntax.Kind}"),
+                _ => throw new InvalidOperationException($"Unexpected syntax: {syntax.Kind}")
             };
-        }
 
-        private BoundExpression BindParenthesizedExpression(ParenthesizedExpressionSyntax syntax)
-        {
-            return BindExpression(syntax.Expression);
-        }
+        private BoundExpression BindParenthesizedExpression(ParenthesizedExpressionSyntax syntax) =>
+            BindExpression(syntax.Expression);
 
         private BoundExpression BindNameExpression(NameExpressionSyntax syntax)
         {
@@ -73,10 +94,8 @@ namespace Compiler.Parts.Binding
             return new BoundAssignmentExpression(variable, boundExpression);
         }
 
-        private BoundExpression BindLiteralExpression(LiteralExpressionSyntax syntax)
-        {
-            return new BoundLiteralExpression(syntax.Value);
-        }
+        private BoundExpression BindLiteralExpression(LiteralExpressionSyntax syntax) =>
+            new BoundLiteralExpression(syntax.Value);
 
         private BoundExpression BindUnaryExpression(UnaryExpressionSyntax syntax)
         {

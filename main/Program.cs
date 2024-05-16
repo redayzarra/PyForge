@@ -13,6 +13,7 @@ namespace Compiler
             var variables = new Dictionary<VariableSymbol, object>();
             var showTree = false;
             var textBuilder = new StringBuilder();
+            Compilation? previous = null;
 
             while (true)
             {
@@ -45,7 +46,10 @@ namespace Compiler
                 if (!isBlank && syntaxTree.Diagnostics.Any())
                     continue;
 
-                var compilation = new Compilation(syntaxTree);
+                var compilation = previous == null  
+                                    ? new Compilation(syntaxTree)
+                                    : previous.ContinueWith(syntaxTree);
+
                 var result = compilation.Evaluate(variables);
 
                 if (showTree)
@@ -61,6 +65,8 @@ namespace Compiler
                     Console.WriteLine();
                     PrintWithColor($"Result: ", ConsoleColor.Black, inline: true);
                     PrintWithColor($"{result.Value}", ConsoleColor.Magenta);
+
+                    previous = compilation;
                 }
                 else
                 {
@@ -88,7 +94,6 @@ namespace Compiler
                     return true;
                 case "cls":
                 case "clear()":
-                    variables.Clear();
                     Welcome();
                     return true;
                 case "run()":
@@ -137,10 +142,8 @@ namespace Compiler
                 var character = diagnostic.Span.Start - line.Start + 1;
 
                 Console.WriteLine();
-                Console.ForegroundColor = ConsoleColor.DarkRed;
-                Console.Write($"Line {lineNumber}, Char {character}: ");
-                Console.ResetColor();
-                Console.WriteLine(diagnostic);
+                PrintWithColor($"Line {lineNumber}, Char {character}: ", ConsoleColor.DarkRed, inline: true);
+                PrintWithColor($"{diagnostic}", ConsoleColor.Yellow);
 
                 HighlightErrorInLine(line.ToString(), diagnostic.Span, line.Start);
             }
@@ -161,13 +164,11 @@ namespace Compiler
             var error = line.Substring(startIndex, length);
             var suffix = line.Substring(startIndex + length);
 
-            Console.Write("    ");
+            PrintWithColor(">>> ", ConsoleColor.DarkGray, inline: true);
             Console.Write(prefix);
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.Write(error);
-            Console.ResetColor();
-            Console.Write(suffix);
-            Console.WriteLine();
+
+            PrintWithColor($"{error}", ConsoleColor.Red, inline: true);
+            Console.WriteLine(suffix);
 
             if (length > 0)
             {
