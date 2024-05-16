@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using Compiler.Parts.Syntax;
 
 namespace Compiler.Parts.Binding
@@ -5,34 +6,39 @@ namespace Compiler.Parts.Binding
     internal sealed class Binder
     {
         private readonly DiagnosticBag _diagnostics = new DiagnosticBag();
-        private readonly Dictionary<VariableSymbol, object> _variables;
+        private readonly BoundScope _scope;
 
-        public Binder(Dictionary<VariableSymbol, object> variables)
+        public Binder(BoundScope? parent)
         {
-            _variables = variables;
+            _scope = new BoundScope(parent);
+        }
+
+        public static BoundGlobalScope BindGlobalScope(CompilationUnitSyntax syntax)
+        {
+            // Pass a valid BoundScope to Binder
+            var binder = new Binder(new BoundScope(null));
+            var expression = binder.BindExpression(syntax.Expression);
+            var variables = binder._scope.GetDeclaredVariables();
+            var diagnostics = binder.Diagnostics.ToImmutableArray();
+
+            // Assuming BoundGlobalScope constructor can handle null for first parameter
+            return new BoundGlobalScope(null, diagnostics, variables, expression);
         }
 
         public DiagnosticBag Diagnostics => _diagnostics;
 
         public BoundExpression BindExpression(ExpressionSyntax syntax)
         {
-            switch (syntax.Kind)
+            return syntax.Kind switch
             {
-                case SyntaxKind.LiteralExpression:
-                    return BindLiteralExpression((LiteralExpressionSyntax)syntax);
-                case SyntaxKind.UnaryExpression:
-                    return BindUnaryExpression((UnaryExpressionSyntax)syntax);
-                case SyntaxKind.BinaryExpression:
-                    return BindBinaryExpression((BinaryExpressionSyntax)syntax);
-                case SyntaxKind.ParenthesizedExpression:
-                    return BindParenthesizedExpression((ParenthesizedExpressionSyntax)syntax);
-                case SyntaxKind.NameExpression:
-                    return BindNameExpression((NameExpressionSyntax)syntax);
-                case SyntaxKind.AssignmentExpression:
-                    return BindAssignmentExpression((AssignmentExpressionSyntax)syntax);
-                default:
-                    throw new Exception($"Unexpected syntax: {syntax.Kind}");
-            }
+                SyntaxKind.LiteralExpression => BindLiteralExpression((LiteralExpressionSyntax)syntax),
+                SyntaxKind.UnaryExpression => BindUnaryExpression((UnaryExpressionSyntax)syntax),
+                SyntaxKind.BinaryExpression => BindBinaryExpression((BinaryExpressionSyntax)syntax),
+                SyntaxKind.ParenthesizedExpression => BindParenthesizedExpression((ParenthesizedExpressionSyntax)syntax),
+                SyntaxKind.NameExpression => BindNameExpression((NameExpressionSyntax)syntax),
+                SyntaxKind.AssignmentExpression => BindAssignmentExpression((AssignmentExpressionSyntax)syntax),
+                _ => throw new Exception($"Unexpected syntax: {syntax.Kind}"),
+            };
         }
 
         private BoundExpression BindParenthesizedExpression(ParenthesizedExpressionSyntax syntax)
@@ -44,12 +50,10 @@ namespace Compiler.Parts.Binding
         {
             var name = syntax.IdentifierToken.Text;
 
-            var variable = _variables.Keys.FirstOrDefault(v => v.Name == name);
-
-            if (variable == null)  // Check if the variable does NOT exist
+            if (!_scope.TryLookup(name, out var variable) || variable == null)
             {
                 _diagnostics.ReportUndefinedName(syntax.IdentifierToken.Span, name);
-                return new BoundLiteralExpression(0); 
+                return new BoundLiteralExpression(0);
             }
 
             return new BoundVariableExpression(variable);
@@ -59,18 +63,12 @@ namespace Compiler.Parts.Binding
         {
             var name = syntax.IdentifierToken.Text;
             var boundExpression = BindExpression(syntax.Expression);
+            var variable = new VariableSymbol(name, boundExpression.Type);
 
-            // Try to find if the variable already exists
-            var variable = _variables.Keys.FirstOrDefault(v => v.Name == name);
-
-            // If variable exists, remove it
-            if (variable != null)
-                _variables.Remove(variable);
-            else
-                variable = new VariableSymbol(name, boundExpression.Type); // Create new if not found
-
-            // Add or update the variable in the dictionary
-            _variables[variable] = boundExpression;
+            if (!_scope.TryDeclare(variable))
+            {
+                _diagnostics.ReportVariableDeclared(syntax.IdentifierToken.Span, name);
+            }
 
             return new BoundAssignmentExpression(variable, boundExpression);
         }
@@ -110,3 +108,4 @@ namespace Compiler.Parts.Binding
         }
     }
 }
+

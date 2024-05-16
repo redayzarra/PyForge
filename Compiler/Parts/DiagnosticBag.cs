@@ -70,5 +70,11 @@ namespace Compiler.Parts
             var message = $"Variable '{name}' does not exist.";
             Report(span, message);
         }
+
+        internal void ReportVariableDeclared(TextSpan span, string name)
+        {
+            var message = $"Variable '{name}' already exists.";
+            Report(span, message);
+        }
     }
 }

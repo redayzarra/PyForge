@@ -19,17 +19,15 @@ namespace Compiler.Parts
         public EvaluationResult Evaluate(Dictionary<VariableSymbol, object> variables)
         {
             // Binder with dictionary of variables -> links them to expressions
-            var binder = new Binder(variables);
-            // Root of syntaxTree tree is processed into an expression, suitable format for evaluation
-            var boundExpression = binder.BindExpression(SyntaxTree.Root.Expression);
+            var globalScope = Binder.BindGlobalScope(SyntaxTree.Root);
 
             // Check for any error messages that have been collected, stops evaluation
-            var diagnostics = SyntaxTree.Diagnostics.Concat(binder.Diagnostics).ToArray();
+            var diagnostics = SyntaxTree.Diagnostics.Concat(globalScope.Diagnostics).ToArray();
             if (diagnostics.Any())
                 return new EvaluationResult(diagnostics.ToImmutableArray(), null);
 
             // Use the bound expression for evaluation and compute the value of expression
-            var evaluator = new Evaluator(boundExpression, variables);
+            var evaluator = new Evaluator(globalScope.Expression, variables);
             var value = evaluator.Evaluate();
 
             // Return the computed value and empty diagnostics (we checked)
