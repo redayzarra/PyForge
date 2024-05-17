@@ -53,7 +53,7 @@ namespace Compiler.Parts
                 return new EvaluationResult(diagnostics.ToImmutableArray(), null);
 
             // Use the bound expression for evaluation and compute the value of expression
-            var evaluator = new Evaluator(GlobalScope.Expression, variables);
+            var evaluator = new Evaluator(GlobalScope.Statement, variables);
             var value = evaluator.Evaluate();
 
             // Return the computed value and empty diagnostics (we checked)

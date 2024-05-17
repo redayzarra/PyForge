@@ -71,9 +71,10 @@ namespace Compiler.Parts
             Report(span, message);
         }
 
-        internal void ReportVariableDeclared(TextSpan span, string name)
+        // Invalid Type Conversion: If a variable of a certain type can't be reassigned to other
+        public void ReportCannotConvert(TextSpan span, Type fromType, Type toType)
         {
-            var message = $"Variable '{name}' already exists.";
+            var message = $"Cannot convert type '{fromType}' to '{toType}'.";
             Report(span, message);
         }
     }

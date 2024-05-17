@@ -6,7 +6,7 @@ namespace Compiler.Parts.Binding
     internal sealed class Binder
     {
         private readonly DiagnosticBag _diagnostics = new DiagnosticBag();
-        private readonly BoundScope _scope;
+        private BoundScope _scope;
 
         public Binder(BoundScope? parent)
         {
@@ -78,12 +78,19 @@ namespace Compiler.Parts.Binding
         private BoundStatement BindBlockStatement(BlockStatementSyntax syntax)
         {
             var statements = ImmutableArray.CreateBuilder<BoundStatement>();
+            
+            // Create a new scope for the block
+            var previousScope = _scope;
+            _scope = new BoundScope(previousScope);
 
             foreach (var statementSyntax in syntax.Statements)
             {
                 var statement = BindStatement(statementSyntax);
                 statements.Add(statement);
             }
+
+            // Revert to the parent scope, ensuring we handle nullability
+            _scope = _scope.Parent ?? previousScope;
 
             return new BoundBlockStatement(statements.ToImmutable());
         }
@@ -114,9 +121,10 @@ namespace Compiler.Parts.Binding
         {
             var name = syntax.IdentifierToken.Text;
             var boundExpression = BindExpression(syntax.Expression);
+            VariableSymbol? variable;
 
             // Lookup the variable in the current scope
-            if (!_scope.TryLookup(name, out var variable))
+            if (!_scope.TryLookup(name, out variable))
             {
                 // Declare a new variable if it does not exist
                 variable = new VariableSymbol(name, boundExpression.Type);
@@ -125,9 +133,12 @@ namespace Compiler.Parts.Binding
             else
             {
                 // Update the existing variable's type to match the new expression type
-                variable = new VariableSymbol(name, boundExpression.Type);
-                _scope.TryUpdate(variable);
+                _scope.TryUpdate(new VariableSymbol(name, boundExpression.Type));
             }
+
+            // Ensure variable is not null
+            if (variable == null)
+                throw new InvalidOperationException("Variable should not be null after lookup or declaration.");
 
             return new BoundAssignmentExpression(variable, boundExpression);
         }
@@ -165,4 +176,3 @@ namespace Compiler.Parts.Binding
         }
     }
 }
-
