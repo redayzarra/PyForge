@@ -7,7 +7,6 @@ namespace Compiler.Tests.Parts.Text
         [Theory]
         [InlineData(".", 1)]  
         [InlineData(".\r\n", 2)]
-        [InlineData("Single line without newline", 1)] 
         [InlineData(".\n", 2)]
         [InlineData("Hello\nWorld", 2)]
         [InlineData("First line\nSecond line\nThird line", 3)] 

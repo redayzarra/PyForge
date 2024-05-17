@@ -18,7 +18,7 @@ public partial class ParserTests
 
         // Arrange operator text into expression and parse it using SyntaxTree
         var text = $"a {firstText} b {secondText} c";
-        var expression = SyntaxTree.Parse(text).Root;
+        var expression = ParseExpression(text);
 
         using (var exp = new AssertingEnumerator(expression))
         {
@@ -66,7 +66,7 @@ public partial class ParserTests
 
         // Arrange operator text into expression and parse it using SyntaxTree
         var text = $"{unaryText} a {binaryText} b";
-        var expression = SyntaxTree.Parse(text).Root;
+        var expression = ParseExpression(text);
 
         using (var exp = new AssertingEnumerator(expression))
         {
@@ -94,6 +94,13 @@ public partial class ParserTests
                 exp.AssertToken(SyntaxKind.IdentifierToken, "b");
             }
         }
+    }
+
+    private static ExpressionSyntax ParseExpression(string text)
+    {
+        var syntaxTree = SyntaxTree.Parse(text);
+        var root = syntaxTree.Root;
+        return root.Expression;
     }
 
     public static IEnumerable<object[]> GetBinaryOperatorPairs()
