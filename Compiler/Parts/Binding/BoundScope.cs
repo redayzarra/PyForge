@@ -36,6 +36,20 @@ namespace Compiler.Parts.Binding
             return Parent?.TryLookup(name, out variable) ?? false;
         }
 
+        public bool TryUpdate(VariableSymbol variable)
+        {
+            if (variable == null)
+                throw new ArgumentNullException(nameof(variable));
+
+            if (_variables.ContainsKey(variable.Name))
+            {
+                _variables[variable.Name] = variable;
+                return true;
+            }
+
+            return false;
+        }
+
         public ImmutableArray<VariableSymbol> GetDeclaredVariables()
         {
             return _variables.Values.ToImmutableArray();

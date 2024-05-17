@@ -87,11 +87,19 @@ namespace Compiler.Parts.Binding
         {
             var name = syntax.IdentifierToken.Text;
             var boundExpression = BindExpression(syntax.Expression);
-            var variable = new VariableSymbol(name, boundExpression.Type);
 
-            if (!_scope.TryDeclare(variable))
+            // Lookup the variable in the current scope
+            if (!_scope.TryLookup(name, out var variable))
             {
-                _diagnostics.ReportVariableDeclared(syntax.IdentifierToken.Span, name);
+                // Declare a new variable if it does not exist
+                variable = new VariableSymbol(name, boundExpression.Type);
+                _scope.TryDeclare(variable);
+            }
+            else
+            {
+                // Update the existing variable's type to match the new expression type
+                variable = new VariableSymbol(name, boundExpression.Type);
+                _scope.TryUpdate(variable);
             }
 
             return new BoundAssignmentExpression(variable, boundExpression);

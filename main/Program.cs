@@ -22,7 +22,10 @@ namespace Compiler
                 else
                     PrintWithColor("└─ ", ConsoleColor.Gray, inline: true);
 
+                Console.ForegroundColor = ConsoleColor.White; // Set input color to white
                 var input = Console.ReadLine();
+                Console.ResetColor(); // Reset color after input
+
                 if (input == null)
                     break; // Exit if ReadLine() returns null (end of input stream)
 
@@ -166,11 +169,12 @@ namespace Compiler
             var error = line.Substring(startIndex, length);
             var suffix = line.Substring(startIndex + length);
 
+            Console.WriteLine();
             PrintWithColor(">>> ", ConsoleColor.DarkGray, inline: true);
-            Console.Write(prefix);
+            PrintWithColor($"{prefix}", ConsoleColor.DarkGray, inline: true);
 
             PrintWithColor($"{error}", ConsoleColor.Red, inline: true);
-            Console.WriteLine(suffix);
+            PrintWithColor($"{suffix}", ConsoleColor.DarkGray);
 
             if (length > 0)
             {
@@ -183,4 +187,5 @@ namespace Compiler
         }
     }
 }
+
 
