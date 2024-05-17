@@ -67,7 +67,19 @@ namespace Compiler
                 {
                     Console.WriteLine();
                     PrintWithColor($"Result: ", ConsoleColor.Black, inline: true);
-                    PrintWithColor($"{result.Value}", ConsoleColor.Magenta);
+
+                    switch (result?.Value?.ToString())
+                    {
+                        case "False":
+                            PrintWithColor($"{result.Value}", ConsoleColor.Yellow);
+                            break;
+                        case "True":
+                            PrintWithColor($"{result.Value}", ConsoleColor.DarkGreen);
+                            break;
+                        default:
+                            PrintWithColor($"{result?.Value}", ConsoleColor.Magenta);
+                            break;
+                    }
 
                     previous = compilation;
                 }
