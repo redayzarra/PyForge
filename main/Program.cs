@@ -177,13 +177,9 @@ namespace Compiler
             PrintWithColor($"{suffix}", ConsoleColor.DarkGray);
 
             if (length > 0)
-            {
-                Console.WriteLine(new string(' ', startIndex + 4) + new string('^', length));
-            }
+                PrintWithColor(new string(' ', startIndex + 4) + new string('^', length), ConsoleColor.Red);
             else
-            {
-                Console.WriteLine(new string(' ', startIndex + 4) + "^");
-            }
+                PrintWithColor(new string(' ', startIndex + 4) + "^", ConsoleColor.Red);
         }
     }
 }
