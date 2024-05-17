@@ -78,7 +78,7 @@ namespace Compiler.Parts.Binding
         private BoundStatement BindBlockStatement(BlockStatementSyntax syntax)
         {
             var statements = ImmutableArray.CreateBuilder<BoundStatement>();
-            
+
             // Create a new scope for the block
             var previousScope = _scope;
             _scope = new BoundScope(previousScope);
@@ -89,8 +89,8 @@ namespace Compiler.Parts.Binding
                 statements.Add(statement);
             }
 
-            // Revert to the parent scope, ensuring we handle nullability
-            _scope = _scope.Parent ?? previousScope;
+            // Revert to the parent scope
+            _scope = previousScope;
 
             return new BoundBlockStatement(statements.ToImmutable());
         }
@@ -123,22 +123,19 @@ namespace Compiler.Parts.Binding
             var boundExpression = BindExpression(syntax.Expression);
             VariableSymbol? variable;
 
-            // Lookup the variable in the current scope
-            if (!_scope.TryLookup(name, out variable))
+            // Lookup the variable in the current scope only
+            if (!_scope.TryLookupInCurrentScope(name, out _))
             {
-                // Declare a new variable if it does not exist
+                // Declare a new variable if it does not exist in the current scope
                 variable = new VariableSymbol(name, boundExpression.Type);
                 _scope.TryDeclare(variable);
             }
             else
             {
                 // Update the existing variable's type to match the new expression type
-                _scope.TryUpdate(new VariableSymbol(name, boundExpression.Type));
+                variable = new VariableSymbol(name, boundExpression.Type);
+                _scope.TryUpdate(variable);
             }
-
-            // Ensure variable is not null
-            if (variable == null)
-                throw new InvalidOperationException("Variable should not be null after lookup or declaration.");
 
             return new BoundAssignmentExpression(variable, boundExpression);
         }

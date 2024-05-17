@@ -36,6 +36,11 @@ namespace Compiler.Parts.Binding
             return Parent?.TryLookup(name, out variable) ?? false;
         }
 
+        public bool TryLookupInCurrentScope(string name, out VariableSymbol? variable)
+        {
+            return _variables.TryGetValue(name, out variable);
+        }
+
         public bool TryUpdate(VariableSymbol variable)
         {
             if (variable == null)
