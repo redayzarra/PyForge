@@ -2,9 +2,12 @@ namespace Compiler.Parts.Syntax
 {
     public enum SyntaxKind
     {
-        // Special tokens
+        CompilationUnit,
+
+        #region Special Tokens
         EndOfFileToken,
         BadToken,
+        #endregion
 
         #region Literal Tokens
         NumberToken,
@@ -49,6 +52,9 @@ namespace Compiler.Parts.Syntax
         WhitespaceToken,
         #endregion
 
-        CompilationUnit,
+        #region Statements
+        BlockStatement,
+        ExpressionStatement,
+        #endregion
     }
 }
