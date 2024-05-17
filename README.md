@@ -98,7 +98,8 @@ PyForge is a custom Python compiler built using .NET and C#. It provides an inte
 
 - `showTree()`: Show the parse tree of the entered expression.
 - `hideTree()`: Hide the parse tree.
-- `clear()`, `cls`: Clear the current session.
+- `clear()`, `cls`: Clear the console.
+- `reset()`: Reset all variables and clear the console.
 - `run()`: Rerun the compiler without needing to exit.
 - `test()`: Test the compiler using custom tests.
 - `exit()`: Exit the compiler.

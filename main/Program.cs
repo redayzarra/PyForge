@@ -28,12 +28,12 @@ namespace Compiler
 
                 var isBlank = string.IsNullOrWhiteSpace(input);
 
-            if (textBuilder.Length == 0)
+                if (textBuilder.Length == 0)
                 {
                     if (isBlank)
                         break;
 
-                    if (HandleCommand(input, ref showTree, variables))
+                    if (HandleCommand(input, ref showTree, ref previous, variables))
                         continue; // Skip parsing and evaluating if HandleCommand processed a command
                 }
 
@@ -49,7 +49,7 @@ namespace Compiler
                 var compilation = previous == null  
                                     ? new Compilation(syntaxTree)
                                     : previous.ContinueWith(syntaxTree);
-
+                
                 var result = compilation.Evaluate(variables);
 
                 if (showTree)
@@ -69,16 +69,14 @@ namespace Compiler
                     previous = compilation;
                 }
                 else
-                {
                     DisplayDiagnostics(result.Diagnostics, syntaxTree);
-                }
 
                 textBuilder.Clear();
                 Console.WriteLine();
             }
         }
 
-        private static bool HandleCommand(string input, ref bool showTree, Dictionary<VariableSymbol, object> variables)
+        private static bool HandleCommand(string input, ref bool showTree, ref Compilation? previous, Dictionary<VariableSymbol, object> variables)
         {
             switch (input.Trim())
             {
@@ -94,6 +92,10 @@ namespace Compiler
                     return true;
                 case "cls":
                 case "clear()":
+                    Welcome();
+                    return true;
+                case "reset()":
+                    previous = null;
                     Welcome();
                     return true;
                 case "run()":

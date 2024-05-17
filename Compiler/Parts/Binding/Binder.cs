@@ -21,6 +21,9 @@ namespace Compiler.Parts.Binding
             var variables = binder._scope.GetDeclaredVariables();
             var diagnostics = binder.Diagnostics.ToImmutableArray();
 
+            if (previous != null)
+                diagnostics = diagnostics.InsertRange(0, previous.Diagnostics);
+
             return new BoundGlobalScope(previous, diagnostics, variables, expression);
         }
 
