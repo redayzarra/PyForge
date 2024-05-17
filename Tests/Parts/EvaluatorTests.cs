@@ -42,6 +42,13 @@ public partial class ParserTests
         [InlineData("(a = 12) != 12", false)]
         [InlineData("(a = 12) is 12", false)]
         [InlineData("(a = 12) is not 12", true)]
+
+        // Testing scoping
+        [InlineData("{x = 20}", 20)]
+        [InlineData("{x = (x = 12)}", 12)]
+        [InlineData("{x = True}", true)]
+        [InlineData("{x = False}", false)]
+        [InlineData("{x = True and False}", false)]
         public void EvaluateText(string text, object expectedValue)
         {
             var syntaxTree = SyntaxTree.Parse(text);
