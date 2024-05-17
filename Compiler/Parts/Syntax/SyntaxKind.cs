@@ -2,7 +2,9 @@ namespace Compiler.Parts.Syntax
 {
     public enum SyntaxKind
     {
+        #region Compilation Unit
         CompilationUnit,
+        #endregion
 
         #region Special Tokens
         EndOfFileToken,
@@ -27,6 +29,8 @@ namespace Compiler.Parts.Syntax
         #region Punctuation Tokens
         OpenParenthesisToken,
         CloseParenthesisToken,
+        OpenBraceToken,
+        CloseBraceToken,
         #endregion
 
         #region Keywords

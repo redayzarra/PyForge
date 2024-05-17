@@ -4,5 +4,4 @@ namespace Compiler.Parts.Binding
     {
         public abstract Type Type { get; }
     }
-    
 }

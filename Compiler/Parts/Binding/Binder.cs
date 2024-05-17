@@ -17,14 +17,14 @@ namespace Compiler.Parts.Binding
         {
             var parentScope = CreateParentScope(previous);
             var binder = new Binder(parentScope);
-            var expression = binder.BindExpression(syntax.Expression);
+            var boundStatement = binder.BindStatement(syntax.Statement);
             var variables = binder._scope.GetDeclaredVariables();
             var diagnostics = binder.Diagnostics.ToImmutableArray();
 
             if (previous != null)
                 diagnostics = diagnostics.InsertRange(0, previous.Diagnostics);
 
-            return new BoundGlobalScope(previous, diagnostics, variables, expression);
+            return new BoundGlobalScope(previous, diagnostics, variables, boundStatement);
         }
 
         private static BoundScope CreateParentScope(BoundGlobalScope? previous)
@@ -55,7 +55,15 @@ namespace Compiler.Parts.Binding
 
         public DiagnosticBag Diagnostics => _diagnostics;
 
-        public BoundExpression BindExpression(ExpressionSyntax syntax) =>
+        private BoundStatement BindStatement(StatementSyntax syntax) =>
+            syntax.Kind switch
+            {
+                SyntaxKind.BlockStatement => BindBlockStatement((BlockStatementSyntax)syntax),
+                SyntaxKind.ExpressionStatement => BindExpressionStatement((ExpressionStatementSyntax)syntax),
+                _ => throw new InvalidOperationException($"Unexpected syntax: {syntax.Kind}")
+            };
+
+        private BoundExpression BindExpression(ExpressionSyntax syntax) =>
             syntax.Kind switch
             {
                 SyntaxKind.LiteralExpression => BindLiteralExpression((LiteralExpressionSyntax)syntax),
@@ -66,6 +74,25 @@ namespace Compiler.Parts.Binding
                 SyntaxKind.AssignmentExpression => BindAssignmentExpression((AssignmentExpressionSyntax)syntax),
                 _ => throw new InvalidOperationException($"Unexpected syntax: {syntax.Kind}")
             };
+
+        private BoundStatement BindBlockStatement(BlockStatementSyntax syntax)
+        {
+            var statements = ImmutableArray.CreateBuilder<BoundStatement>();
+
+            foreach (var statementSyntax in syntax.Statements)
+            {
+                var statement = BindStatement(statementSyntax);
+                statements.Add(statement);
+            }
+
+            return new BoundBlockStatement(statements.ToImmutable());
+        }
+
+        private BoundStatement BindExpressionStatement(ExpressionStatementSyntax syntax)
+        {
+            var expression = BindExpression(syntax.Expression);
+            return new BoundExpressionStatement(expression);
+        }
 
         private BoundExpression BindParenthesizedExpression(ParenthesizedExpressionSyntax syntax) =>
             BindExpression(syntax.Expression);

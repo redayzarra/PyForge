@@ -1,3 +1,4 @@
+using Compiler.Parts;
 using Compiler.Parts.Syntax;
 
 namespace Compiler.Tests.Parts.Syntax;
@@ -100,7 +101,8 @@ public partial class ParserTests
     {
         var syntaxTree = SyntaxTree.Parse(text);
         var root = syntaxTree.Root;
-        return root.Expression;
+        var statement = root.Statement;
+        return Assert.IsType<ExpressionStatementSyntax>(statement).Expression;
     }
 
     public static IEnumerable<object[]> GetBinaryOperatorPairs()

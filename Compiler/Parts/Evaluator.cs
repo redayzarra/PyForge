@@ -4,19 +4,40 @@ namespace Compiler.Parts
 {
     internal sealed class Evaluator
     {
-        private readonly BoundExpression _root;
+        private readonly BoundStatement _root;
         private readonly Dictionary<VariableSymbol, object> _variables;
 
-        public Evaluator(BoundExpression root, Dictionary<VariableSymbol, object> variables)
+        private object _lastValue;
+
+        public Evaluator(BoundStatement root, Dictionary<VariableSymbol, object> variables)
         {
             _root = root;
             _variables = variables;
+            _lastValue = 0; // Initialize _lastValue to a non-null value
         }
 
         // Runs the EvaluateExpression function on the root of the tree
         public object Evaluate()
         {
-            return EvaluateExpression(_root);
+            EvaluateStatement(_root);
+            return _lastValue;
+        }
+
+        private void EvaluateStatement(BoundStatement statement)
+        {
+            if (statement == null) throw new ArgumentNullException(nameof(statement));
+
+            switch (statement)
+            {
+                case BoundBlockStatement block:
+                    EvaluateBlockStatement(block);
+                    break;
+                case BoundExpressionStatement exp:
+                    EvaluateExpressionStatement(exp);
+                    break;
+                default:
+                    throw new InvalidOperationException($"Unexpected node type: '{statement.Kind}'");
+            }
         }
 
         // Recursive function to evaluate the SyntaxTree
@@ -33,6 +54,17 @@ namespace Compiler.Parts
                 BoundAssignmentExpression asn => EvaluateAssignmentExpression(asn),
                 _ => throw new InvalidOperationException($"Unexpected node type: '{root.Kind}'")
             };
+        }
+
+        private void EvaluateBlockStatement(BoundBlockStatement block)
+        {
+            foreach (var statement in block.Statements)
+                EvaluateStatement(statement);
+        }
+
+        private void EvaluateExpressionStatement(BoundExpressionStatement exp)
+        {
+            _lastValue = EvaluateExpression(exp.Expression);
         }
 
         private object EvaluateAssignmentExpression(BoundAssignmentExpression asn)
@@ -62,34 +94,22 @@ namespace Compiler.Parts
             var left = EvaluateExpression(bin.Left);
             var right = EvaluateExpression(bin.Right);
 
-            switch (bin.Operate.Kind)
+            return bin.Operate.Kind switch
             {
-                case BoundBinaryOperatorKind.Multiplication:
-                    return (int)left * (int)right;
-                case BoundBinaryOperatorKind.Division:
-                    // Check for division by zero before performing division
-                    if ((int)right == 0)
-                        throw new DivideByZeroException("Attempted to divide by zero.");
-                    return (int)left / (int)right;
-                case BoundBinaryOperatorKind.Addition:
-                    return (int)left + (int)right;
-                case BoundBinaryOperatorKind.Subtraction:
-                    return (int)left - (int)right;
-                case BoundBinaryOperatorKind.LogicalOr:
-                    return (bool)left || (bool)right;
-                case BoundBinaryOperatorKind.LogicalAnd:
-                    return (bool)left && (bool)right;
-                case BoundBinaryOperatorKind.Equals:
-                    return Equals(left, right);
-                case BoundBinaryOperatorKind.NotEquals:
-                    return !Equals(left, right);
-                case BoundBinaryOperatorKind.Identity:
-                    return ReferenceEquals(left, right);
-                case BoundBinaryOperatorKind.NonIdentity:
-                    return !ReferenceEquals(left, right);
-                default:
-                    throw new Exception($"Unexpected binary operator {bin.Operate}");
-            }
+                BoundBinaryOperatorKind.Multiplication => (int)left * (int)right,
+                BoundBinaryOperatorKind.Division =>
+                    (int)right == 0 ? throw new DivideByZeroException("Attempted to divide by zero.") : (int)left / (int)right,
+                BoundBinaryOperatorKind.Addition => (int)left + (int)right,
+                BoundBinaryOperatorKind.Subtraction => (int)left - (int)right,
+                BoundBinaryOperatorKind.LogicalOr => (bool)left || (bool)right,
+                BoundBinaryOperatorKind.LogicalAnd => (bool)left && (bool)right,
+                BoundBinaryOperatorKind.Equals => Equals(left, right),
+                BoundBinaryOperatorKind.NotEquals => !Equals(left, right),
+                BoundBinaryOperatorKind.Identity => ReferenceEquals(left, right),
+                BoundBinaryOperatorKind.NonIdentity => !ReferenceEquals(left, right),
+                _ => throw new InvalidOperationException($"Unexpected binary operator {bin.Operate}")
+            };
         }
     }
 }
+

@@ -65,6 +65,8 @@ namespace Compiler.Parts.Syntax
             SyntaxKind.NotEqualsToken => "!=",
             SyntaxKind.OpenParenthesisToken => "(",
             SyntaxKind.CloseParenthesisToken => ")",
+            SyntaxKind.OpenBraceToken => "{",
+            SyntaxKind.CloseBraceToken => "}",
             SyntaxKind.AndKeyword => "and",
             SyntaxKind.OrKeyword => "or",
             SyntaxKind.NotKeyword => "not",
