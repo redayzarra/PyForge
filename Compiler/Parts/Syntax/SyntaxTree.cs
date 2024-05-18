@@ -9,10 +9,9 @@ namespace Compiler.Parts.Syntax
         {
             var parser = new Parser(text);
             var root = parser.ParseCompilationUnit();
-            var diagnostics = parser.Diagnostics.ToImmutableArray();
 
             Text = text;
-            Diagnostics = diagnostics;
+            Diagnostics = parser.Diagnostics.ToImmutableArray();
             Root = root;
         }
 

@@ -10,9 +10,7 @@ namespace Compiler.Parts
         // Initialize the compilation with the syntaxTree tree
         public Compilation(SyntaxTree syntaxTree)
             : this(null, syntaxTree)
-        {
-            SyntaxTree = syntaxTree;
-        }
+        {}
 
         private Compilation(Compilation? previous, SyntaxTree syntaxTree)
         {
