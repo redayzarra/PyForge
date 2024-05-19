@@ -63,7 +63,32 @@ public partial class ParserTests
         [InlineData("{ { x = 20 } [y] }", "Variable 'y' does not exist.")]
         [InlineData("{ a = 10 b = 20 c = 30 [d] }", "Variable 'd' does not exist.")]
         [InlineData("{ a = 10 b = 20 c = 30 d = 40 [e] }", "Variable 'e' does not exist.")]
-        public void UndefinedVariableTests(string text, string expectedDiagnostics)
+        public void UndefinedVariable(string text, string expectedDiagnostics)
+        {
+            AssertDiagnostics(text, expectedDiagnostics);
+        }
+
+        [Theory]
+        [InlineData("[+]True", "Unary operator '+' is not defined for type: System.Boolean.")]
+        [InlineData("[-]False", "Unary operator '-' is not defined for type: System.Boolean.")]
+        [InlineData("[not]1", "Unary operator 'not' is not defined for type: System.Int32.")]
+        public void UndefinedUnaryOperator(string text, string expectedDiagnostics)
+        {
+            AssertDiagnostics(text, expectedDiagnostics);
+        }
+
+        [Theory]
+        [InlineData("10 [*] False", "Binary operator '*' is not defined for types: System.Int32 and System.Boolean.")]
+        [InlineData("10 [/] True", "Binary operator '/' is not defined for types: System.Int32 and System.Boolean.")]
+        [InlineData("10 [+] True", "Binary operator '+' is not defined for types: System.Int32 and System.Boolean.")]
+        [InlineData("10 [-] False", "Binary operator '-' is not defined for types: System.Int32 and System.Boolean.")]
+        [InlineData("10 [==] True", "Binary operator '==' is not defined for types: System.Int32 and System.Boolean.")]
+        [InlineData("10 [!=] False", "Binary operator '!=' is not defined for types: System.Int32 and System.Boolean.")]
+        [InlineData("10 [and] 20", "Binary operator 'and' is not defined for types: System.Int32 and System.Int32.")]
+        [InlineData("10 [or] 20", "Binary operator 'or' is not defined for types: System.Int32 and System.Int32.")]
+        [InlineData("True [==] 10", "Binary operator '==' is not defined for types: System.Boolean and System.Int32.")]
+        [InlineData("False [!=] 10", "Binary operator '!=' is not defined for types: System.Boolean and System.Int32.")]
+        public void UndefinedBinaryOperator(string text, string expectedDiagnostics)
         {
             AssertDiagnostics(text, expectedDiagnostics);
         }

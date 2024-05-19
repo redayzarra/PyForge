@@ -83,7 +83,7 @@ namespace Compiler.Parts
             {
                 BoundUnaryOperatorKind.Negation => -(int)operand,
                 BoundUnaryOperatorKind.Identity => (int)operand,
-                BoundUnaryOperatorKind.LogicalNegation => !(bool)operand, // Correct handling for boolean negation
+                BoundUnaryOperatorKind.LogicalNegation => !(bool)operand, 
                 _ => throw new InvalidOperationException($"Unexpected unary operator {una.Operate}")
             };
         }
