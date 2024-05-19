@@ -26,9 +26,7 @@ namespace Compiler.Parts.Syntax
         private char Peek(int offset)
         {
             var index = _position + offset;
-            if (index >= _text.Length)
-                return '\0';
-            return _text[index];
+            return index >= _text.Length ? '\0' : _text[index];
         }
 
         private void Next()
@@ -55,86 +53,141 @@ namespace Compiler.Parts.Syntax
             _start = _position; 
 
             if (char.IsWhiteSpace(Current))
-            {
-                var whitespace = ConsumeWhile(char.IsWhiteSpace);
-                SetToken(SyntaxKind.WhitespaceToken, whitespace);
-            }
-            else if (Current == '=' && LookAhead == '=')
+                HandleWhitespace();
+            else if (Current == '=')
+                HandleEquals();
+            else if (Current == '!')
+                HandleExclamation();
+            else if (Current == '>' || Current == '<')
+                HandleComparisonOperators();
+            else if (char.IsLetter(Current))
+                HandleIdentifier();
+            else if (char.IsDigit(Current))
+                HandleNumber();
+            else
+                HandleSingleCharacterToken();
+
+            string textRepresentation = _value?.ToString() ?? string.Empty;
+            return new SyntaxToken(_kind, _start, textRepresentation, _value);
+        }
+
+        private void HandleWhitespace()
+        {
+            var whitespace = ConsumeWhile(char.IsWhiteSpace);
+            SetToken(SyntaxKind.WhitespaceToken, whitespace);
+        }
+
+        private void HandleEquals()
+        {
+            if (LookAhead == '=')
             {
                 _position += 2;
                 SetToken(SyntaxKind.EqualsEqualsToken, "==");
             }
-            else if (Current == '!' && LookAhead == '=')
-            {
-                _position += 2;
-                SetToken(SyntaxKind.NotEqualsToken, "!=");
-            }
-            else if (Current == '=' && LookAhead != '=')
+            else
             {
                 Next();
                 SetToken(SyntaxKind.EqualsToken, "=");
             }
-            else if (char.IsLetter(Current))
+        }
+
+        private void HandleExclamation()
+        {
+            if (LookAhead == '=')
             {
-                var text = ConsumeWhile(char.IsLetter);
-                SetToken(SyntaxFacts.GetKeywordKind(text), text);
-            }
-            else if (char.IsDigit(Current))
-            {
-                var text = ConsumeWhile(char.IsDigit);
-                if (int.TryParse(text, out var value))
-                {
-                    SetToken(SyntaxKind.NumberToken, value);
-                }
-                else
-                {
-                    _diagnostics.ReportInvalidNumber(new TextSpan(_start, text.Length), text, typeof(int));
-                    SetToken(SyntaxKind.NumberToken, null);
-                }
+                _position += 2;
+                SetToken(SyntaxKind.NotEqualsToken, "!=");
             }
             else
             {
-                switch (Current)
-                {
-                    case '\0':
-                        SetToken(SyntaxKind.EndOfFileToken);
-                        break;
-                    case '+':
-                        SetToken(SyntaxKind.PlusToken);
-                        break;
-                    case '-':
-                        SetToken(SyntaxKind.MinusToken);
-                        break;
-                    case '*':
-                        SetToken(SyntaxKind.StarToken);
-                        break;
-                    case '/':
-                        SetToken(SyntaxKind.SlashToken);
-                        break;
-                    case '(':
-                        SetToken(SyntaxKind.OpenParenthesisToken);
-                        break;
-                    case ')':
-                        SetToken(SyntaxKind.CloseParenthesisToken);
-                        break;
-                    case '{':
-                        SetToken(SyntaxKind.OpenBraceToken);
-                        break;
-                    case '}':
-                        SetToken(SyntaxKind.CloseBraceToken);
-                        break;
-                    default:
-                        _diagnostics.ReportBadCharacter(_position, Current);
-                        SetToken(SyntaxKind.BadToken);
-                        break;
-                }
-                _value = Current.ToString();
-                Next(); // Advance the position for single character token
+                _diagnostics.ReportBadCharacter(_position, Current);
+                SetToken(SyntaxKind.BadToken);
+                Next();
             }
+        }
 
-            // Ensuring text is not null when creating a SyntaxToken
-            string textRepresentation = _value?.ToString() ?? string.Empty;
-            return new SyntaxToken(_kind, _start, textRepresentation, _value);
+        private void HandleComparisonOperators()
+        {
+            if (Current == '>' && LookAhead == '=')
+            {
+                _position += 2;
+                SetToken(SyntaxKind.GreaterThanOrEqualsToken, ">=");
+            }
+            else if (Current == '<' && LookAhead == '=')
+            {
+                _position += 2;
+                SetToken(SyntaxKind.LessThanOrEqualsToken, "<=");
+            }
+            else if (Current == '>')
+            {
+                Next();
+                SetToken(SyntaxKind.GreaterThanToken, ">");
+            }
+            else if (Current == '<')
+            {
+                Next();
+                SetToken(SyntaxKind.LessThanToken, "<");
+            }
+        }
+
+        private void HandleIdentifier()
+        {
+            var text = ConsumeWhile(char.IsLetter);
+            SetToken(SyntaxFacts.GetKeywordKind(text), text);
+        }
+
+        private void HandleNumber()
+        {
+            var text = ConsumeWhile(char.IsDigit);
+            if (int.TryParse(text, out var value))
+            {
+                SetToken(SyntaxKind.NumberToken, value);
+            }
+            else
+            {
+                _diagnostics.ReportInvalidNumber(new TextSpan(_start, text.Length), text, typeof(int));
+                SetToken(SyntaxKind.NumberToken, null);
+            }
+        }
+
+        private void HandleSingleCharacterToken()
+        {
+            switch (Current)
+            {
+                case '\0':
+                    SetToken(SyntaxKind.EndOfFileToken);
+                    break;
+                case '+':
+                    SetToken(SyntaxKind.PlusToken);
+                    break;
+                case '-':
+                    SetToken(SyntaxKind.MinusToken);
+                    break;
+                case '*':
+                    SetToken(SyntaxKind.StarToken);
+                    break;
+                case '/':
+                    SetToken(SyntaxKind.SlashToken);
+                    break;
+                case '(':
+                    SetToken(SyntaxKind.OpenParenthesisToken);
+                    break;
+                case ')':
+                    SetToken(SyntaxKind.CloseParenthesisToken);
+                    break;
+                case '{':
+                    SetToken(SyntaxKind.OpenBraceToken);
+                    break;
+                case '}':
+                    SetToken(SyntaxKind.CloseBraceToken);
+                    break;
+                default:
+                    _diagnostics.ReportBadCharacter(_position, Current);
+                    SetToken(SyntaxKind.BadToken);
+                    break;
+            }
+            _value = Current.ToString();
+            Next();
         }
     }
 }

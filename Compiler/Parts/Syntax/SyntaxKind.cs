@@ -24,6 +24,10 @@ namespace Compiler.Parts.Syntax
         EqualsEqualsToken,
         NotEqualsToken,
         EqualsToken,
+        GreaterThanOrEqualsToken,
+        LessThanOrEqualsToken,
+        GreaterThanToken,
+        LessThanToken,
         #endregion
 
         #region Punctuation Tokens
