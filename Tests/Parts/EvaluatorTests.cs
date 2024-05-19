@@ -62,6 +62,9 @@ public partial class ParserTests
         [InlineData("{x = True}", true)]
         [InlineData("{x = False}", false)]
         [InlineData("{x = True and False}", false)]
+
+        // If Statements
+        [InlineData("{a = 0 if a == 0 a = 10 a}", 10)]
         public void EvaluateText(string text, object expectedValue)
         {
             var result = EvaluateExpression(text);

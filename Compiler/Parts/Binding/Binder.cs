@@ -60,18 +60,7 @@ namespace Compiler.Parts.Binding
             {
                 SyntaxKind.BlockStatement => BindBlockStatement((BlockStatementSyntax)syntax),
                 SyntaxKind.ExpressionStatement => BindExpressionStatement((ExpressionStatementSyntax)syntax),
-                _ => throw new InvalidOperationException($"Unexpected syntax: {syntax.Kind}")
-            };
-
-        private BoundExpression BindExpression(ExpressionSyntax syntax) =>
-            syntax.Kind switch
-            {
-                SyntaxKind.LiteralExpression => BindLiteralExpression((LiteralExpressionSyntax)syntax),
-                SyntaxKind.UnaryExpression => BindUnaryExpression((UnaryExpressionSyntax)syntax),
-                SyntaxKind.BinaryExpression => BindBinaryExpression((BinaryExpressionSyntax)syntax),
-                SyntaxKind.ParenthesizedExpression => BindParenthesizedExpression((ParenthesizedExpressionSyntax)syntax),
-                SyntaxKind.NameExpression => BindNameExpression((NameExpressionSyntax)syntax),
-                SyntaxKind.AssignmentExpression => BindAssignmentExpression((AssignmentExpressionSyntax)syntax),
+                SyntaxKind.IfStatement => BindIfStatement((IfStatementSyntax)syntax),
                 _ => throw new InvalidOperationException($"Unexpected syntax: {syntax.Kind}")
             };
 
@@ -93,6 +82,49 @@ namespace Compiler.Parts.Binding
             _scope = previousScope;
 
             return new BoundBlockStatement(statements.ToImmutable());
+        }
+
+        private BoundExpression BindExpression(ExpressionSyntax syntax) =>
+            syntax.Kind switch
+            {
+                SyntaxKind.LiteralExpression => BindLiteralExpression((LiteralExpressionSyntax)syntax),
+                SyntaxKind.UnaryExpression => BindUnaryExpression((UnaryExpressionSyntax)syntax),
+                SyntaxKind.BinaryExpression => BindBinaryExpression((BinaryExpressionSyntax)syntax),
+                SyntaxKind.ParenthesizedExpression => BindParenthesizedExpression((ParenthesizedExpressionSyntax)syntax),
+                SyntaxKind.NameExpression => BindNameExpression((NameExpressionSyntax)syntax),
+                SyntaxKind.AssignmentExpression => BindAssignmentExpression((AssignmentExpressionSyntax)syntax),
+                _ => throw new InvalidOperationException($"Unexpected syntax: {syntax.Kind}")
+            };
+
+        private BoundStatement BindIfStatement(IfStatementSyntax syntax)
+        {
+            var condition = BindExpression(syntax.Condition, typeof(bool));
+            var thenStatement = BindStatement(syntax.ThenStatement);
+            
+            var elifClauses = ImmutableArray.CreateBuilder<BoundElifClause>();
+            foreach (var elifClause in syntax.ElifClauses)
+            {
+                var elifCondition = BindExpression(elifClause.Condition, typeof(bool));
+                var elifStatement = BindStatement(elifClause.Statement);
+                elifClauses.Add(new BoundElifClause(elifCondition, elifStatement));
+            }
+            
+            BoundStatement? elseStatement = null;
+            if (syntax.ElseClause != null)
+            {
+                elseStatement = BindStatement(syntax.ElseClause.ElseStatement);
+            }
+
+            return new BoundIfStatement(condition, thenStatement, elifClauses.ToImmutable(), elseStatement);
+        }
+
+        private BoundExpression BindExpression(ExpressionSyntax syntax, Type targetType)
+        {
+            var result = BindExpression(syntax);
+            if (result.Type != targetType)
+                _diagnostics.ReportCannotConvert(syntax.Span, result.Type, targetType);
+            
+            return result;
         }
 
         private BoundStatement BindExpressionStatement(ExpressionStatementSyntax syntax)

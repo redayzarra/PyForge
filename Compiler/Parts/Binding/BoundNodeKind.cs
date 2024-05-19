@@ -12,7 +12,7 @@ namespace Compiler.Parts.Binding
         #region Statements
         BlockStatement,
         ExpressionStatement,
+        IfStatement,
         #endregion
     }
-    
 }

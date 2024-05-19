@@ -35,8 +35,35 @@ namespace Compiler.Parts
                 case BoundExpressionStatement exp:
                     EvaluateExpressionStatement(exp);
                     break;
+                case BoundIfStatement ifs:
+                    EvaluateIfStatement(ifs);
+                    break;
                 default:
                     throw new InvalidOperationException($"Unexpected node type: '{statement.Kind}'");
+            }
+        }
+
+        private void EvaluateIfStatement(BoundIfStatement ifs)
+        {
+            var condition = (bool)EvaluateExpression(ifs.Condition);
+            if (condition)
+                EvaluateStatement(ifs.ThenStatement);
+            else
+            {
+                bool elifEvaluated = false;
+                foreach (var elifClause in ifs.ElifClauses)
+                {
+                    var elifCondition = (bool)EvaluateExpression(elifClause.Condition);
+                    if (elifCondition)
+                    {
+                        EvaluateStatement(elifClause.Statement);
+                        elifEvaluated = true;
+                        break;
+                    }
+                }
+
+                if (!elifEvaluated && ifs.ElseStatement != null)
+                    EvaluateStatement(ifs.ElseStatement);
             }
         }
 
