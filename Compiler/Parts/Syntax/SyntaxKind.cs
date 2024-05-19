@@ -45,6 +45,9 @@ namespace Compiler.Parts.Syntax
         OrKeyword,
         IsKeyword,
         IsNotKeyword,
+        IfKeyword,
+        ElifKeyword,
+        ElseKeyword,
         #endregion
 
         #region Expressions
@@ -65,6 +68,7 @@ namespace Compiler.Parts.Syntax
         ExpressionStatement,
         IfStatement,
         ElseClause,
+        ElifClause,
         #endregion
     }
 }

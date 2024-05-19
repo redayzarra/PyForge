@@ -81,10 +81,52 @@ namespace Compiler.Parts.Syntax
 
         private StatementSyntax ParseStatement()
         {
-            if (Current.Kind == SyntaxKind.OpenBraceToken)
-                return ParseBlockStatement();
+            switch (Current.Kind)
+            {
+                case SyntaxKind.OpenBraceToken:
+                    return ParseBlockStatement();
+                case SyntaxKind.IfKeyword:
+                    return ParseIfStatement();
+                default:
+                    return ParseExpressionStatement();
+            }
+        }
+
+        private StatementSyntax ParseIfStatement()
+        {
+            var ifKeyword = MatchToken(SyntaxKind.IfKeyword);
+            var condition = ParseExpression();
+            var thenStatement = ParseStatement();
+            var elifClauses = ParseElifClauses();
+            var elseClause = ParseElseClause();
+
+            return new IfStatementSyntax(ifKeyword, condition, thenStatement, elifClauses, elseClause);
+        }
+
+        private ImmutableArray<ElifClauseSyntax> ParseElifClauses()
+        {
+            var elifClauses = ImmutableArray.CreateBuilder<ElifClauseSyntax>();
+
+            while (Current.Kind == SyntaxKind.ElifKeyword)
+            {
+                var elifKeyword = MatchToken(SyntaxKind.ElifKeyword);
+                var condition = ParseExpression();
+                var statement = ParseStatement();
+                var elifClause = new ElifClauseSyntax(elifKeyword, condition, statement);
+                elifClauses.Add(elifClause);
+            }
+
+            return elifClauses.ToImmutable();
+        }
+
+        private ElseClauseSyntax? ParseElseClause()
+        {
+            if (Current.Kind != SyntaxKind.ElseKeyword)
+                return null;
             
-            return ParseExpressionStatement();
+            var keyword = NextToken();
+            var statement = ParseStatement();
+            return new ElseClauseSyntax(keyword, statement);
         }
 
         private BlockStatementSyntax ParseBlockStatement()

@@ -57,6 +57,9 @@ namespace Compiler.Parts.Syntax
             "or" => SyntaxKind.OrKeyword,
             "not" => SyntaxKind.NotKeyword,
             "is" => SyntaxKind.IsKeyword,
+            "if" => SyntaxKind.IfKeyword,
+            "elif" => SyntaxKind.ElifKeyword,
+            "else" => SyntaxKind.ElseClause,
             _ => SyntaxKind.IdentifierToken
         };
 
@@ -84,6 +87,9 @@ namespace Compiler.Parts.Syntax
             SyntaxKind.IsNotKeyword => "is not",
             SyntaxKind.TrueKeyword => "True",
             SyntaxKind.FalseKeyword => "False",
+            SyntaxKind.IfKeyword => "if",
+            SyntaxKind.ElifKeyword => "elif",
+            SyntaxKind.ElseKeyword => "else",
             _ => null
         };
     }
