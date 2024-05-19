@@ -1,7 +1,6 @@
 using Compiler.Parts;
 using Compiler.Parts.Syntax;
 using Compiler.Parts.Text;
-using Xunit;
 
 namespace Compiler.Tests.Parts;
 
@@ -58,22 +57,15 @@ public partial class ParserTests
             Assert.Equal(expectedValue, result.Value);
         }
 
-        [Fact]
-        public void VariableDeclarationReports()
+        [Theory]
+        [InlineData("{ [a] }", "Variable 'a' does not exist.")]
+        [InlineData("{ x = 10 [y] }", "Variable 'y' does not exist.")]
+        [InlineData("{ { x = 20 } [y] }", "Variable 'y' does not exist.")]
+        [InlineData("{ a = 10 b = 20 c = 30 [d] }", "Variable 'd' does not exist.")]
+        [InlineData("{ a = 10 b = 20 c = 30 d = 40 [e] }", "Variable 'e' does not exist.")]
+        public void UndefinedVariableTests(string text, string expectedDiagnostics)
         {
-            var text = @"
-            {
-                x = 10
-                y = 100
-                {
-                    x = 20
-                }
-                [z]
-            }";
-
-            var diagnostics = "Variable 'z' does not exist.";
-
-            AssertDiagnostics(text, diagnostics);
+            AssertDiagnostics(text, expectedDiagnostics);
         }
 
         private EvaluationResult EvaluateExpression(string text)

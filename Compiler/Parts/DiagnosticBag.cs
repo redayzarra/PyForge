@@ -70,12 +70,5 @@ namespace Compiler.Parts
             var message = $"Variable '{name}' does not exist.";
             Report(span, message);
         }
-
-        // Invalid Type Conversion: If a variable of a certain type can't be reassigned to other
-        public void ReportCannotConvert(TextSpan span, Type fromType, Type toType)
-        {
-            var message = $"Cannot convert type '{fromType}' to '{toType}'.";
-            Report(span, message);
-        }
     }
 }
