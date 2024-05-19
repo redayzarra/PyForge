@@ -30,24 +30,23 @@ namespace Compiler.Tests.Parts
                 var position = 0;
                 foreach (var character in text)
                 {
-                    if (character == '[')
+                    switch (character)
                     {
-                        startStack.Push(position);
-                    }
-                    else if (character == ']')
-                    {
-                        if (startStack.Count == 0)
-                            throw new ArgumentException("Too many ']' in text.", nameof(text));
+                        case '[':
+                            startStack.Push(position);
+                            break;
+                        case ']':
+                            if (startStack.Count == 0)
+                                throw new ArgumentException("Too many ']' in text.", nameof(text));
 
-                        var start = startStack.Pop();
-                        var end = position;
-                        var span = TextSpan.FromBounds(start, end);
-                        spanBuilder.Add(span);
-                    }
-                    else
-                    {
-                        textBuilder.Append(character);
-                        position++;
+                            var start = startStack.Pop();
+                            var span = TextSpan.FromBounds(start, position);
+                            spanBuilder.Add(span);
+                            break;
+                        default:
+                            textBuilder.Append(character);
+                            position++;
+                            break;
                     }
                 }
 
@@ -58,6 +57,13 @@ namespace Compiler.Tests.Parts
             }
 
             private static string Unindent(string text)
+            {
+                var lines = UnindentLines(text);
+
+                return string.Join(Environment.NewLine, lines);
+            }
+
+            public static List<string> UnindentLines(string text)
             {
                 if (text == null) throw new ArgumentNullException(nameof(text));
 
@@ -71,31 +77,26 @@ namespace Compiler.Tests.Parts
                     }
                 }
 
-                var minIndent = int.MaxValue;
-                foreach (var line in lines)
-                {
-                    if (line.Trim().Length == 0)
-                        continue;
-
-                    var indent = line.Length - line.TrimStart().Length;
-                    minIndent = Math.Min(minIndent, indent);
-                }
+                var minIndent = lines
+                    .Where(line => !string.IsNullOrWhiteSpace(line))
+                    .Min(line => line.Length - line.TrimStart().Length);
 
                 for (var i = 0; i < lines.Count; i++)
                 {
-                    if (lines[i].Length == 0)
-                        continue;
-
-                    lines[i] = lines[i].Substring(minIndent);
+                    if (lines[i].Length > 0 && lines[i].Length >= minIndent)
+                    {
+                        lines[i] = lines[i].Substring(minIndent);
+                    }
                 }
 
-                while (lines.Count > 0 && string.IsNullOrWhiteSpace(lines[0]))
-                    lines.RemoveAt(0);
+                lines = lines
+                    .SkipWhile(string.IsNullOrWhiteSpace)
+                    .Reverse()
+                    .SkipWhile(string.IsNullOrWhiteSpace)
+                    .Reverse()
+                    .ToList();
 
-                while (lines.Count > 0 && string.IsNullOrWhiteSpace(lines[lines.Count - 1]))
-                    lines.RemoveAt(lines.Count - 1);
-
-                return string.Join(Environment.NewLine, lines);
+                return lines;
             }
         }
     }
