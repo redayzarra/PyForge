@@ -174,6 +174,8 @@ public class LexerTests
 
             case SyntaxKind.EqualsToken:
             case SyntaxKind.EqualsEqualsToken:
+            case SyntaxKind.GreaterThanToken:
+            case SyntaxKind.LessThanToken:
                 return secondKind == SyntaxKind.EqualsToken || secondKind == SyntaxKind.EqualsEqualsToken;
 
             default:

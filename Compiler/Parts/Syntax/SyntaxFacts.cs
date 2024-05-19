@@ -23,6 +23,12 @@ namespace Compiler.Parts.Syntax
             SyntaxKind.PlusToken => 4,
             SyntaxKind.MinusToken => 4,
 
+            // Value comparison tokens have the same as other comparisons
+            SyntaxKind.GreaterThanToken => 3,
+            SyntaxKind.GreaterThanOrEqualsToken => 3,
+            SyntaxKind.LessThanToken => 3,
+            SyntaxKind.LessThanOrEqualsToken => 3,
+
             // Equality and inequality have specific precedence
             SyntaxKind.EqualsEqualsToken => 3,
             SyntaxKind.NotEqualsToken => 3,
@@ -65,6 +71,10 @@ namespace Compiler.Parts.Syntax
             SyntaxKind.NotEqualsToken => "!=",
             SyntaxKind.OpenParenthesisToken => "(",
             SyntaxKind.CloseParenthesisToken => ")",
+            SyntaxKind.GreaterThanToken => ">",
+            SyntaxKind.GreaterThanOrEqualsToken => ">=",
+            SyntaxKind.LessThanToken => "<",
+            SyntaxKind.LessThanOrEqualsToken => "<=",
             SyntaxKind.OpenBraceToken => "{",
             SyntaxKind.CloseBraceToken => "}",
             SyntaxKind.AndKeyword => "and",

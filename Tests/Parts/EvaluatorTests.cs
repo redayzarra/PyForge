@@ -33,6 +33,18 @@ public partial class ParserTests
         [InlineData("True is False", false)]
         [InlineData("True is not False", true)]
 
+        // Comparison Operator Tests
+        [InlineData("10 > 5", true)]
+        [InlineData("5 > 10", false)]
+        [InlineData("10 >= 5", true)]
+        [InlineData("5 >= 10", false)]
+        [InlineData("10 >= 10", true)]
+        [InlineData("5 < 10", true)]
+        [InlineData("10 < 5", false)]
+        [InlineData("5 <= 10", true)]
+        [InlineData("10 <= 5", false)]
+        [InlineData("10 <= 10", true)]
+
         // Assignment Tests
         [InlineData("x = 10", 10)]
         [InlineData("(x = 4) + 2", 6)]

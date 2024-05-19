@@ -105,6 +105,10 @@ namespace Compiler.Parts
                 BoundBinaryOperatorKind.LogicalAnd => (bool)left && (bool)right,
                 BoundBinaryOperatorKind.Equals => Equals(left, right),
                 BoundBinaryOperatorKind.NotEquals => !Equals(left, right),
+                BoundBinaryOperatorKind.GreaterThan => (int)left > (int)right,
+                BoundBinaryOperatorKind.GreaterThanOrEquals => (int)left >= (int)right,
+                BoundBinaryOperatorKind.LessThan => (int)left < (int)right,
+                BoundBinaryOperatorKind.LessThanOrEquals => (int)left <= (int)right,
                 BoundBinaryOperatorKind.Identity => ReferenceEquals(left, right),
                 BoundBinaryOperatorKind.NonIdentity => !ReferenceEquals(left, right),
                 _ => throw new InvalidOperationException($"Unexpected binary operator {bin.Operate}")
