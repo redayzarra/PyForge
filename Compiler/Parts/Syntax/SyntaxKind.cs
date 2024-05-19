@@ -67,8 +67,8 @@ namespace Compiler.Parts.Syntax
         BlockStatement,
         ExpressionStatement,
         IfStatement,
-        ElseClause,
         ElifClause,
+        ElseClause,
         #endregion
     }
 }

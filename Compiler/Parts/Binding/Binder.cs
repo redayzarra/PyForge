@@ -100,7 +100,7 @@ namespace Compiler.Parts.Binding
         {
             var condition = BindExpression(syntax.Condition, typeof(bool));
             var thenStatement = BindStatement(syntax.ThenStatement);
-            
+
             var elifClauses = ImmutableArray.CreateBuilder<BoundElifClause>();
             foreach (var elifClause in syntax.ElifClauses)
             {
@@ -108,7 +108,7 @@ namespace Compiler.Parts.Binding
                 var elifStatement = BindStatement(elifClause.Statement);
                 elifClauses.Add(new BoundElifClause(elifCondition, elifStatement));
             }
-            
+
             BoundStatement? elseStatement = null;
             if (syntax.ElseClause != null)
             {
@@ -140,33 +140,32 @@ namespace Compiler.Parts.Binding
         {
             var name = syntax.IdentifierToken.Text;
 
-            if (!_scope.TryLookup(name, out var variable) || variable == null)
+            if (!_scope.TryLookup(name, out var variable))
             {
                 _diagnostics.ReportUndefinedName(syntax.IdentifierToken.Span, name);
                 return new BoundLiteralExpression(0);
             }
 
-            return new BoundVariableExpression(variable);
+            return new BoundVariableExpression(variable!);
         }
 
         private BoundExpression BindAssignmentExpression(AssignmentExpressionSyntax syntax)
         {
             var name = syntax.IdentifierToken.Text;
             var boundExpression = BindExpression(syntax.Expression);
-            VariableSymbol? variable;
 
-            // Lookup the variable in the current scope only
-            if (!_scope.TryLookupInCurrentScope(name, out _))
+            // Lookup the variable in the current scope and parent scopes
+            if (!_scope.TryLookup(name, out var variable))
             {
-                // Declare a new variable if it does not exist in the current scope
+                // Declare a new variable if it does not exist in any scope
                 variable = new VariableSymbol(name, boundExpression.Type);
                 _scope.TryDeclare(variable);
             }
-            else
+
+            // Ensure variable is not null
+            if (variable == null)
             {
-                // Update the existing variable's type to match the new expression type
-                variable = new VariableSymbol(name, boundExpression.Type);
-                _scope.TryUpdate(variable);
+                throw new InvalidOperationException($"Variable '{name}' should have been declared.");
             }
 
             return new BoundAssignmentExpression(variable, boundExpression);
@@ -205,3 +204,4 @@ namespace Compiler.Parts.Binding
         }
     }
 }
+

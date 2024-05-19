@@ -65,6 +65,15 @@ public partial class ParserTests
 
         // If Statements
         [InlineData("{a = 0 if a == 0 a = 10 a}", 10)]
+        [InlineData("{a = 0 if a == 1 a = 10 else a = 20 a}", 20)]
+        [InlineData("{a = 10 if a == 9 hot = True elif a == 10 hot = False hot}", false)]
+        [InlineData("{a = 0 if a == 1 a = 10 elif a == 0 a = 20 a}", 20)]
+        [InlineData("{a = 0 if a == 1 a = 10 elif a == 2 a = 20 else a = 30 a}", 30)]
+        [InlineData("{a = 0 if a == 0 if a == 0 a = 10 else a = 20 a}", 10)]
+        [InlineData("{a = 3 if a == 1 a = 10 elif a == 2 a = 20 elif a == 3 a = 30 a}", 30)]
+        [InlineData("{a = 2 if a == 1 a = 10 elif a == 2 a = 20 elif a == 3 a = 30 else a = 40 a}", 20)]
+        [InlineData("{a = 4 if a < 2 a = 10 elif a < 4 if a == 3 a = 30 else a = 40 elif a == 4 a = 50 else a = 60 a}", 50)]
+        [InlineData("{a = 1 b = 2 if a + b == 3 a = 10 elif a - b == -1 a = 20 else a = 30 a}", 10)]
         public void EvaluateText(string text, object expectedValue)
         {
             var result = EvaluateExpression(text);

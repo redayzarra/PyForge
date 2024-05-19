@@ -59,7 +59,7 @@ namespace Compiler.Parts.Syntax
             "is" => SyntaxKind.IsKeyword,
             "if" => SyntaxKind.IfKeyword,
             "elif" => SyntaxKind.ElifKeyword,
-            "else" => SyntaxKind.ElseClause,
+            "else" => SyntaxKind.ElseKeyword,
             _ => SyntaxKind.IdentifierToken
         };
 
