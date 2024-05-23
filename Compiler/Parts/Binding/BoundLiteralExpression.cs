@@ -11,5 +11,4 @@ namespace Compiler.Parts.Binding
         public override BoundNodeKind Kind => BoundNodeKind.LiteralExpression;
         public object Value { get; }
     }
-    
 }

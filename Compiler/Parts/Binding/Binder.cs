@@ -62,8 +62,31 @@ namespace Compiler.Parts.Binding
                 SyntaxKind.ExpressionStatement => BindExpressionStatement((ExpressionStatementSyntax)syntax),
                 SyntaxKind.IfStatement => BindIfStatement((IfStatementSyntax)syntax),
                 SyntaxKind.WhileStatement => BindWhileStatement((WhileStatementSyntax)syntax),
+                SyntaxKind.ForStatement => BindForStatement((ForStatementSyntax)syntax),
                 _ => throw new InvalidOperationException($"Unexpected syntax: {syntax.Kind}")
             };
+
+        private BoundStatement BindForStatement(ForStatementSyntax syntax)
+        {
+            var upperBound = BindExpression(syntax.RangeExpression);
+            var previousScope = _scope;
+            _scope = new BoundScope(previousScope);
+
+            var variable = new VariableSymbol(syntax.Identifier.Text, typeof(int));
+            _scope.TryDeclare(variable);
+
+            var body = BindStatement(syntax.Body);
+            _scope = previousScope;
+
+            return new BoundForStatement(variable, new BoundLiteralExpression(0), upperBound, body);
+        }
+
+        private BoundExpression BindRangeExpression(RangeExpressionSyntax syntax)
+        {
+            var lowerBound = new BoundLiteralExpression(0); // Assume range always starts at 0
+            var upperBound = BindExpression(syntax.Expression);
+            return new BoundRangeExpression(lowerBound, upperBound);
+        }
 
         private BoundStatement BindWhileStatement(WhileStatementSyntax syntax)
         {
@@ -102,6 +125,7 @@ namespace Compiler.Parts.Binding
                 SyntaxKind.ParenthesizedExpression => BindParenthesizedExpression((ParenthesizedExpressionSyntax)syntax),
                 SyntaxKind.NameExpression => BindNameExpression((NameExpressionSyntax)syntax),
                 SyntaxKind.AssignmentExpression => BindAssignmentExpression((AssignmentExpressionSyntax)syntax),
+                SyntaxKind.RangeExpression => BindRangeExpression((RangeExpressionSyntax)syntax),
                 _ => throw new InvalidOperationException($"Unexpected syntax: {syntax.Kind}")
             };
 

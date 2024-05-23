@@ -98,7 +98,12 @@ namespace Compiler.Parts.Syntax
 
         private StatementSyntax ParseForStatement()
         {
-            throw new NotImplementedException();
+            var forKeyword = MatchToken(SyntaxKind.ForKeyword);
+            var identifier = MatchToken(SyntaxKind.IdentifierToken);
+            var inKeyword = MatchToken(SyntaxKind.InKeyword);
+            var rangeExpression = ParseExpression();
+            var body = ParseStatement();
+            return new ForStatementSyntax(forKeyword, identifier, inKeyword, rangeExpression, body);
         }
 
         private StatementSyntax ParseWhileStatement()
@@ -244,10 +249,22 @@ namespace Compiler.Parts.Syntax
                 case SyntaxKind.NumberToken:
                     return ParseNumberLiteral();
 
+                case SyntaxKind.RangeKeyword:
+                    return ParseRangeExpression();
+
                 case SyntaxKind.IdentifierToken:
                 default:
                     return ParseNameExpression();
             }
+        }
+
+        private ExpressionSyntax ParseRangeExpression()
+        {
+            var identifier = MatchToken(SyntaxKind.RangeKeyword);
+            var openParenthesisToken = MatchToken(SyntaxKind.OpenParenthesisToken);
+            var expression = ParseExpression();
+            var closeParenthesisToken = MatchToken(SyntaxKind.CloseParenthesisToken);
+            return new RangeExpressionSyntax(identifier, openParenthesisToken, expression, closeParenthesisToken);
         }
 
         private ExpressionSyntax ParseParenthesizedExpression()

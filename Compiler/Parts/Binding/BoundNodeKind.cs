@@ -7,6 +7,7 @@ namespace Compiler.Parts.Binding
         UnaryExpression,
         VariableExpression,
         AssignmentExpression,
+        RangeExpression,
         #endregion
 
         #region Statements
@@ -14,6 +15,7 @@ namespace Compiler.Parts.Binding
         ExpressionStatement,
         IfStatement,
         WhileStatement,
+        ForStatement,
         #endregion
     }
 }

@@ -82,6 +82,14 @@ public partial class ParserTests
         [InlineData("{a = 0 sum = 0 while a <= 5 { sum = sum + a a = a + 1 } sum}", 15)] // sum of first 5 numbers
         [InlineData("{a = 0 while False { a = a + 1 } a}", 0)] // loop never executes
         [InlineData("{a = 0 b = 0 while a < 3 { a = a + 1 while b < 2 { b = b + 1 } } a + b}", 5)] // nested while loops
+
+        // For Statements
+        [InlineData("{sum = 0 for i in range(5) { sum = sum + i } sum}", 10)]
+        [InlineData("{x = 10 for i in range(5) { x = x - 1 } x}", 5)]
+        [InlineData("{sum = 0 for i in range(6) { sum = sum + i } sum}", 15)] // sum of first 5 numbers
+        [InlineData("{res = 0 for i in range(3) { for j in range(2) { res = res + 1 } } res}", 6)] // nested for loops
+        [InlineData("{sum = 0 for i in range(3) { sum = sum + i } sum}", 3)] // simple range iteration
+        [InlineData("{res = 0 for i in range(3) { for j in range(2) { res = res + i * 10 + j } } res}", 63)] // nested loops with calculation
         public void EvaluateText(string text, object expectedValue)
         {
             var result = EvaluateExpression(text);

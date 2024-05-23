@@ -1,4 +1,5 @@
 using Compiler.Parts.Binding;
+using System.Text;
 
 namespace Compiler.Parts
 {
@@ -20,7 +21,7 @@ namespace Compiler.Parts
         public object Evaluate()
         {
             EvaluateStatement(_root);
-            return _lastValue;
+            return FormatResult(_lastValue);
         }
 
         private void EvaluateStatement(BoundStatement statement)
@@ -41,8 +42,22 @@ namespace Compiler.Parts
                 case BoundWhileStatement whi:
                     EvaluateWhileStatement(whi);
                     break;
+                case BoundForStatement fs:
+                    EvaluateForStatement(fs);
+                    break;
                 default:
                     throw new InvalidOperationException($"Unexpected node type: '{statement.Kind}'");
+            }
+        }
+
+        private void EvaluateForStatement(BoundForStatement forStatement)
+        {
+            var rangeArray = (int[])EvaluateExpression(forStatement.UpperBound);
+
+            foreach (var value in rangeArray)
+            {
+                _variables[forStatement.Variable] = value;
+                EvaluateStatement(forStatement.Body);
             }
         }
 
@@ -88,8 +103,16 @@ namespace Compiler.Parts
                 BoundBinaryExpression bin => EvaluateBinaryExpression(bin),
                 BoundVariableExpression var => _variables.TryGetValue(var.Variable, out var value) ? value : throw new Exception($"Variable '{var.Variable}' not found."),
                 BoundAssignmentExpression asn => EvaluateAssignmentExpression(asn),
+                BoundRangeExpression rng => EvaluateRangeExpression(rng),
                 _ => throw new InvalidOperationException($"Unexpected node type: '{root.Kind}'")
             };
+        }
+
+        private object EvaluateRangeExpression(BoundRangeExpression rng)
+        {
+            var lowerBound = (int)EvaluateExpression(rng.LowerBound);
+            var upperBound = (int)EvaluateExpression(rng.UpperBound);
+            return Enumerable.Range(lowerBound, upperBound - lowerBound).ToArray();
         }
 
         private void EvaluateBlockStatement(BoundBlockStatement block)
@@ -149,6 +172,24 @@ namespace Compiler.Parts
                 BoundBinaryOperatorKind.NonIdentity => !ReferenceEquals(left, right),
                 _ => throw new InvalidOperationException($"Unexpected binary operator {bin.Operate}")
             };
+        }
+
+        private object FormatResult(object result)
+        {
+            if (result is int[] array)
+            {
+                var sb = new StringBuilder();
+                sb.Append("[");
+                for (int i = 0; i < array.Length; i++)
+                {
+                    if (i > 0)
+                        sb.Append(", ");
+                    sb.Append(array[i]);
+                }
+                sb.Append("]");
+                return sb.ToString();
+            }
+            return result;
         }
     }
 }

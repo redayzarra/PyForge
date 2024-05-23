@@ -62,6 +62,8 @@ namespace Compiler.Parts.Syntax
             "else" => SyntaxKind.ElseKeyword,
             "while" => SyntaxKind.WhileKeyword,
             "for" => SyntaxKind.ForKeyword,
+            "in" => SyntaxKind.InKeyword,
+            "range" => SyntaxKind.RangeKeyword,
             _ => SyntaxKind.IdentifierToken
         };
 
@@ -94,6 +96,8 @@ namespace Compiler.Parts.Syntax
             SyntaxKind.ElseKeyword => "else",
             SyntaxKind.WhileKeyword => "while",
             SyntaxKind.ForKeyword => "for",
+            SyntaxKind.InKeyword => "in",
+            SyntaxKind.RangeKeyword => "range",
             _ => null
         };
     }

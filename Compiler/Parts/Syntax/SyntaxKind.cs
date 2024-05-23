@@ -50,6 +50,8 @@ namespace Compiler.Parts.Syntax
         ElseKeyword,
         WhileKeyword,
         ForKeyword,
+        InKeyword,
+        RangeKeyword,
         #endregion
 
         #region Expressions
@@ -59,6 +61,7 @@ namespace Compiler.Parts.Syntax
         ParenthesizedExpression,
         NameExpression,
         AssignmentExpression,
+        RangeExpression,
         #endregion
 
         #region Whitespace
