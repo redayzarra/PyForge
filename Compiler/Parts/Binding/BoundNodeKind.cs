@@ -13,6 +13,7 @@ namespace Compiler.Parts.Binding
         BlockStatement,
         ExpressionStatement,
         IfStatement,
+        WhileStatement,
         #endregion
     }
 }

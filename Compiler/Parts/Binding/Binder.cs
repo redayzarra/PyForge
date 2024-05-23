@@ -61,8 +61,17 @@ namespace Compiler.Parts.Binding
                 SyntaxKind.BlockStatement => BindBlockStatement((BlockStatementSyntax)syntax),
                 SyntaxKind.ExpressionStatement => BindExpressionStatement((ExpressionStatementSyntax)syntax),
                 SyntaxKind.IfStatement => BindIfStatement((IfStatementSyntax)syntax),
+                SyntaxKind.WhileStatement => BindWhileStatement((WhileStatementSyntax)syntax),
                 _ => throw new InvalidOperationException($"Unexpected syntax: {syntax.Kind}")
             };
+
+        private BoundStatement BindWhileStatement(WhileStatementSyntax syntax)
+        {
+            var condition = BindExpression(syntax.Condition, typeof(bool));
+            var body = BindStatement(syntax.Body);
+
+            return new BoundWhileStatement(condition, body);
+        }
 
         private BoundStatement BindBlockStatement(BlockStatementSyntax syntax)
         {
