@@ -14,13 +14,11 @@ namespace Compiler
             var showTree = false;
             var textBuilder = new StringBuilder();
             Compilation? previous = null;
+            bool indentNextLine = false;
 
             while (true)
             {
-                if (textBuilder.Length == 0)
-                    PrintWithColor(">>> ", ConsoleColor.White, inline: true);
-                else
-                    PrintWithColor("└─ ", ConsoleColor.Gray, inline: true);
+                PrintPrompt(textBuilder.Length, indentNextLine);
 
                 Console.ForegroundColor = ConsoleColor.White; // Set input color to white
                 var input = Console.ReadLine();
@@ -40,7 +38,19 @@ namespace Compiler
                         continue; // Skip parsing and evaluating if HandleCommand processed a command
                 }
 
+                if (indentNextLine && !isBlank)
+                {
+                    input = "    " + input;
+                    indentNextLine = false;
+                }
+
                 textBuilder.AppendLine(input);
+
+                // Adjust indent level based on the input
+                if (input.TrimEnd().EndsWith(":"))
+                {
+                    indentNextLine = true;
+                }
 
                 var text = textBuilder.ToString();
                 var syntaxTree = SyntaxTree.Parse(text);
@@ -49,7 +59,7 @@ namespace Compiler
                 if (!isBlank && syntaxTree.Diagnostics.Any())
                     continue;
 
-                var compilation = previous == null  
+                var compilation = previous == null
                                     ? new Compilation(syntaxTree)
                                     : previous.ContinueWith(syntaxTree);
                 
@@ -87,7 +97,27 @@ namespace Compiler
                     DisplayDiagnostics(result.Diagnostics, syntaxTree);
 
                 textBuilder.Clear();
+                indentNextLine = false; // Reset indent flag after evaluating the block
                 Console.WriteLine();
+            }
+        }
+
+        private static void PrintPrompt(int textLength, bool indentNextLine)
+        {
+            if (textLength == 0)
+            {
+                PrintWithColor(">>> ", ConsoleColor.White, inline: true);
+            }
+            else
+            {
+                if (indentNextLine)
+                {
+                    PrintWithColor("└─    ", ConsoleColor.Gray, inline: true); // Indented prompt
+                }
+                else
+                {
+                    PrintWithColor("└─ ", ConsoleColor.Gray, inline: true); // Regular prompt
+                }
             }
         }
 
@@ -195,5 +225,4 @@ namespace Compiler
         }
     }
 }
-
 
