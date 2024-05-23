@@ -61,6 +61,7 @@ namespace Compiler.Parts.Syntax
             "elif" => SyntaxKind.ElifKeyword,
             "else" => SyntaxKind.ElseKeyword,
             "while" => SyntaxKind.WhileKeyword,
+            "for" => SyntaxKind.ForKeyword,
             _ => SyntaxKind.IdentifierToken
         };
 
@@ -92,6 +93,7 @@ namespace Compiler.Parts.Syntax
             SyntaxKind.ElifKeyword => "elif",
             SyntaxKind.ElseKeyword => "else",
             SyntaxKind.WhileKeyword => "while",
+            SyntaxKind.ForKeyword => "for",
             _ => null
         };
     }

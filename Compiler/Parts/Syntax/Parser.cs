@@ -89,9 +89,16 @@ namespace Compiler.Parts.Syntax
                     return ParseIfStatement();
                 case SyntaxKind.WhileKeyword:
                     return ParseWhileStatement();
+                case SyntaxKind.ForKeyword:
+                    return ParseForStatement();
                 default:
                     return ParseExpressionStatement();
             }
+        }
+
+        private StatementSyntax ParseForStatement()
+        {
+            throw new NotImplementedException();
         }
 
         private StatementSyntax ParseWhileStatement()

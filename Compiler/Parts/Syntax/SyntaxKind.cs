@@ -49,6 +49,7 @@ namespace Compiler.Parts.Syntax
         ElifKeyword,
         ElseKeyword,
         WhileKeyword,
+        ForKeyword,
         #endregion
 
         #region Expressions
@@ -71,6 +72,7 @@ namespace Compiler.Parts.Syntax
         ElifClause,
         ElseClause,
         WhileStatement,
+        ForStatement,
         #endregion
     }
 }
