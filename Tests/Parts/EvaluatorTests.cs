@@ -178,6 +178,17 @@ public partial class ParserTests
             AssertDiagnostics(text, expectedDiagnostics);
         }
 
+        // [Theory]
+        // [InlineData("{x = 10[)]", "Unexpected token <CloseParenthesisToken>, expected <EndOfFileToken>.")]
+        // [InlineData("{x = 10 if y == 10 {x = 20} else y = 30[)]", "Unexpected token <CloseParenthesisToken>, expected <EndOfFileToken>.")]
+        // [InlineData("{x = 10 while y < 10 {x = x + 1}}[)]", "Unexpected token <CloseParenthesisToken>, expected <EndOfFileToken>.")]
+        // [InlineData("{x = 10 for i in range(5) {x = x - 1}[)]", "Unexpected token <CloseParenthesisToken>, expected <EndOfFileToken>.")]
+        // [InlineData("{x = 10[(]", "Unexpected token <OpenParenthesisToken>, expected <EndOfFileToken>.")]
+        // public void BlockStatementSyntaxError(string text, string expectedDiagnostics)
+        // {
+        //     AssertDiagnostics(text, expectedDiagnostics);
+        // }
+
         private EvaluationResult EvaluateExpression(string text)
         {
             var syntaxTree = SyntaxTree.Parse(text);
