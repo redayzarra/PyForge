@@ -83,6 +83,11 @@ public partial class ParserTests
         [InlineData("{a = 0 while False { a = a + 1 } a}", 0)] // loop never executes
         [InlineData("{a = 0 b = 0 while a < 3 { a = a + 1 while b < 2 { b = b + 1 } } a + b}", 5)] // nested while loops
 
+        // Range Tests
+        [InlineData("range(10)", "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]")]
+        [InlineData("range(5, 10)", "[5, 6, 7, 8, 9]")]
+        [InlineData("range(10, -1, -1)", "[10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]")]
+
         // For Statements
         [InlineData("{sum = 0 for i in range(5) { sum = sum + i } sum}", 10)]
         [InlineData("{x = 10 for i in range(5) { x = x - 1 } x}", 5)]
@@ -90,6 +95,9 @@ public partial class ParserTests
         [InlineData("{res = 0 for i in range(3) { for j in range(2) { res = res + 1 } } res}", 6)] // nested for loops
         [InlineData("{sum = 0 for i in range(3) { sum = sum + i } sum}", 3)] // simple range iteration
         [InlineData("{res = 0 for i in range(3) { for j in range(2) { res = res + i * 10 + j } } res}", 63)] // nested loops with calculation
+        [InlineData("{sum = 0 for i in range(5, 10) { sum = sum + i } sum}", 35)] // range with two arguments
+        [InlineData("{sum = 0 for i in range(10, -1, -1) { sum = sum + i } sum}", 55)] // range with three arguments
+        [InlineData("{x = 10 for i in range(10, 0, -2) { x = x - 1 } x}", 5)] // range with three arguments and negative step
         public void EvaluateText(string text, object expectedValue)
         {
             var result = EvaluateExpression(text);

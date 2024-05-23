@@ -111,8 +111,31 @@ namespace Compiler.Parts
         private object EvaluateRangeExpression(BoundRangeExpression rng)
         {
             var lowerBound = (int)EvaluateExpression(rng.LowerBound);
-            var upperBound = (int)EvaluateExpression(rng.UpperBound);
-            return Enumerable.Range(lowerBound, upperBound - lowerBound).ToArray();
+            var upperBound = rng.UpperBound != null ? (int)EvaluateExpression(rng.UpperBound) : 0;
+            var step = rng.Step != null ? (int)EvaluateExpression(rng.Step) : 1;
+
+            if (rng.UpperBound != null)
+            {
+                if (step == 0)
+                    throw new InvalidOperationException("Step cannot be zero.");
+
+                var range = new List<int>();
+                if (step > 0)
+                {
+                    for (int i = lowerBound; i < upperBound; i += step)
+                        range.Add(i);
+                }
+                else
+                {
+                    for (int i = lowerBound; i > upperBound; i += step)
+                        range.Add(i);
+                }
+                return range.ToArray();
+            }
+            else
+            {
+                return Enumerable.Range(0, lowerBound).ToArray();
+            }
         }
 
         private void EvaluateBlockStatement(BoundBlockStatement block)

@@ -181,6 +181,9 @@ namespace Compiler.Parts.Syntax
                 case '}':
                     SetToken(SyntaxKind.CloseBraceToken);
                     break;
+                case ',':
+                    SetToken(SyntaxKind.CommaToken);
+                    break;
                 default:
                     _diagnostics.ReportBadCharacter(_position, Current);
                     SetToken(SyntaxKind.BadToken);

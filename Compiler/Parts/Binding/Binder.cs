@@ -83,9 +83,11 @@ namespace Compiler.Parts.Binding
 
         private BoundExpression BindRangeExpression(RangeExpressionSyntax syntax)
         {
-            var lowerBound = new BoundLiteralExpression(0); // Assume range always starts at 0
-            var upperBound = BindExpression(syntax.Expression);
-            return new BoundRangeExpression(lowerBound, upperBound);
+            var lowerBound = BindExpression(syntax.LowerBound);
+            var upperBound = syntax.UpperBound != null ? BindExpression(syntax.UpperBound) : null;
+            var step = syntax.Step != null ? BindExpression(syntax.Step) : null;
+
+            return new BoundRangeExpression(lowerBound, upperBound, step);
         }
 
         private BoundStatement BindWhileStatement(WhileStatementSyntax syntax)

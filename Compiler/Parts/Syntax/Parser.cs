@@ -260,11 +260,31 @@ namespace Compiler.Parts.Syntax
 
         private ExpressionSyntax ParseRangeExpression()
         {
-            var identifier = MatchToken(SyntaxKind.RangeKeyword);
+            var rangeKeyword = MatchToken(SyntaxKind.RangeKeyword);
             var openParenthesisToken = MatchToken(SyntaxKind.OpenParenthesisToken);
-            var expression = ParseExpression();
+
+            var lowerBound = ParseExpression();
+
+            SyntaxToken? commaToken1 = null;
+            ExpressionSyntax? upperBound = null;
+            SyntaxToken? commaToken2 = null;
+            ExpressionSyntax? step = null;
+
+            if (Current.Kind == SyntaxKind.CommaToken)
+            {
+                commaToken1 = MatchToken(SyntaxKind.CommaToken);
+                upperBound = ParseExpression();
+
+                if (Current.Kind == SyntaxKind.CommaToken)
+                {
+                    commaToken2 = MatchToken(SyntaxKind.CommaToken);
+                    step = ParseExpression();
+                }
+            }
+
             var closeParenthesisToken = MatchToken(SyntaxKind.CloseParenthesisToken);
-            return new RangeExpressionSyntax(identifier, openParenthesisToken, expression, closeParenthesisToken);
+
+            return new RangeExpressionSyntax(rangeKeyword, openParenthesisToken, lowerBound, commaToken1, upperBound, commaToken2, step, closeParenthesisToken);
         }
 
         private ExpressionSyntax ParseParenthesizedExpression()
