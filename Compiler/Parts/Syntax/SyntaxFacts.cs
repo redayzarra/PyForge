@@ -60,6 +60,7 @@ namespace Compiler.Parts.Syntax
             "if" => SyntaxKind.IfKeyword,
             "elif" => SyntaxKind.ElifKeyword,
             "else" => SyntaxKind.ElseKeyword,
+            "while" => SyntaxKind.WhileKeyword,
             _ => SyntaxKind.IdentifierToken
         };
 
@@ -90,6 +91,7 @@ namespace Compiler.Parts.Syntax
             SyntaxKind.IfKeyword => "if",
             SyntaxKind.ElifKeyword => "elif",
             SyntaxKind.ElseKeyword => "else",
+            SyntaxKind.WhileKeyword => "while",
             _ => null
         };
     }
