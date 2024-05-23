@@ -193,10 +193,11 @@ C:\Users\reday\Documents\Compiler\Tests\obj\Debug\net7.0\Tests.GeneratedMSBuildE
 C:\Users\reday\Documents\Compiler\Tests\obj\Debug\net7.0\Tests.AssemblyInfoInputs.cache
 C:\Users\reday\Documents\Compiler\Tests\obj\Debug\net7.0\Tests.AssemblyInfo.cs
 C:\Users\reday\Documents\Compiler\Tests\obj\Debug\net7.0\Tests.csproj.CoreCompileInputs.cache
-C:\Users\reday\Documents\Compiler\Tests\obj\Debug\net7.0\Tests.csproj.CopyComplete
 C:\Users\reday\Documents\Compiler\Tests\obj\Debug\net7.0\Tests.dll
 C:\Users\reday\Documents\Compiler\Tests\obj\Debug\net7.0\refint\Tests.dll
 C:\Users\reday\Documents\Compiler\Tests\obj\Debug\net7.0\Tests.pdb
 C:\Users\reday\Documents\Compiler\Tests\obj\Debug\net7.0\Tests.genruntimeconfig.cache
 C:\Users\reday\Documents\Compiler\Tests\obj\Debug\net7.0\ref\Tests.dll
 C:\Users\reday\Documents\Compiler\Tests\bin\Debug\net7.0\System.Collections.Immutable.dll
+c:\Users\reday\Documents\Compiler\Tests\obj\Debug\net7.0\Tests.sourcelink.json
+c:\Users\reday\Documents\Compiler\Tests\obj\Debug\net7.0\Tests.csproj.Up2Date

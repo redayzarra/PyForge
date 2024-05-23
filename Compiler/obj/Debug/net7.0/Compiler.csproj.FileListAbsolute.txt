@@ -22,3 +22,4 @@ C:\Users\reday\Documents\Compiler\Compiler\obj\Debug\net7.0\Compiler.dll
 C:\Users\reday\Documents\Compiler\Compiler\obj\Debug\net7.0\refint\Compiler.dll
 C:\Users\reday\Documents\Compiler\Compiler\obj\Debug\net7.0\Compiler.pdb
 C:\Users\reday\Documents\Compiler\Compiler\obj\Debug\net7.0\ref\Compiler.dll
+c:\Users\reday\Documents\Compiler\Compiler\obj\Debug\net7.0\Compiler.sourcelink.json
