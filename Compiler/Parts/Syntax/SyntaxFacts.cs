@@ -86,6 +86,7 @@ namespace Compiler.Parts.Syntax
             SyntaxKind.OpenBraceToken => "{",
             SyntaxKind.CloseBraceToken => "}",
             SyntaxKind.CommaToken => ",",
+            SyntaxKind.ColonToken => ":",
             SyntaxKind.AndKeyword => "and",
             SyntaxKind.OrKeyword => "or",
             SyntaxKind.NotKeyword => "not",

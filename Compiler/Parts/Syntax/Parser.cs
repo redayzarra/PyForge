@@ -5,7 +5,7 @@ using static Compiler.Parts.Syntax.SyntaxFacts;
 namespace Compiler.Parts.Syntax
 {
     // Uses the tokens from the Lexer to create a syntax tree
-    internal sealed class Parser 
+    internal sealed class Parser
     {
         private int _position;
         private readonly SourceText _text;
@@ -22,8 +22,8 @@ namespace Compiler.Parts.Syntax
             do
             { // Add valid tokens to the _tokens array
                 token = lexer.Lex();
-                if (token.Kind != SyntaxKind.WhitespaceToken && 
-                    token.Kind != SyntaxKind.BadToken) 
+                if (token.Kind != SyntaxKind.WhitespaceToken &&
+                    token.Kind != SyntaxKind.BadToken)
                 {
                     tokens.Add(token);
                 }
@@ -42,7 +42,7 @@ namespace Compiler.Parts.Syntax
             var index = _position + offset;
             if (index < 0 || index >= _tokens.Length)
                 return _tokens[_tokens.Length - 1];
-            
+
             return _tokens[index];
         }
 
@@ -102,28 +102,30 @@ namespace Compiler.Parts.Syntax
             var identifier = MatchToken(SyntaxKind.IdentifierToken);
             var inKeyword = MatchToken(SyntaxKind.InKeyword);
             var rangeExpression = ParseExpression();
+            var colonToken = MatchToken(SyntaxKind.ColonToken);
             var body = ParseStatement();
-            return new ForStatementSyntax(forKeyword, identifier, inKeyword, rangeExpression, body);
+            return new ForStatementSyntax(forKeyword, identifier, inKeyword, rangeExpression, colonToken, body);
         }
 
         private StatementSyntax ParseWhileStatement()
         {
             var keyword = MatchToken(SyntaxKind.WhileKeyword);
             var condition = ParseExpression();
-
+            var colonToken = MatchToken(SyntaxKind.ColonToken);
             var body = ParseStatement();
-            return new WhileStatementSyntax(keyword, condition, body);
+            return new WhileStatementSyntax(keyword, condition, colonToken, body);
         }
 
         private StatementSyntax ParseIfStatement()
         {
             var ifKeyword = MatchToken(SyntaxKind.IfKeyword);
             var condition = ParseExpression();
+            var colonToken = MatchToken(SyntaxKind.ColonToken);
             var thenStatement = ParseStatement();
             var elifClauses = ParseElifClauses();
             var elseClause = ParseElseClause();
 
-            return new IfStatementSyntax(ifKeyword, condition, thenStatement, elifClauses, elseClause);
+            return new IfStatementSyntax(ifKeyword, condition, colonToken, thenStatement, elifClauses, elseClause);
         }
 
         private ImmutableArray<ElifClauseSyntax> ParseElifClauses()
@@ -134,8 +136,9 @@ namespace Compiler.Parts.Syntax
             {
                 var elifKeyword = MatchToken(SyntaxKind.ElifKeyword);
                 var condition = ParseExpression();
+                var colonToken = MatchToken(SyntaxKind.ColonToken);
                 var statement = ParseStatement();
-                var elifClause = new ElifClauseSyntax(elifKeyword, condition, statement);
+                var elifClause = new ElifClauseSyntax(elifKeyword, condition, colonToken, statement);
                 elifClauses.Add(elifClause);
             }
 
@@ -146,10 +149,11 @@ namespace Compiler.Parts.Syntax
         {
             if (Current.Kind != SyntaxKind.ElseKeyword)
                 return null;
-            
+
             var keyword = NextToken();
+            var colonToken = MatchToken(SyntaxKind.ColonToken);
             var statement = ParseStatement();
-            return new ElseClauseSyntax(keyword, statement);
+            return new ElseClauseSyntax(keyword, colonToken, statement);
         }
 
         private BlockStatementSyntax ParseBlockStatement()

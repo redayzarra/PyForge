@@ -184,6 +184,9 @@ namespace Compiler.Parts.Syntax
                 case ',':
                     SetToken(SyntaxKind.CommaToken);
                     break;
+                case ':':
+                    SetToken(SyntaxKind.ColonToken);
+                    break;
                 default:
                     _diagnostics.ReportBadCharacter(_position, Current);
                     SetToken(SyntaxKind.BadToken);

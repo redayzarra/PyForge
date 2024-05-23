@@ -36,6 +36,7 @@ namespace Compiler.Parts.Syntax
         OpenBraceToken,
         CloseBraceToken,
         CommaToken,
+        ColonToken,
         #endregion
 
         #region Keywords
