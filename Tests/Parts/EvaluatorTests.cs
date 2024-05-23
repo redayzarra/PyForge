@@ -74,6 +74,14 @@ public partial class ParserTests
         [InlineData("{a = 2 if a == 1 a = 10 elif a == 2 a = 20 elif a == 3 a = 30 else a = 40 a}", 20)]
         [InlineData("{a = 4 if a < 2 a = 10 elif a < 4 if a == 3 a = 30 else a = 40 elif a == 4 a = 50 else a = 60 a}", 50)]
         [InlineData("{a = 1 b = 2 if a + b == 3 a = 10 elif a - b == -1 a = 20 else a = 30 a}", 10)]
+
+        // While Statements
+        [InlineData("{a = 10 res = 0 while a > 0 { res = res + a a = a - 1} res}", 55)]
+        [InlineData("{a = 5 res = 1 while a > 1 { res = res * a a = a - 1} res}", 120)] // factorial of 5
+        [InlineData("{a = 0 while a < 5 { a = a + 1 } a}", 5)]
+        [InlineData("{a = 0 sum = 0 while a <= 5 { sum = sum + a a = a + 1 } sum}", 15)] // sum of first 5 numbers
+        [InlineData("{a = 0 while False { a = a + 1 } a}", 0)] // loop never executes
+        [InlineData("{a = 0 b = 0 while a < 3 { a = a + 1 while b < 2 { b = b + 1 } } a + b}", 5)] // nested while loops
         public void EvaluateText(string text, object expectedValue)
         {
             var result = EvaluateExpression(text);

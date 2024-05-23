@@ -38,9 +38,18 @@ namespace Compiler.Parts
                 case BoundIfStatement ifs:
                     EvaluateIfStatement(ifs);
                     break;
+                case BoundWhileStatement whi:
+                    EvaluateWhileStatement(whi);
+                    break;
                 default:
                     throw new InvalidOperationException($"Unexpected node type: '{statement.Kind}'");
             }
+        }
+
+        private void EvaluateWhileStatement(BoundWhileStatement whi)
+        {
+            while ((bool)EvaluateExpression(whi.Condition))
+                EvaluateStatement(whi.Body);
         }
 
         private void EvaluateIfStatement(BoundIfStatement ifs)
