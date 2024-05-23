@@ -16,13 +16,14 @@ namespace Compiler.Parts.Binding
         NotEquals,
         Identity,
         NonIdentity,
+        In,       
         #endregion
 
         #region Comparison
         GreaterThan,
         GreaterThanOrEquals,
         LessThan,
-        LessThanOrEquals
+        LessThanOrEquals,
         #endregion
     }
 }

@@ -34,6 +34,7 @@ namespace Compiler.Parts.Syntax
             SyntaxKind.NotEqualsToken => 3,
             SyntaxKind.IsKeyword => 3,
             SyntaxKind.IsNotKeyword => 3,
+            SyntaxKind.InKeyword => 3,
 
             // Logical AND has lower precedence than equality checks
             SyntaxKind.AndKeyword => 2,

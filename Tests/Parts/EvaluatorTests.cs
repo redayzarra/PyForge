@@ -88,6 +88,14 @@ public partial class ParserTests
         [InlineData("range(5, 10)", "[5, 6, 7, 8, 9]")]
         [InlineData("range(10, -1, -1)", "[10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]")]
 
+        // In Keyword tests
+        [InlineData("20 in range(30)", true)]
+        [InlineData("10 in range(5, 15)", true)]
+        [InlineData("5 in range(10, 0, -1)", true)]
+        [InlineData("0 in range(1, 10)", false)]
+        [InlineData("4 in range(1, 10, 2)", false)] // Tests with step that skips the value
+        [InlineData("2 in range(10, 0, -2)", true)]
+
         // For Statements
         [InlineData("{sum = 0 for i in range(5) { sum = sum + i } sum}", 10)]
         [InlineData("{x = 10 for i in range(5) { x = x - 1 } x}", 5)]

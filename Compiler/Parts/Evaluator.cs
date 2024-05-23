@@ -193,6 +193,7 @@ namespace Compiler.Parts
                 BoundBinaryOperatorKind.LessThanOrEquals => (int)left <= (int)right,
                 BoundBinaryOperatorKind.Identity => ReferenceEquals(left, right),
                 BoundBinaryOperatorKind.NonIdentity => !ReferenceEquals(left, right),
+                BoundBinaryOperatorKind.In => ((int[])right).Contains((int)left), 
                 _ => throw new InvalidOperationException($"Unexpected binary operator {bin.Operate}")
             };
         }

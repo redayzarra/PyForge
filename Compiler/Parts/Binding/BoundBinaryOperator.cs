@@ -49,10 +49,15 @@ namespace Compiler.Parts.Binding
             new BoundBinaryOperator(SyntaxKind.GreaterThanOrEqualsToken, BoundBinaryOperatorKind.GreaterThanOrEquals, typeof(int), typeof(bool)),
             new BoundBinaryOperator(SyntaxKind.LessThanToken, BoundBinaryOperatorKind.LessThan, typeof(int), typeof(bool)),
             new BoundBinaryOperator(SyntaxKind.LessThanOrEqualsToken, BoundBinaryOperatorKind.LessThanOrEquals, typeof(int), typeof(bool)),
+
+            new BoundBinaryOperator(SyntaxKind.InKeyword, BoundBinaryOperatorKind.In, typeof(int), typeof(int[]), typeof(bool)) // Add in operator
         };
 
         public static BoundBinaryOperator? Bind(SyntaxKind syntaxKind, Type leftType, Type rightType)
         {
+            if (syntaxKind == SyntaxKind.InKeyword)
+                return BindInOperator(leftType, rightType);
+
             foreach (var op in _operators)
             {
                 bool leftMatches = op.LeftType == typeof(object) ? true : op.LeftType == leftType;
@@ -61,6 +66,14 @@ namespace Compiler.Parts.Binding
                 if (op.SyntaxKind == syntaxKind && leftMatches && rightMatches)
                     return op; 
             }
+
+            return null;
+        }
+
+        public static BoundBinaryOperator? BindInOperator(Type leftType, Type rightType)
+        {
+            if (leftType == typeof(int) && rightType == typeof(int[]))
+                return new BoundBinaryOperator(SyntaxKind.InKeyword, BoundBinaryOperatorKind.In, typeof(int), typeof(int[]), typeof(bool));
 
             return null;
         }
