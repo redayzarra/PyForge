@@ -87,6 +87,15 @@ namespace Compiler.Parts.Binding
             var upperBound = syntax.UpperBound != null ? BindExpression(syntax.UpperBound) : null;
             var step = syntax.Step != null ? BindExpression(syntax.Step) : null;
 
+            if (lowerBound.Type != typeof(int))
+                _diagnostics.ReportCannotConvert(syntax.LowerBound.Span, lowerBound.Type, typeof(int));
+
+            if (upperBound != null && upperBound.Type != typeof(int))
+                _diagnostics.ReportCannotConvert(syntax.UpperBound!.Span, upperBound.Type, typeof(int));
+
+            if (step != null && step.Type != typeof(int))
+                _diagnostics.ReportCannotConvert(syntax.Step!.Span, step.Type, typeof(int));
+
             return new BoundRangeExpression(lowerBound, upperBound, step);
         }
 

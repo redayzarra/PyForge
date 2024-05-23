@@ -149,6 +149,35 @@ public partial class ParserTests
             AssertDiagnostics(text, expectedDiagnostics);
         }
 
+        [Theory]
+        [InlineData("{a = 0 if [0]: a = 10 a}", "Cannot convert type 'System.Int32' to 'System.Boolean'.")]
+        [InlineData("{a = 0 if [1 + 2]: a = 10 a}", "Cannot convert type 'System.Int32' to 'System.Boolean'.")]
+        [InlineData("{a = 0 if [x = 5]: a = 10 a}", "Cannot convert type 'System.Int32' to 'System.Boolean'.")]
+        [InlineData("{a = 0 if [range(10)]: a = 10 a}", "Cannot convert type 'System.Int32[]' to 'System.Boolean'.")]
+        public void IfStatementCannotConvert(string text, string expectedDiagnostics)
+        {
+            AssertDiagnostics(text, expectedDiagnostics);
+        }
+
+        [Theory]
+        [InlineData("{a = 0 while [5]: { a = a + 1 } a}", "Cannot convert type 'System.Int32' to 'System.Boolean'.")]
+        [InlineData("{a = 0 while [1 + 2]: { a = a + 1 } a}", "Cannot convert type 'System.Int32' to 'System.Boolean'.")]
+        [InlineData("{a = 0 while [x = 5]: { a = a + 1 } a}", "Cannot convert type 'System.Int32' to 'System.Boolean'.")]
+        [InlineData("{a = 0 while [range(10)]: { a = a + 1 } a}", "Cannot convert type 'System.Int32[]' to 'System.Boolean'.")]
+        public void WhileStatementCannotConvert(string text, string expectedDiagnostics)
+        {
+            AssertDiagnostics(text, expectedDiagnostics);
+        }
+
+        [Theory]
+        [InlineData("range([True], 10)", "Cannot convert type 'System.Boolean' to 'System.Int32'.")]
+        [InlineData("range(100, [False])", "Cannot convert type 'System.Boolean' to 'System.Int32'.")]
+        [InlineData("range(10, 20, [True])", "Cannot convert type 'System.Boolean' to 'System.Int32'.")]
+        public void RangeExpressionCannotConvert(string text, string expectedDiagnostics)
+        {
+            AssertDiagnostics(text, expectedDiagnostics);
+        }
+
         private EvaluationResult EvaluateExpression(string text)
         {
             var syntaxTree = SyntaxTree.Parse(text);
