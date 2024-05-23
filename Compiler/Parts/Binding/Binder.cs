@@ -68,17 +68,17 @@ namespace Compiler.Parts.Binding
 
         private BoundStatement BindForStatement(ForStatementSyntax syntax)
         {
+            var lowerBound = new BoundLiteralExpression(0);
             var upperBound = BindExpression(syntax.RangeExpression);
-            var previousScope = _scope;
-            _scope = new BoundScope(previousScope);
 
-            var variable = new VariableSymbol(syntax.Identifier.Text, typeof(int));
-            _scope.TryDeclare(variable);
+            // Declare loop variable in the current scope
+            var loopVariable = new VariableSymbol(syntax.Identifier.Text, typeof(int));
+            _scope.TryDeclare(loopVariable);
 
+            // Bind the body in the same scope to allow updates
             var body = BindStatement(syntax.Body);
-            _scope = previousScope;
 
-            return new BoundForStatement(variable, new BoundLiteralExpression(0), upperBound, body);
+            return new BoundForStatement(loopVariable, lowerBound, upperBound, body);
         }
 
         private BoundExpression BindRangeExpression(RangeExpressionSyntax syntax)
@@ -102,7 +102,9 @@ namespace Compiler.Parts.Binding
         private BoundStatement BindWhileStatement(WhileStatementSyntax syntax)
         {
             var condition = BindExpression(syntax.Condition, typeof(bool));
-            var body = BindStatement(syntax.Body);
+
+            // Bind the body in the same scope to allow updates
+        var body = BindStatement(syntax.Body);
 
             return new BoundWhileStatement(condition, body);
         }
@@ -183,6 +185,10 @@ namespace Compiler.Parts.Binding
         private BoundExpression BindNameExpression(NameExpressionSyntax syntax)
         {
             var name = syntax.IdentifierToken.Text;
+            if (string.IsNullOrEmpty(name))
+            {
+                return new BoundLiteralExpression(0);
+            }
 
             if (!_scope.TryLookup(name, out var variable))
             {
@@ -198,21 +204,16 @@ namespace Compiler.Parts.Binding
             var name = syntax.IdentifierToken.Text;
             var boundExpression = BindExpression(syntax.Expression);
 
-            // Lookup the variable in the current scope and parent scopes
-            if (!_scope.TryLookup(name, out var variable))
+            // Check if the variable exists in the current scope
+            if (!_scope.TryLookupInCurrentScope(name, out var variable))
             {
-                // Declare a new variable if it does not exist in any scope
+                // If not found in the current scope, declare it
                 variable = new VariableSymbol(name, boundExpression.Type);
                 _scope.TryDeclare(variable);
             }
 
-            // Ensure variable is not null
-            if (variable == null)
-            {
-                throw new InvalidOperationException($"Variable '{name}' should have been declared.");
-            }
-
-            return new BoundAssignmentExpression(variable, boundExpression);
+            // The variable should be non-null here
+            return new BoundAssignmentExpression(variable!, boundExpression);
         }
 
         private BoundExpression BindLiteralExpression(LiteralExpressionSyntax syntax) =>
