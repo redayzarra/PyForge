@@ -9,6 +9,8 @@ namespace Compiler.Parts.Binding
         AssignmentExpression,
         AdditionAssignmentExpression,
         SubtractionAssignmentExpression,
+        MultiplicationAssignmentExpression,
+        DivisionAssignmentExpression,
         RangeExpression,
         #endregion
 

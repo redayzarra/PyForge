@@ -178,8 +178,12 @@ public class LexerTests
             case SyntaxKind.LessThanToken:
             case SyntaxKind.PlusToken:         // Include PlusToken
             case SyntaxKind.MinusToken:        // Include MinusToken
+            case SyntaxKind.StarToken:
+            case SyntaxKind.SlashToken:
             case SyntaxKind.PlusEqualsToken:   // Include PlusEqualsToken
             case SyntaxKind.MinusEqualsToken:  // Include MinusEqualsToken
+            case SyntaxKind.StarEqualsToken:  // Include MinusEqualsToken
+            case SyntaxKind.SlashEqualsToken:  // Include MinusEqualsToken
                 return secondKind == SyntaxKind.EqualsToken || secondKind == SyntaxKind.EqualsEqualsToken ||
                     secondKind == SyntaxKind.PlusEqualsToken || secondKind == SyntaxKind.MinusEqualsToken;
 

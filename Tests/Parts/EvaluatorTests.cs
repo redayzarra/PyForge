@@ -90,6 +90,11 @@ public partial class ParserTests
         [InlineData("{a = 0 while False: { a += 1 } a}", 0)]
         [InlineData("{a = 0 b = 0 while a < 3: { a += 1 while b < 2: { b += 1 } } a + b}", 5)]
 
+        // While statements with "*=" and "/="
+        [InlineData("{a = 5 res = 1 while a > 1: { res *= a a -= 1} res}", 120)] // factorial of 5
+        [InlineData("{a = 16 while a > 1: { a /= 2 } a}", 1)]
+        [InlineData("{a = 0 res = 1 while a < 5: { a += 1 res *= a } res}", 120)] // factorial of 5 with addition
+
         // Range Tests
         [InlineData("range(10)", "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]")]
         [InlineData("range(5, 10)", "[5, 6, 7, 8, 9]")]
@@ -123,6 +128,10 @@ public partial class ParserTests
         [InlineData("{sum = 0 for i in range(5, 10): { sum += i } sum}", 35)]
         [InlineData("{sum = 0 for i in range(10, -1, -1): { sum += i } sum}", 55)]
         [InlineData("{x = 10 for i in range(10, 0, -2): { x -= 1 } x}", 5)]
+
+        // For statements with "*=" and "/="
+        [InlineData("{prod = 1 for i in range(1, 5): { prod *= i } prod}", 24)] // factorial of 4
+        [InlineData("{x = 16 for i in range(4): { x /= 2 } x}", 1)]
         public void EvaluateText(string text, object expectedValue)
         {
             var result = EvaluateExpression(text);

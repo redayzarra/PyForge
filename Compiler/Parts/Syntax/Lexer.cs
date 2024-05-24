@@ -60,6 +60,10 @@ namespace Compiler.Parts.Syntax
                 HandlePlus();
             else if (Current == '-')
                 HandleMinus();
+            else if (Current == '*')
+                HandleStar();
+            else if (Current == '/')
+                HandleSlash();
             else if (Current == '!')
                 HandleExclamation();
             else if (Current == '>' || Current == '<')
@@ -161,12 +165,6 @@ namespace Compiler.Parts.Syntax
                 case '\0':
                     SetToken(SyntaxKind.EndOfFileToken);
                     break;
-                case '*':
-                    SetToken(SyntaxKind.StarToken);
-                    break;
-                case '/':
-                    SetToken(SyntaxKind.SlashToken);
-                    break;
                 case '(':
                     SetToken(SyntaxKind.OpenParenthesisToken);
                     break;
@@ -219,6 +217,34 @@ namespace Compiler.Parts.Syntax
             {
                 SetToken(SyntaxKind.MinusToken, "-");
                 Next(); // Move past the '-' character
+            }
+        }
+
+        private void HandleStar()
+        {
+            if (LookAhead == '=')
+            {
+                _position += 2;
+                SetToken(SyntaxKind.StarEqualsToken, "*=");
+            }
+            else
+            {
+                SetToken(SyntaxKind.StarToken, "*");
+                Next(); // Move past the '+' character
+            }
+        }
+
+        private void HandleSlash()
+        {
+            if (LookAhead == '=')
+            {
+                _position += 2;
+                SetToken(SyntaxKind.SlashEqualsToken, "/=");
+            }
+            else
+            {
+                SetToken(SyntaxKind.SlashToken, "/");
+                Next(); // Move past the '+' character
             }
         }
     }

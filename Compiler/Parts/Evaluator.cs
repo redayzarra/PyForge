@@ -105,9 +105,33 @@ namespace Compiler.Parts
                 BoundAssignmentExpression asn => EvaluateAssignmentExpression(asn),
                 BoundAdditionAssignmentExpression add => EvaluateAdditionAssignmentExpression(add),
                 BoundSubtractionAssignmentExpression sub => EvaluateSubtractionAssignmentExpression(sub),
+                BoundMultiplicationAssignmentExpression mul => EvaluateMultiplicationAssignmentExpression(mul),
+                BoundDivisionAssignmentExpression div => EvaluateDivisionAssignmentExpression(div),
                 BoundRangeExpression rng => EvaluateRangeExpression(rng),
                 _ => throw new InvalidOperationException($"Unexpected node type: '{root.Kind}'")
             };
+        }
+
+        private object EvaluateMultiplicationAssignmentExpression(BoundMultiplicationAssignmentExpression mul)
+        {
+            var variable = mul.Variable;
+            var value = EvaluateExpression(mul.Expression);
+
+            var currentValue = (int)_variables[variable];
+            value = currentValue * (int)value;
+            _variables[variable] = value;
+            return value;
+        }
+
+        private object EvaluateDivisionAssignmentExpression(BoundDivisionAssignmentExpression div)
+        {
+            var variable = div.Variable;
+            var value = EvaluateExpression(div.Expression);
+
+            var currentValue = (int)_variables[variable];
+            value = currentValue / (int)value;
+            _variables[variable] = value;
+            return value;
         }
 
         private object EvaluateSubtractionAssignmentExpression(BoundSubtractionAssignmentExpression sub)

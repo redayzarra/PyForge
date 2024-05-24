@@ -26,6 +26,8 @@ namespace Compiler.Parts.Syntax
         EqualsToken,
         PlusEqualsToken,
         MinusEqualsToken,
+        StarEqualsToken,
+        SlashEqualsToken,
         GreaterThanOrEqualsToken,
         LessThanOrEqualsToken,
         GreaterThanToken,
@@ -67,6 +69,8 @@ namespace Compiler.Parts.Syntax
         AssignmentExpression,
         AdditionAssignmentExpression,
         SubtractionAssignmentExpression,
+        MultiplicationAssignmentExpression,
+        DivisionAssignmentExpression,
         RangeExpression,
         #endregion
 

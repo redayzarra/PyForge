@@ -140,9 +140,55 @@ namespace Compiler.Parts.Binding
                 SyntaxKind.AssignmentExpression => BindAssignmentExpression((AssignmentExpressionSyntax)syntax),
                 SyntaxKind.AdditionAssignmentExpression => BindAdditionAssignmentExpression((AdditionAssignmentExpressionSyntax)syntax),
                 SyntaxKind.SubtractionAssignmentExpression => BindSubtractionAssignmentExpression((SubtractionAssignmentExpressionSyntax)syntax),
+                SyntaxKind.MultiplicationAssignmentExpression => BindMultiplicationAssignmentExpression((MultiplicationAssignmentExpressionSyntax)syntax),
+                SyntaxKind.DivisionAssignmentExpression => BindDivisionAssignmentExpression((DivisionAssignmentExpressionSyntax)syntax),
                 SyntaxKind.RangeExpression => BindRangeExpression((RangeExpressionSyntax)syntax),
                 _ => throw new InvalidOperationException($"Unexpected syntax: {syntax.Kind}")
             };
+
+        private BoundExpression BindMultiplicationAssignmentExpression(MultiplicationAssignmentExpressionSyntax syntax)
+        {
+            var name = syntax.IdentifierToken.Text;
+            var boundExpression = BindExpression(syntax.Expression);
+
+            // Lookup the variable in the current scope and parent scopes
+            if (!_scope.TryLookup(name, out var variable))
+            {
+                // Declare a new variable if it does not exist in any scope
+                variable = new VariableSymbol(name, boundExpression.Type);
+                _scope.TryDeclare(variable);
+            }
+
+            // Ensure variable is not null
+            if (variable == null)
+            {
+                throw new InvalidOperationException($"Variable '{name}' should have been declared.");
+            }
+
+            return new BoundMultiplicationAssignmentExpression(variable, boundExpression);
+        }
+
+        private BoundExpression BindDivisionAssignmentExpression(DivisionAssignmentExpressionSyntax syntax)
+        {
+            var name = syntax.IdentifierToken.Text;
+            var boundExpression = BindExpression(syntax.Expression);
+
+            // Lookup the variable in the current scope and parent scopes
+            if (!_scope.TryLookup(name, out var variable))
+            {
+                // Declare a new variable if it does not exist in any scope
+                variable = new VariableSymbol(name, boundExpression.Type);
+                _scope.TryDeclare(variable);
+            }
+
+            // Ensure variable is not null
+            if (variable == null)
+            {
+                throw new InvalidOperationException($"Variable '{name}' should have been declared.");
+            }
+
+            return new BoundDivisionAssignmentExpression(variable, boundExpression);
+        }
 
         private BoundExpression BindSubtractionAssignmentExpression(SubtractionAssignmentExpressionSyntax syntax)
         {
