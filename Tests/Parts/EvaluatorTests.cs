@@ -76,12 +76,12 @@ public partial class ParserTests
         [InlineData("{a = 1 b = 2 if a + b == 3: a = 10 elif a - b == -1: a = 20 else: a = 30 a}", 10)]
 
         // While Statements
-        [InlineData("{a = 0 while a < 5: a = a + 1 a}", 5)]
-        [InlineData("{a = 0 while False: a = a + 1 a}", 0)] // loop never executes
-        // [InlineData("{a = 5 res = 1 while a > 1: res = res * a a = a - 1 res}", 120)] // factorial of 5
-        // [InlineData("{a = 0 sum = 0 while a <= 5: sum = sum + a a = a + 1 sum}", 15)] // sum of first 5 numbers
-        // [InlineData("{a = 10 res = 0 while a > 0: res = res + a a = a - 1 res}", 55)]
-        // [InlineData("{a = 0 b = 0 while a < 3: a = a + 1 while b < 2: b = b + 1 a + b}", 5)] // nested while loops
+        [InlineData("{a = 10 res = 0 while a > 0: { res = res + a a = a - 1} res}", 55)]
+        [InlineData("{a = 5 res = 1 while a > 1: { res = res * a a = a - 1} res}", 120)] // factorial of 5
+        [InlineData("{a = 0 while a < 5: { a = a + 1 } a}", 5)]
+        [InlineData("{a = 0 sum = 0 while a <= 5: { sum = sum + a a = a + 1 } sum}", 15)] // sum of first 5 numbers
+        [InlineData("{a = 0 while False: { a = a + 1 } a}", 0)] // loop never executes
+        [InlineData("{a = 0 b = 0 while a < 3: { a = a + 1 while b < 2: { b = b + 1 } } a + b}", 5)] // nested while loops
 
         // Range Tests
         [InlineData("range(10)", "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]")]
@@ -97,15 +97,15 @@ public partial class ParserTests
         [InlineData("2 in range(10, 0, -2)", true)]
 
         // For Statements
-        [InlineData("{sum = 0 for i in range(5): sum = sum + i sum}", 10)]
-        [InlineData("{x = 10 for i in range(5): x = x - 1 x}", 5)]
-        [InlineData("{sum = 0 for i in range(6): sum = sum + i sum}", 15)] // sum of first 5 numbers
-        [InlineData("{sum = 0 for i in range(3): sum = sum + i sum}", 3)] // simple range iteration
-        [InlineData("{sum = 0 for i in range(5, 10): sum = sum + i sum}", 35)] // range with two arguments
-        [InlineData("{sum = 0 for i in range(10, -1, -1): sum = sum + i sum}", 55)] // range with three arguments
-        [InlineData("{x = 10 for i in range(10, 0, -2): x = x - 1 x}", 5)] // range with three arguments and negative step
-        [InlineData("{res = 0 for i in range(3): for j in range(2): res = res + 1 res}", 6)] // nested for loops
-        [InlineData("{res = 0 for i in range(3): for j in range(2): res = res + i * 10 + j res}", 63)] // nested loops with calculation
+        [InlineData("{sum = 0 for i in range(5): { sum = sum + i } sum}", 10)]
+        [InlineData("{x = 10 for i in range(5): { x = x - 1 } x}", 5)]
+        [InlineData("{sum = 0 for i in range(6): { sum = sum + i } sum}", 15)] // sum of first 5 numbers
+        [InlineData("{res = 0 for i in range(3): { for j in range(2): { res = res + 1 } } res}", 6)] // nested for loops
+        [InlineData("{sum = 0 for i in range(3): { sum = sum + i } sum}", 3)] // simple range iteration
+        [InlineData("{res = 0 for i in range(3): { for j in range(2): { res = res + i * 10 + j } } res}", 63)] // nested loops with calculation
+        [InlineData("{sum = 0 for i in range(5, 10): { sum = sum + i } sum}", 35)] // range with two arguments
+        [InlineData("{sum = 0 for i in range(10, -1, -1): { sum = sum + i } sum}", 55)] // range with three arguments
+        [InlineData("{x = 10 for i in range(10, 0, -2): { x = x - 1 } x}", 5)] // range with three arguments and negative step
         public void EvaluateText(string text, object expectedValue)
         {
             var result = EvaluateExpression(text);
@@ -177,17 +177,6 @@ public partial class ParserTests
         {
             AssertDiagnostics(text, expectedDiagnostics);
         }
-
-        // [Theory]
-        // [InlineData("{x = 10[)]", "Unexpected token <CloseParenthesisToken>, expected <EndOfFileToken>.")]
-        // [InlineData("{x = 10 if y == 10 {x = 20} else y = 30[)]", "Unexpected token <CloseParenthesisToken>, expected <EndOfFileToken>.")]
-        // [InlineData("{x = 10 while y < 10 {x = x + 1}}[)]", "Unexpected token <CloseParenthesisToken>, expected <EndOfFileToken>.")]
-        // [InlineData("{x = 10 for i in range(5) {x = x - 1}[)]", "Unexpected token <CloseParenthesisToken>, expected <EndOfFileToken>.")]
-        // [InlineData("{x = 10[(]", "Unexpected token <OpenParenthesisToken>, expected <EndOfFileToken>.")]
-        // public void BlockStatementSyntaxError(string text, string expectedDiagnostics)
-        // {
-        //     AssertDiagnostics(text, expectedDiagnostics);
-        // }
 
         private EvaluationResult EvaluateExpression(string text)
         {
