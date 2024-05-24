@@ -75,6 +75,8 @@ namespace Compiler.Parts.Syntax
             SyntaxKind.StarToken => "*",
             SyntaxKind.SlashToken => "/",
             SyntaxKind.EqualsToken => "=",
+            SyntaxKind.PlusEqualsToken => "+=",
+            SyntaxKind.MinusEqualsToken => "-=",
             SyntaxKind.EqualsEqualsToken => "==",
             SyntaxKind.NotEqualsToken => "!=",
             SyntaxKind.OpenParenthesisToken => "(",

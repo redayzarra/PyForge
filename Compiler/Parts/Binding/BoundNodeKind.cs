@@ -7,6 +7,8 @@ namespace Compiler.Parts.Binding
         UnaryExpression,
         VariableExpression,
         AssignmentExpression,
+        AdditionAssignmentExpression,
+        SubtractionAssignmentExpression,
         RangeExpression,
         #endregion
 

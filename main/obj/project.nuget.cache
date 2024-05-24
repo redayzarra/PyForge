@@ -1,10 +1,14 @@
 {
   "version": 2,
-  "dgSpecHash": "ZLscEhaHVVISGS5U9D+SKAVM9MXTEQvzeX57I92AKjBw6nhF41Xerba6kMFEEK9FKJpob2VlE+bMyIBev1AmFA==",
+  "dgSpecHash": "IqTi/XXHsC1kUa33S+VTqBSgqo/vmRnFVWm/zvnNkTOcgOEqqIhSeAIMc3dIrceEWqRTf4raUpHdQQaQmjbyng==",
   "success": true,
   "projectFilePath": "C:\\Users\\reday\\Documents\\Compiler\\main\\main.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\reday\\.nuget\\packages\\system.collections.immutable\\8.0.0\\system.collections.immutable.8.0.0.nupkg.sha512"
+    "C:\\Users\\reday\\.nuget\\packages\\system.collections.immutable\\8.0.0\\system.collections.immutable.8.0.0.nupkg.sha512",
+    "C:\\Users\\reday\\.nuget\\packages\\microsoft.netcore.app.ref\\7.0.17\\microsoft.netcore.app.ref.7.0.17.nupkg.sha512",
+    "C:\\Users\\reday\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\7.0.17\\microsoft.windowsdesktop.app.ref.7.0.17.nupkg.sha512",
+    "C:\\Users\\reday\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\7.0.17\\microsoft.aspnetcore.app.ref.7.0.17.nupkg.sha512",
+    "C:\\Users\\reday\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\7.0.17\\microsoft.netcore.app.host.win-x64.7.0.17.nupkg.sha512"
   ],
   "logs": []
 }

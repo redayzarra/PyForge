@@ -83,6 +83,13 @@ public partial class ParserTests
         [InlineData("{a = 0 while False: { a = a + 1 } a}", 0)] // loop never executes
         [InlineData("{a = 0 b = 0 while a < 3: { a = a + 1 while b < 2: { b = b + 1 } } a + b}", 5)] // nested while loops
 
+        // While statements with "+=" and "-="
+        [InlineData("{a = 10 res = 0 while a > 0: { res += a a -= 1} res}", 55)]
+        [InlineData("{a = 0 while a < 5: { a += 1 } a}", 5)]
+        [InlineData("{a = 0 sum = 0 while a <= 5: { sum += a a += 1 } sum}", 15)]
+        [InlineData("{a = 0 while False: { a += 1 } a}", 0)]
+        [InlineData("{a = 0 b = 0 while a < 3: { a += 1 while b < 2: { b += 1 } } a + b}", 5)]
+
         // Range Tests
         [InlineData("range(10)", "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]")]
         [InlineData("range(5, 10)", "[5, 6, 7, 8, 9]")]
@@ -106,6 +113,16 @@ public partial class ParserTests
         [InlineData("{sum = 0 for i in range(5, 10): { sum = sum + i } sum}", 35)] // range with two arguments
         [InlineData("{sum = 0 for i in range(10, -1, -1): { sum = sum + i } sum}", 55)] // range with three arguments
         [InlineData("{x = 10 for i in range(10, 0, -2): { x = x - 1 } x}", 5)] // range with three arguments and negative step
+
+        // For Statements with "+=" and "-="
+        [InlineData("{sum = 0 for i in range(5): { sum += i } sum}", 10)]
+        [InlineData("{x = 10 for i in range(5): { x -= 1 } x}", 5)]
+        [InlineData("{res = 0 for i in range(3): { for j in range(2): { res += 1 } } res}", 6)]
+        [InlineData("{sum = 0 for i in range(3): { sum += i } sum}", 3)]
+        [InlineData("{res = 0 for i in range(3): { for j in range(2): { res += i * 10 + j } } res}", 63)]
+        [InlineData("{sum = 0 for i in range(5, 10): { sum += i } sum}", 35)]
+        [InlineData("{sum = 0 for i in range(10, -1, -1): { sum += i } sum}", 55)]
+        [InlineData("{x = 10 for i in range(10, 0, -2): { x -= 1 } x}", 5)]
         public void EvaluateText(string text, object expectedValue)
         {
             var result = EvaluateExpression(text);

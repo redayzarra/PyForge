@@ -103,9 +103,33 @@ namespace Compiler.Parts
                 BoundBinaryExpression bin => EvaluateBinaryExpression(bin),
                 BoundVariableExpression var => _variables.TryGetValue(var.Variable, out var value) ? value : throw new Exception($"Variable '{var.Variable}' not found."),
                 BoundAssignmentExpression asn => EvaluateAssignmentExpression(asn),
+                BoundAdditionAssignmentExpression add => EvaluateAdditionAssignmentExpression(add),
+                BoundSubtractionAssignmentExpression sub => EvaluateSubtractionAssignmentExpression(sub),
                 BoundRangeExpression rng => EvaluateRangeExpression(rng),
                 _ => throw new InvalidOperationException($"Unexpected node type: '{root.Kind}'")
             };
+        }
+
+        private object EvaluateSubtractionAssignmentExpression(BoundSubtractionAssignmentExpression sub)
+        {
+            var variable = sub.Variable;
+            var value = EvaluateExpression(sub.Expression);
+
+            var currentValue = (int)_variables[variable];
+            value = currentValue - (int)value;
+            _variables[variable] = value;
+            return value;
+        }
+
+        private object EvaluateAdditionAssignmentExpression(BoundAdditionAssignmentExpression add)
+        {
+            var variable = add.Variable;
+            var value = EvaluateExpression(add.Expression);
+
+            var currentValue = (int)_variables[variable];
+            value = currentValue + (int)value;
+            _variables[variable] = value;
+            return value;
         }
 
         private object EvaluateRangeExpression(BoundRangeExpression rng)

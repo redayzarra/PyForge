@@ -200,6 +200,24 @@ namespace Compiler.Parts.Syntax
                 return new AssignmentExpressionSyntax(identifierToken, operatorToken, right);
             }
 
+            if (Peek(0).Kind == SyntaxKind.IdentifierToken &&
+                Peek(1).Kind == SyntaxKind.PlusEqualsToken)
+            {
+                var identifierToken = NextToken();
+                var operatorToken = NextToken();
+                var right = ParseAssignmentExpression();
+                return new AdditionAssignmentExpressionSyntax(identifierToken, operatorToken, right);
+            }
+
+            if (Peek(0).Kind == SyntaxKind.IdentifierToken &&
+                Peek(1).Kind == SyntaxKind.MinusEqualsToken)
+            {
+                var identifierToken = NextToken();
+                var operatorToken = NextToken();
+                var right = ParseAssignmentExpression();
+                return new SubtractionAssignmentExpressionSyntax(identifierToken, operatorToken, right);
+            }
+
             return ParseBinaryExpression();
         }
 

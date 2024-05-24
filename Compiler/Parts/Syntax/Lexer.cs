@@ -56,6 +56,10 @@ namespace Compiler.Parts.Syntax
                 HandleWhitespace();
             else if (Current == '=')
                 HandleEquals();
+            else if (Current == '+')
+                HandlePlus();
+            else if (Current == '-')
+                HandleMinus();
             else if (Current == '!')
                 HandleExclamation();
             else if (Current == '>' || Current == '<')
@@ -157,12 +161,6 @@ namespace Compiler.Parts.Syntax
                 case '\0':
                     SetToken(SyntaxKind.EndOfFileToken);
                     break;
-                case '+':
-                    SetToken(SyntaxKind.PlusToken);
-                    break;
-                case '-':
-                    SetToken(SyntaxKind.MinusToken);
-                    break;
                 case '*':
                     SetToken(SyntaxKind.StarToken);
                     break;
@@ -194,6 +192,34 @@ namespace Compiler.Parts.Syntax
             }
             _value = Current.ToString();
             Next();
+        }
+
+        private void HandlePlus()
+        {
+            if (LookAhead == '=')
+            {
+                _position += 2;
+                SetToken(SyntaxKind.PlusEqualsToken, "+=");
+            }
+            else
+            {
+                SetToken(SyntaxKind.PlusToken, "+");
+                Next(); // Move past the '+' character
+            }
+        }
+
+        private void HandleMinus()
+        {
+            if (LookAhead == '=')
+            {
+                _position += 2;
+                SetToken(SyntaxKind.MinusEqualsToken, "-=");
+            }
+            else
+            {
+                SetToken(SyntaxKind.MinusToken, "-");
+                Next(); // Move past the '-' character
+            }
         }
     }
 }

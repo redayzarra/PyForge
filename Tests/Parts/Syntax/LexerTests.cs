@@ -176,7 +176,12 @@ public class LexerTests
             case SyntaxKind.EqualsEqualsToken:
             case SyntaxKind.GreaterThanToken:
             case SyntaxKind.LessThanToken:
-                return secondKind == SyntaxKind.EqualsToken || secondKind == SyntaxKind.EqualsEqualsToken;
+            case SyntaxKind.PlusToken:         // Include PlusToken
+            case SyntaxKind.MinusToken:        // Include MinusToken
+            case SyntaxKind.PlusEqualsToken:   // Include PlusEqualsToken
+            case SyntaxKind.MinusEqualsToken:  // Include MinusEqualsToken
+                return secondKind == SyntaxKind.EqualsToken || secondKind == SyntaxKind.EqualsEqualsToken ||
+                    secondKind == SyntaxKind.PlusEqualsToken || secondKind == SyntaxKind.MinusEqualsToken;
 
             default:
                 return IsKeyword(firstKind);
