@@ -1,10 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "uUPkN3XxgDK2PVGAEZ+FooR+H45nEsq7gOgBF0AoiWnvRxxRtNWDUQozhiYr2LliXbhK2D+lg4ChHIIywIwZtQ==",
+  "dgSpecHash": "k+8ymU8jfy1iSq4pmYjWsN1uLIQ3bBPhZTKw6f1aZviQoN2tzSZJ6PJ7U2oTbrqE5lLawRt4oggw7IjtMv1Wcw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\reday\\Documents\\Compiler\\Compiler\\Compiler.csproj",
+  "projectFilePath": "C:\\Users\\reday\\Documents\\compiler\\Compiler\\Compiler.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\reday\\.nuget\\packages\\system.collections.immutable\\8.0.0\\system.collections.immutable.8.0.0.nupkg.sha512"
+    "C:\\Users\\reday\\.nuget\\packages\\system.collections.immutable\\8.0.0\\system.collections.immutable.8.0.0.nupkg.sha512",
+    "C:\\Users\\reday\\.nuget\\packages\\microsoft.netcore.app.ref\\7.0.17\\microsoft.netcore.app.ref.7.0.17.nupkg.sha512",
+    "C:\\Users\\reday\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\7.0.17\\microsoft.windowsdesktop.app.ref.7.0.17.nupkg.sha512",
+    "C:\\Users\\reday\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\7.0.17\\microsoft.aspnetcore.app.ref.7.0.17.nupkg.sha512"
   ],
   "logs": []
 }

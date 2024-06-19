@@ -5587,29 +5587,27 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\reday\\Documents\\Compiler\\Tests\\Tests.csproj",
+      "projectUniqueName": "C:\\Users\\reday\\Documents\\compiler\\Tests\\Tests.csproj",
       "projectName": "Tests",
-      "projectPath": "C:\\Users\\reday\\Documents\\Compiler\\Tests\\Tests.csproj",
+      "projectPath": "C:\\Users\\reday\\Documents\\compiler\\Tests\\Tests.csproj",
       "packagesPath": "C:\\Users\\reday\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\reday\\Documents\\Compiler\\Tests\\obj\\",
+      "outputPath": "C:\\Users\\reday\\Documents\\compiler\\Tests\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\reday\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "C:\\Users\\reday\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net7.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net7.0": {
           "targetAlias": "net7.0",
           "projectReferences": {
-            "C:\\Users\\reday\\Documents\\Compiler\\Compiler\\Compiler.csproj": {
-              "projectPath": "C:\\Users\\reday\\Documents\\Compiler\\Compiler\\Compiler.csproj"
+            "C:\\Users\\reday\\Documents\\compiler\\Compiler\\Compiler.csproj": {
+              "projectPath": "C:\\Users\\reday\\Documents\\compiler\\Compiler\\Compiler.csproj"
             }
           }
         }
@@ -5618,6 +5616,11 @@
         "warnAsError": [
           "NU1605"
         ]
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
       }
     },
     "frameworks": {
@@ -5656,12 +5659,26 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.AspNetCore.App.Ref",
+            "version": "[7.0.17, 7.0.17]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Ref",
+            "version": "[7.0.17, 7.0.17]"
+          },
+          {
+            "name": "Microsoft.WindowsDesktop.App.Ref",
+            "version": "[7.0.17, 7.0.17]"
+          }
+        ],
         "frameworkReferences": {
           "Microsoft.NETCore.App": {
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.203\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.203\\RuntimeIdentifierGraph.json"
       }
     }
   }

@@ -202,4 +202,5 @@ C:\Users\reday\Documents\Compiler\Tests\bin\Debug\net7.0\System.Collections.Immu
 <<<<<<< HEAD
 =======
 >>>>>>> 6642be5c60fe635daa4e28f692a0a6d75b773349
-C:\Users\reday\Documents\Compiler\Tests\obj\Debug\net7.0\Tests.csproj.CopyComplete
+C:\Users\reday\Documents\compiler\Tests\obj\Debug\net7.0\Tests.sourcelink.json
+C:\Users\reday\Documents\compiler\Tests\obj\Debug\net7.0\Tests.csproj.Up2Date

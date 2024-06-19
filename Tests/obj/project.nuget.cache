@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "cufKVRg6VENH+HKFQeAz1nNb3VufG+bhjJEdynVlXwBvD64rJwws/QEzwfAVgx5LHaoSklnmnm/DE45Nrnf7aQ==",
+  "dgSpecHash": "zgMiIIhMNvXfabD9rNaA+yMcunK0GPkiCegDWAbBx4Ci2xwj9sTORXm5GiW9yWPlegWYO0BLBH42WiuJ5ZL+mw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\reday\\Documents\\Compiler\\Tests\\Tests.csproj",
+  "projectFilePath": "C:\\Users\\reday\\Documents\\compiler\\Tests\\Tests.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\reday\\.nuget\\packages\\coverlet.collector\\3.2.0\\coverlet.collector.3.2.0.nupkg.sha512",
     "C:\\Users\\reday\\.nuget\\packages\\microsoft.codecoverage\\17.5.0\\microsoft.codecoverage.17.5.0.nupkg.sha512",
@@ -93,7 +93,10 @@
     "C:\\Users\\reday\\.nuget\\packages\\xunit.core\\2.4.2\\xunit.core.2.4.2.nupkg.sha512",
     "C:\\Users\\reday\\.nuget\\packages\\xunit.extensibility.core\\2.4.2\\xunit.extensibility.core.2.4.2.nupkg.sha512",
     "C:\\Users\\reday\\.nuget\\packages\\xunit.extensibility.execution\\2.4.2\\xunit.extensibility.execution.2.4.2.nupkg.sha512",
-    "C:\\Users\\reday\\.nuget\\packages\\xunit.runner.visualstudio\\2.4.5\\xunit.runner.visualstudio.2.4.5.nupkg.sha512"
+    "C:\\Users\\reday\\.nuget\\packages\\xunit.runner.visualstudio\\2.4.5\\xunit.runner.visualstudio.2.4.5.nupkg.sha512",
+    "C:\\Users\\reday\\.nuget\\packages\\microsoft.netcore.app.ref\\7.0.17\\microsoft.netcore.app.ref.7.0.17.nupkg.sha512",
+    "C:\\Users\\reday\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\7.0.17\\microsoft.windowsdesktop.app.ref.7.0.17.nupkg.sha512",
+    "C:\\Users\\reday\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\7.0.17\\microsoft.aspnetcore.app.ref.7.0.17.nupkg.sha512"
   ],
   "logs": []
 }
