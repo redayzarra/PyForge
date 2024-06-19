@@ -102,6 +102,14 @@ PyForge is a custom Python compiler built using .NET and C#. It provides an inte
 - `reset()`: Reset all variables and clear the console.
 - `run()`: Rerun the compiler without needing to exit.
 - `test()`: Test the compiler using custom tests.
+
+<div align="center">
+ 
+  <img src="https://github.com/redayzarra/PyForge/assets/113388793/d096aec2-e0d9-4cc2-85d0-eb618d7cf576" alt="Compiler testing output">
+
+</div>
+
+
 - `exit()`: Exit the compiler.
 
 
