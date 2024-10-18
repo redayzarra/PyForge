@@ -113,18 +113,11 @@ namespace Compiler.Parts.Binding
         {
             var statements = ImmutableArray.CreateBuilder<BoundStatement>();
 
-            // Create a new scope for the block
-            var previousScope = _scope;
-            _scope = new BoundScope(previousScope);
-
             foreach (var statementSyntax in syntax.Statements)
             {
                 var statement = BindStatement(statementSyntax);
                 statements.Add(statement);
             }
-
-            // Revert to the parent scope
-            _scope = previousScope;
 
             return new BoundBlockStatement(statements.ToImmutable());
         }

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ajoPeqf6tlfvd3Rw8/sGqPZWpptV0ik8hFXtaJ85GkUTt3cQmNf8AqLYfO2YovHmpeCW2PGqbMEHCnlcUKRMEQ==",
+  "dgSpecHash": "IqTi/XXHsC1kUa33S+VTqBSgqo/vmRnFVWm/zvnNkTOcgOEqqIhSeAIMc3dIrceEWqRTf4raUpHdQQaQmjbyng==",
   "success": true,
-  "projectFilePath": "C:\\Users\\reday\\Documents\\compiler\\main\\main.csproj",
+  "projectFilePath": "C:\\Users\\reday\\Documents\\Compiler\\main\\main.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\reday\\.nuget\\packages\\system.collections.immutable\\8.0.0\\system.collections.immutable.8.0.0.nupkg.sha512",
     "C:\\Users\\reday\\.nuget\\packages\\microsoft.netcore.app.ref\\7.0.17\\microsoft.netcore.app.ref.7.0.17.nupkg.sha512",
