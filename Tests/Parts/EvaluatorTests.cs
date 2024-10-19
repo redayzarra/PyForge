@@ -45,6 +45,53 @@ public partial class ParserTests
         [InlineData("10 <= 5", false)]
         [InlineData("10 <= 10", true)]
 
+        // Bitwise Operations Tests
+        [InlineData("5 & 3", 1)] // AND operation
+        [InlineData("5 | 3", 7)] // OR operation
+        [InlineData("5 ^ 3", 6)] // XOR operation
+        [InlineData("~5", -6)]   // NOT operation
+        [InlineData("5 << 1", 10)] // Left shift operation
+        [InlineData("5 >> 1", 2)]  // Right shift operation
+
+        // Complex Bitwise Operations Tests
+        [InlineData("5 & (3 | 2)", 1)] // AND with OR
+        [InlineData("8 | 2 & 5", 10)]  // OR with AND
+        [InlineData("5 ^ 3 & 2", 7)]   // XOR with AND
+        [InlineData("~(5 | 2)", -8)]   // NOT with OR
+        [InlineData("5 << 2 | 1", 21)] // Left shift with OR
+        [InlineData("(5 | 3) >> 1", 3)] // OR with right shift
+        [InlineData("7 ^ 3 & 5 << 1", 13)] // Mix XOR, AND, and left shift
+        [InlineData("~(5 ^ 2) & 10", 8)]  // NOT with XOR and AND
+        [InlineData("((5 & 3) | 2) ^ 1", 2)] // Nested bitwise operations
+        [InlineData("(5 << 2) + (7 >> 1)", 21)] // Left shift, right shift with addition
+        [InlineData("(~5) + (3 << 2)", 7)] // NOT and left shift with addition
+        [InlineData("(5 | 2) ^ (3 & 1)", 7)] // OR, AND, XOR combination
+
+        // Bitwise Operations for Booleans
+        [InlineData("True & True", true)]   // AND operation (1 & 1 = 1)
+        [InlineData("True & False", false)] // AND operation (1 & 0 = 0)
+        [InlineData("True | False", true)]  // OR operation (1 | 0 = 1)
+        [InlineData("False | False", false)] // OR operation (0 | 0 = 0)
+        [InlineData("True ^ False", true)]  // XOR operation (1 ^ 0 = 1)
+        [InlineData("True ^ True", false)]  // XOR operation (1 ^ 1 = 0)
+        [InlineData("False ^ False", false)] // XOR operation (0 ^ 0 = 0)
+        [InlineData("~True", -2)]  // NOT operation (~1 = -2 in two's complement)
+        [InlineData("~False", -1)] // NOT operation (~0 = -1)
+        [InlineData("True << 1", 2)]  // Left shift (1 << 1 = 2)
+        [InlineData("False << 1", 0)] // Left shift (0 << 1 = 0)
+        [InlineData("True >> 1", 0)]  // Right shift (1 >> 1 = 0)
+        [InlineData("False >> 1", 0)] // Right shift (0 >> 1 = 0)
+        
+        // Complex Boolean Bitwise Operations
+        [InlineData("True & (False | True)", true)]   // AND with OR
+        [InlineData("True | False & True", true)]     // OR with AND
+        [InlineData("True ^ False & True", true)]     // XOR with AND
+        [InlineData("~(True | False)", -2)]          // NOT with OR
+        [InlineData("True << 2 | False", 4)]         // Left shift with OR
+        [InlineData("(True | False) >> 1", 0)]       // OR with right shift
+        [InlineData("True ^ (False << 1)", 1)]       // XOR with left shift
+        [InlineData("~(True & False) | True", -1)]   // NOT with AND and OR
+
         // Assignment Tests
         [InlineData("x = 10", 10)]
         [InlineData("(x = 4) + 2", 6)]
